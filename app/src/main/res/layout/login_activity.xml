@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="vertical" android:background="#F3F3F3">
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/form_heading" />
+
+    <LinearLayout android:visibility="gone" android:layout_marginTop="0sp" android:layout_marginBottom="20sp" android:layout_width="fill_parent" android:background="#FFFFFF" android:layout_height="wrap_content" android:layout_gravity="center">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="45sp"
+            android:gravity="center"
+            android:paddingLeft="10px"
+            android:paddingRight="10px"
+            android:text="@string/app_name"
+            android:textColor="#FF0000"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="fill_parent" android:layout_marginTop="10sp" android:layout_height="wrap_content" android:orientation="horizontal" android:background="@color/pageHeadingBack">
+        <TextView
+            android:id="@+id/lblSystemDate"
+            android:layout_height="30sp"
+            android:layout_width="fill_parent"
+            android:gravity="center"
+            android:text="09 Jul 2014"
+            android:textColor="@color/pageHeading"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_marginLeft="50sp" android:layout_marginRight="50sp" android:layout_marginTop="0sp" android:layout_marginBottom="20sp" android:layout_width="fill_parent"  android:layout_height="wrap_content" android:layout_gravity="center">
+        <TextView
+            android:id="@+id/UniqueUserId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:gravity="center_horizontal|center_vertical" android:textColor="#006699"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_marginLeft="50sp" android:layout_marginRight="50sp" android:layout_marginTop="20sp" android:layout_marginBottom="0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_gravity="center">
+        <TextView
+            android:layout_height="30sp"
+            android:layout_width="fill_parent"
+            android:gravity="left"
+            android:text="User Name"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_marginLeft="50sp" android:layout_marginRight="50sp" android:layout_marginTop="0sp" android:layout_marginBottom="20sp" android:layout_width="fill_parent"  android:layout_height="wrap_content" android:layout_gravity="center">
+        <Spinner
+            android:id="@+id/userId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true" android:enabled="true"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_marginLeft="50sp" android:layout_marginRight="50sp" android:layout_marginTop="0sp" android:layout_marginBottom="20sp" android:layout_width="fill_parent"  android:layout_height="wrap_content" android:layout_gravity="center">
+        <EditText android:id="@+id/pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:inputType="textPassword"
+            android:layout_marginTop="20sp" android:layout_marginBottom="5dip"
+            android:singleLine="true" android:hint="Password"
+            android:password="true" android:text=""/>
+
+        <!--<android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="10"
+            >
+            <EditText android:id="@+id/pass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:ems="10"
+                android:hint="Password" />
+        </android.support.design.widget.TextInputLayout>-->
+    </LinearLayout>
+
+    <LinearLayout android:layout_weight="0.07" android:layout_marginLeft="50sp" android:layout_marginRight="50sp"  android:orientation="horizontal" android:layout_marginTop="0sp" android:layout_marginBottom="20sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_gravity="center">
+        <Button android:id="@+id/btnLogin"  android:background="@drawable/button_style_gray"
+            android:layout_width="wrap_content" android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10sp"
+            android:text="Login" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btnClose" android:layout_marginLeft="20sp"
+            android:background="@drawable/button_style_gray" android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10sp"
+            android:text="Close" android:textColor="#FFFFFF"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
