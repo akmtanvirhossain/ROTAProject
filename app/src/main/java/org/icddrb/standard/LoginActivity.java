@@ -1,4 +1,4 @@
-package org.icddrb.data;
+package org.icddrb.standard;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -96,11 +96,18 @@ public class LoginActivity extends Activity {
             //**************************************************************************************
             if(netwoekAvailable)
             {
+                //SyncScheduler.startOnlyIfConnectedToNetwork(getApplicationContext());
+                Intent syncService = new Intent(getApplicationContext(), DataSyncService.class);
+                startService(syncService);
+
                 //Reqular data sync
+                //Database Structure Update
+                //C.Sync_DatabaseStructure(UniqueID);
+                C.Sync_Download("DataCollector", UniqueID, "");
             }
             //**************************************************************************************
 
-            uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from UserList order by UserName"));
+            uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from DataCollector where Active='1' order by UserName"));
             String[] CL = uid.getSelectedItem().toString().split("-");
             uid.setSelection(Global.SpinnerItemPosition(uid,CL[0].length(),C.ReturnSingleValue("Select UserId from LastLogin")));
 
@@ -114,7 +121,7 @@ public class LoginActivity extends Activity {
             Button btnClose=(Button)findViewById(R.id.btnClose);
             btnClose.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    finish();
+                    finishAffinity();
                     System.exit(0);
                 }
             });
@@ -128,7 +135,7 @@ public class LoginActivity extends Activity {
                         String[] U = Connection.split(uid.getSelectedItem().toString(),'-');
                         g.setUserId(U[0]);
 
-                        if(!C.Existence("Select * from UserList where UserId='"+ U[0] +"' and Pass='"+ pass.getText().toString() +"'"))
+                        if (!C.Existence("Select * from DataCollector where UserId='" + U[0] + "' and Pass='" + pass.getText().toString() + "'"))
                         {
                             Connection.MessageBox(LoginActivity.this,"This is not a valid user id or password");
                             return;
@@ -138,7 +145,6 @@ public class LoginActivity extends Activity {
                         C.Save("Delete from LastLogin");
                         C.Save("Insert into LastLogin(UserId)Values('"+ U[0] +"')");
 
-
                         //Download Updated System
                         //...................................................................................
                         if(netwoekAvailable==true)
@@ -147,6 +153,12 @@ public class LoginActivity extends Activity {
                             String[] ServerVal  = Connection.split(C.ReturnResult("ReturnSingleValue","sp_ServerCheck '"+ UniqueID +"'"),',');
                             String ServerDate   = ServerVal[0].toString();
                             String UpdateDT     = ServerVal[1].toString();
+                            String DBUploadRequest = ServerVal[2].toString();
+
+                            /*if(DBUploadRequest.equals("1")) {
+                                C.DatabaseUpload(UniqueID);
+                                C.ExecuteCommandOnServer("Update UserList set DBRequest='2' where UserId='"+ UniqueID +"'");
+                            }*/
 
                             //Check for New Version
                             if (!UpdateDT.equals(SystemUpdateDT)) {
@@ -316,6 +328,7 @@ public class LoginActivity extends Activity {
             return null;
         }
     }
+
 
 }
 

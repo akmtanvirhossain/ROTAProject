@@ -1,4 +1,4 @@
-package org.icddrb.data;
+package org.icddrb.standard;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class MainMenu extends Activity {
                     FileUpload myTask = new FileUpload();
                     String[] params = new String[2];
                     params[0] = ProjectSetting.DatabaseName; //Source database name
-                    params[1] = g.getDeviceNo()+"_"+ Global.CurrentDMY() +"_"+ ProjectSetting.DatabaseName +".txt"; //Destination database name
+                    params[1] = g.getDeviceNo()+"_"+ Global.CurrentDMY() +"_"+ ProjectSetting.DatabaseName; //Destination database name
                     myTask.execute(params);
 
                 }
@@ -88,6 +87,14 @@ public class MainMenu extends Activity {
 
                                         C.DataSync_UploadDownload(tableList, USERID);
 
+                                        /*String[] ServerVal  = Connection.split(C.ReturnResult("ReturnSingleValue","sp_ServerCheck '"+ USERID +"'"),',');
+                                        String DBUploadRequest = ServerVal[2].toString();
+
+                                        if(DBUploadRequest.equals("1")) {
+                                            C.DatabaseUpload(USERID);
+                                            C.ExecuteCommandOnServer("Update UserList set DBRequest='2' where UserId='"+ USERID +"'");
+                                        }*/
+
                                     } catch (Exception e) {
 
                                     }
@@ -109,7 +116,8 @@ public class MainMenu extends Activity {
                             adb.setNegativeButton("No", null);
                             adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    finish();
+                                    finishAffinity();
+                                    System.exit(0);
                                 }});
                             adb.show();
                 }

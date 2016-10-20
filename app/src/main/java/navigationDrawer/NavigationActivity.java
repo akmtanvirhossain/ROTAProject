@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.icddrb.data.*;
-import org.icddrb.data.R;
+import org.icddrb.standard.*;
+import org.icddrb.standard.R;
 
 
 public class NavigationActivity extends AppCompatActivity {
