@@ -39,7 +39,7 @@
 
         //Android Manifest Code
         <!--<activity android:name="org.icddrb.data.Screening" android:label="Screening" />-->
-
+        <activity android:name=".AndroidTask" android:label="AndroidTask" />
 
         //Service
         <service android:name="org.icddrb.standard.DataSyncService"/>

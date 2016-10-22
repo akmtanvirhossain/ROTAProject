@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,9 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Common.Connection;
-import Common.FileUpload;
 import Common.Global;
-import Common.ProjectSetting;
 
 public class MainMenu extends Activity {
 
@@ -39,12 +38,15 @@ public class MainMenu extends Activity {
             cmdDataUpload = (Button)findViewById(R.id.cmdDataUpload);
             cmdDataUpload.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    //Upload file to server
+                    Intent f1 = new Intent(getApplicationContext(), AndroidTask.class);
+                    startActivity(f1);
+
+                    /*//Upload file to server
                     FileUpload myTask = new FileUpload();
                     String[] params = new String[2];
                     params[0] = ProjectSetting.DatabaseName; //Source database name
                     params[1] = g.getDeviceNo()+"_"+ Global.CurrentDMY() +"_"+ ProjectSetting.DatabaseName; //Destination database name
-                    myTask.execute(params);
+                    myTask.execute(params);*/
 
                 }
             });
