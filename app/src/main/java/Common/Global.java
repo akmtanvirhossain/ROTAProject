@@ -14,79 +14,58 @@ import android.os.Environment;
 import android.widget.Spinner;
 
 public class Global {
-	private static Global instance;
-	public static synchronized Global getInstance()
-	{
-		if(instance==null){
-			instance=new Global();
-		}
-		return instance;
-	}
-
 	public static char VariableSeperator = '^';
 	//public static String Namespace       = ProjectSetting.Namespace;
 	public static String Soap_Address    = ProjectSetting.Namespace + "/"+ ProjectSetting.apiName +"/datasync.asmx";
-
 	//New version
 	//public static String NewVersionName  = ProjectSetting.NewVersionName;
 	public static String UpdatedSystem   = ProjectSetting.Namespace + "/"+ ProjectSetting.apiName +"/Update/"+ ProjectSetting.NewVersionName +".txt";
-
+	public static String CommonDB = ProjectSetting.Namespace + "/" + ProjectSetting.apiName + "/CommonDB/standardDatabase.txt";//+ ProjectSetting.DatabaseName;
 	//Database
 	public static String DatabaseFolder  = ProjectSetting.DatabaseFolder;
 	public static String DatabaseName    = ProjectSetting.DatabaseName;
-
+	private static Global instance;
+	Calendar c = Calendar.getInstance();
+	public int mYear = c.get(Calendar.YEAR);
+	public int mMonth = c.get(Calendar.MONTH) + 1;
+	public int mDay = c.get(Calendar.DAY_OF_MONTH);
 	//Global Variable
 	//-------------------------------------------------------------------------
 	private String _UserId;
-	public void setUserId(String UserId){this._UserId = UserId;}
-	public String getUserId(){ return this._UserId;}
 	//-------------------------------------------------------------------------
 	private String _DeviceNo;
-	public void setDeviceNo(String DeviceNo){this._DeviceNo = DeviceNo;}
-	public String getDeviceNo(){ return this._DeviceNo;}
-
 	//-------------------------------------------------------------------------
 	private String _CountryCode;
-	public void setCountryCode(String CountryCode){this._CountryCode = CountryCode;}
-	public String getCountryCode(){ return this._CountryCode;}
-
 	private String _SiteCode;
-	public void setSiteCode(String SiteCode){this._SiteCode = SiteCode;}
-	public String getSiteCode(){ return this._SiteCode;}
-
 	private String _SiteName;
-	public void setSiteName(String SiteName){this._SiteName = SiteName;}
-	public String getSiteName(){ return this._SiteName;}
-
 	private String _ParticipantID;
-	public void setParticipantID(String ParticipantID){this._ParticipantID = ParticipantID;}
-	public String getParticipantID(){ return this._ParticipantID;}
-
 	//Recruitment Location
 	private String _Location;
-	public void setLocationID(String Location){this._Location = Location;}
-	public String getLocationID(){ return this._Location;}
+
+	public static synchronized Global getInstance() {
+		if (instance == null) {
+			instance = new Global();
+		}
+		return instance;
+	}
 
 	//String Function
 	//...........................................................................................................
 	public static String Right(String text, int length) {
 		return text.substring(text.length() - length, text.length());
 	}
+
 	public static String Left(String text, int length){
 		return text.substring(0, length);
 	}
+
 	public static String Mid(String text, int start, int end){
 		return text.substring(start, end);
 	}
+
 	public static String Mid(String text, int start){
 		return text.substring(start, text.length() - start);
 	}
-
-	Calendar c = Calendar.getInstance();
-	public int mYear = c.get(Calendar.YEAR);
-	public int mMonth = c.get(Calendar.MONTH)+1;
-	public int mDay = c.get(Calendar.DAY_OF_MONTH);
-
 
 	//Year, Month
 	public static String CurrentYear()
@@ -120,7 +99,6 @@ public class Global {
 	{
 		return CurrentDay()+CurrentMonth()+CurrentYear();
 	}
-
 
 	//Date now
 	//...........................................................................................................
@@ -198,14 +176,6 @@ public class Global {
 		return CurrentDateTimeDMY;
 	}
 
-	//Time Now
-	//...........................................................................................................
-	public String CurrentTime24()
-	{
-		Calendar TM = Calendar.getInstance();
-		return Right("00"+String.valueOf(TM.get(Calendar.HOUR_OF_DAY)),2)+":"+ Right("00"+String.valueOf(TM.get(Calendar.MINUTE)),2);
-	}
-
 	//Date Converter: dd/mm/yyyy to yyyy-mm-dd
 	public static String DateConvertYMD(String DateString)
 	{
@@ -256,7 +226,6 @@ public class Global {
 		cal.add(Calendar.DATE, days); //minus number would decrement the days
 		return sdf.format(cal.getTime());
 	}
-
 
 	//Add days: format: DD/MM/YYYY
 	public static String addDays(String date, int days)
@@ -464,7 +433,6 @@ public class Global {
 		return CurrentDateDDMMYYYY;
 	}
 
-
 	//Getting spinner item position with code
 	public static int SpinnerItemPosition(Spinner spn,int CodeLength, String Value)
 	{
@@ -573,26 +541,6 @@ public class Global {
 		return output;
 	}
 
-	/*
-     * Conversion DMS to decimal
-     *
-     * Input: latitude or longitude in the DMS format ( example: N 43Ã‚Â° 36' 15.894")
-     * Return: latitude or longitude in decimal format
-     * hemisphereOUmeridien => {W,E,S,N}
-     *
-     */
-	public double DMSToDecimal(String hemisphereOUmeridien,double degres,double minutes,double secondes)
-	{
-		double LatOrLon=0;
-		double signe=1.0;
-
-		if((hemisphereOUmeridien.equals("W"))||(hemisphereOUmeridien.equals("S"))) {signe=-1.0;}
-		LatOrLon = signe*(Math.floor(degres) + Math.floor(minutes)/60.0 + secondes/3600.0);
-
-		return(LatOrLon);
-	}
-
-
 	public static List<String> ReadTextFile(String fileName)
 	{
 		List<String> dataList = new ArrayList<String>();
@@ -615,6 +563,89 @@ public class Global {
 		}
 
 		return dataList;
+	}
+
+	public String getUserId() {
+		return this._UserId;
+	}
+
+	public void setUserId(String UserId) {
+		this._UserId = UserId;
+	}
+
+	public String getDeviceNo() {
+		return this._DeviceNo;
+	}
+
+	public void setDeviceNo(String DeviceNo) {
+		this._DeviceNo = DeviceNo;
+	}
+
+	public String getCountryCode() {
+		return this._CountryCode;
+	}
+
+	public void setCountryCode(String CountryCode) {
+		this._CountryCode = CountryCode;
+	}
+
+	public String getSiteCode() {
+		return this._SiteCode;
+	}
+
+	public void setSiteCode(String SiteCode) {
+		this._SiteCode = SiteCode;
+	}
+
+	public String getSiteName() {
+		return this._SiteName;
+	}
+
+	public void setSiteName(String SiteName) {
+		this._SiteName = SiteName;
+	}
+
+	public String getParticipantID() {
+		return this._ParticipantID;
+	}
+
+	public void setParticipantID(String ParticipantID) {
+		this._ParticipantID = ParticipantID;
+	}
+
+	public String getLocationID() {
+		return this._Location;
+	}
+
+	public void setLocationID(String Location) {
+		this._Location = Location;
+	}
+
+	//Time Now
+	//...........................................................................................................
+	public String CurrentTime24() {
+		Calendar TM = Calendar.getInstance();
+		return Right("00" + String.valueOf(TM.get(Calendar.HOUR_OF_DAY)), 2) + ":" + Right("00" + String.valueOf(TM.get(Calendar.MINUTE)), 2);
+	}
+
+	/*
+	 * Conversion DMS to decimal
+     *
+     * Input: latitude or longitude in the DMS format ( example: N 43Ã‚Â° 36' 15.894")
+     * Return: latitude or longitude in decimal format
+     * hemisphereOUmeridien => {W,E,S,N}
+     *
+     */
+	public double DMSToDecimal(String hemisphereOUmeridien, double degres, double minutes, double secondes) {
+		double LatOrLon = 0;
+		double signe = 1.0;
+
+		if ((hemisphereOUmeridien.equals("W")) || (hemisphereOUmeridien.equals("S"))) {
+			signe = -1.0;
+		}
+		LatOrLon = signe * (Math.floor(degres) + Math.floor(minutes) / 60.0 + secondes / 3600.0);
+
+		return (LatOrLon);
 	}
 
 }

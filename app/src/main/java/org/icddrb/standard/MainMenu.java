@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,14 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Common.Connection;
+import Common.FileUpload;
 import Common.Global;
+import Common.ProjectSetting;
 
 public class MainMenu extends Activity {
 
+    static String USERID = "";
     Button cmdDataUpload;
     Button cmdDataSync;
-
-    static String USERID = "";
     Connection C;
     Global g;
 
@@ -38,15 +38,12 @@ public class MainMenu extends Activity {
             cmdDataUpload = (Button)findViewById(R.id.cmdDataUpload);
             cmdDataUpload.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    Intent f1 = new Intent(getApplicationContext(), AndroidTask.class);
-                    startActivity(f1);
-
-                    /*//Upload file to server
+                    //Upload file to server
                     FileUpload myTask = new FileUpload();
                     String[] params = new String[2];
                     params[0] = ProjectSetting.DatabaseName; //Source database name
-                    params[1] = g.getDeviceNo()+"_"+ Global.CurrentDMY() +"_"+ ProjectSetting.DatabaseName; //Destination database name
-                    myTask.execute(params);*/
+                    params[1] = g.getDeviceNo() + "_" + Global.CurrentDMY() + "_" + ProjectSetting.DatabaseName + ".txt"; //Destination database name
+                    myTask.execute(params);
 
                 }
             });
@@ -89,14 +86,6 @@ public class MainMenu extends Activity {
 
                                         C.DataSync_UploadDownload(tableList, USERID);
 
-                                        /*String[] ServerVal  = Connection.split(C.ReturnResult("ReturnSingleValue","sp_ServerCheck '"+ USERID +"'"),',');
-                                        String DBUploadRequest = ServerVal[2].toString();
-
-                                        if(DBUploadRequest.equals("1")) {
-                                            C.DatabaseUpload(USERID);
-                                            C.ExecuteCommandOnServer("Update UserList set DBRequest='2' where UserId='"+ USERID +"'");
-                                        }*/
-
                                     } catch (Exception e) {
 
                                     }
@@ -118,8 +107,7 @@ public class MainMenu extends Activity {
                             adb.setNegativeButton("No", null);
                             adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    finishAffinity();
-                                    System.exit(0);
+                                    finish();
                                 }});
                             adb.show();
                 }

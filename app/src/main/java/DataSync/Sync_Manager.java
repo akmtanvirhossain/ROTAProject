@@ -29,7 +29,7 @@ import Common.Global;
 import Common.ReturnResult;
 import Common.UploadDataJSON;
 import Common.UploadDataSQLJSON;
-import Common.downloadClass;
+import Common.DownloadClass;
 //--------------------------------------------------------------------------------------------------
 // Created by TanvirHossain on 17/03/2015.
 //--------------------------------------------------------------------------------------------------
@@ -59,6 +59,66 @@ public class Sync_Manager extends SQLiteOpenHelper {
         {
 
         }
+    }
+
+    //Split function
+    //----------------------------------------------------------------------------------------------
+    public static String[] split(String s, char separator) {
+        ArrayList<String> d = new ArrayList<String>();
+        for (int ini = 0, end = 0; ini <= s.length(); ini = end + 1) {
+            end = s.indexOf(separator, ini);
+            if (end == -1) {
+                end = s.length();
+            }
+
+            String st = s.substring(ini, end).trim();
+
+
+            if (st.length() > 0) {
+                d.add(st);
+            } else {
+                d.add("");
+            }
+        }
+
+        String[] temp = new String[d.size()];
+        temp = d.toArray(temp);
+        return temp;
+    }
+
+    //Message Box
+    //----------------------------------------------------------------------------------------------
+    public static void MessageBox(Context ClassName, String Msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ClassName);
+        builder.setMessage(Msg)
+                .setTitle("Message")
+                .setCancelable(true)
+                //.setIcon(R.drawable.logo)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Ok", null);
+        builder.show();
+    }
+
+    //Check whether internet connectivity available or not
+    //----------------------------------------------------------------------------------------------
+    public static boolean haveNetworkConnection(Context con) {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+        try {
+            ConnectivityManager cm = (ConnectivityManager) con.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+            for (NetworkInfo ni : netInfo) {
+                if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                    if (ni.isConnected())
+                        haveConnectedWifi = true;
+                if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                    if (ni.isConnected())
+                        haveConnectedMobile = true;
+            }
+        } catch (Exception e) {
+
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 
     // Creating our initial tables
@@ -159,34 +219,6 @@ public class Sync_Manager extends SQLiteOpenHelper {
         return retValue;
     }
 
-    //Split function
-    //----------------------------------------------------------------------------------------------
-    public static String[] split(String s, char separator)
-    {
-        ArrayList<String> d = new ArrayList<String>();
-        for (int ini = 0, end = 0; ini <= s.length(); ini = end + 1)
-        {
-            end = s.indexOf(separator, ini);
-            if (end == -1) {
-                end = s.length();
-            }
-
-            String st = s.substring(ini, end).trim();
-
-
-            if (st.length() > 0) {
-                d.add(st);
-            }
-            else {
-                d.add("");
-            }
-        }
-
-        String[] temp = new String[d.size()];
-        temp=d.toArray(temp);
-        return temp;
-    }
-
     //Save/Update/Delete data in to database
     //----------------------------------------------------------------------------------------------
     public void Save(String SQL)
@@ -194,21 +226,6 @@ public class Sync_Manager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(SQL);
         db.close();
-    }
-
-
-    //Message Box
-    //----------------------------------------------------------------------------------------------
-    public static void MessageBox(Context ClassName,String Msg)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ClassName);
-        builder.setMessage(Msg)
-                .setTitle("Message")
-                .setCancelable(true)
-                //.setIcon(R.drawable.logo)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("Ok", null);
-        builder.show();
     }
 
     //Generate data list
@@ -246,32 +263,6 @@ public class Sync_Manager extends SQLiteOpenHelper {
                 android.R.layout.simple_spinner_item, dataList);
 
         return dataAdapter;
-    }
-
-
-    //Check whether internet connectivity available or not
-    //----------------------------------------------------------------------------------------------
-    public static boolean haveNetworkConnection(Context con) {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-        try
-        {
-            ConnectivityManager cm = (ConnectivityManager) con.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-            for (NetworkInfo ni : netInfo) {
-                if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                    if (ni.isConnected())
-                        haveConnectedWifi = true;
-                if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                    if (ni.isConnected())
-                        haveConnectedMobile = true;
-            }
-        }
-        catch(Exception e)
-        {
-
-        }
-        return haveConnectedWifi || haveConnectedMobile;
     }
 
 
@@ -490,7 +481,6 @@ public class Sync_Manager extends SQLiteOpenHelper {
         }
     }*/
 
-
     //Execute command on Database Server
     //----------------------------------------------------------------------------------------------
     public String ExecuteCommandOnServer(String SQLStr)
@@ -645,7 +635,7 @@ public class Sync_Manager extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         List<String> data = new ArrayList<String>();
-        downloadClass responseData = (downloadClass) gson.fromJson(response,downloadClass.class);
+        DownloadClass responseData = gson.fromJson(response, DownloadClass.class);
         data = responseData.getdata();
         return data;
     }
@@ -737,10 +727,11 @@ public class Sync_Manager extends SQLiteOpenHelper {
             response=dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>(){}.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+            Type collType = new TypeToken<DownloadClass>() {
+            }.getType();
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[]  = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -847,10 +838,11 @@ public class Sync_Manager extends SQLiteOpenHelper {
             response=dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>(){}.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+            Type collType = new TypeToken<DownloadClass>() {
+            }.getType();
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[]  = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -958,10 +950,11 @@ public class Sync_Manager extends SQLiteOpenHelper {
             response=dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>(){}.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+            Type collType = new TypeToken<DownloadClass>() {
+            }.getType();
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[]  = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -1084,10 +1077,11 @@ public class Sync_Manager extends SQLiteOpenHelper {
             response=dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>(){}.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+            Type collType = new TypeToken<DownloadClass>() {
+            }.getType();
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[]  = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -1169,10 +1163,11 @@ public class Sync_Manager extends SQLiteOpenHelper {
             response=dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>(){}.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+            Type collType = new TypeToken<DownloadClass>() {
+            }.getType();
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[]  = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -1255,10 +1250,11 @@ public class Sync_Manager extends SQLiteOpenHelper {
             response=dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>(){}.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+            Type collType = new TypeToken<DownloadClass>() {
+            }.getType();
+            DownloadClass responseData = gson.fromJson(response, collType);
             dataStatus = responseData.getdata();
 
         } catch (Exception e) {
@@ -1286,9 +1282,10 @@ public class Sync_Manager extends SQLiteOpenHelper {
             response=u.execute(json).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
-            Type collType   = new TypeToken<downloadClass>(){}.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+            DownloadClass d = new DownloadClass();
+            Type collType = new TypeToken<DownloadClass>() {
+            }.getType();
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             //upload all records as successfull upload then update status of upload=2 for unsuccessfull
             for(int i=0; i<responseData.getdata().size(); i++)

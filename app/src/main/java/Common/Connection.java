@@ -38,17 +38,10 @@ public class Connection extends SQLiteOpenHelper {
     private static final String TABLE_TODO = "todo_items";
     private static Context ud_context;
     private Context dbContext;
-
     public Connection(Context context) {
         super(context, DBLocation, null, DATABASE_VERSION);
         dbContext = context;
         ud_context = context;
-
-        //String SQL = "Create Table OthInvestig( SiteCode Varchar(2), ParticipantID Varchar(10), ChCXR Varchar(1), Bronchitis Varchar(1), Pneumonia Varchar(1), AbUSG Varchar(1), IntBleed Varchar(1), PeyPatches Varchar(1), IntHemorrhage Varchar(1), IntPerforation Varchar(1), Hepatomegaly Varchar(1), Splenomegaly Varchar(1), Cholecystitis Varchar(1), Pancreatitis Varchar(1), Peritonitis Varchar(1), BldCBC Varchar(1), Leucopeia Varchar(1), WBC Varchar(7),Neutrophils Varchar(5), Lymphocyte Varchar(5), RBC Varchar(5), Hb Varchar(4), Thrombocyt Varchar(1), Widal1 Varchar(1), Widal1Dt Varchar(10), Widal1Tm Varchar(5), TyphiO1 Varchar(6), TyphiH1 Varchar(6), PTyphiAH1 Varchar(6), Widal2 Varchar(1), Widal2Dt Varchar(10), Widal2Tm Varchar(5), TyphiO2 Varchar(6), TyphiH2 Varchar(6), PTyphiAH2 Varchar(6), StartTime varchar(5), EndTime varchar(5), UserId Varchar(10), Lat varchar(20), Lon varchar(20), EnDt Varchar(20), Upload Varchar(1), UploadDT datetime, modifyDate datetime)";
-
-        //CreateTable("OthInvestig",SQL);
-
-        //CreateTable("Folup","Create Table Folup( SiteCode Varchar(2), ParticipantID Varchar(10), FApntDt Varchar(10), DieClnVst Varchar(1), FDthcause1 Varchar(200), FDthcause2 Varchar(200), FDthcause3 Varchar(200), RefOthFac Varchar(1), RefFacNam Varchar(200), RefFacDept Varchar(200), StayHospObs Varchar(1), StartTime varchar(5), EndTime varchar(5), UserId Varchar(10), Lat varchar(20), Lon varchar(20), EnDt Varchar(20), Upload Varchar(1), UploadDT datetime, modifyDate datetime)");
     }
 
     //Split function
@@ -121,6 +114,14 @@ public class Connection extends SQLiteOpenHelper {
         return D[0];
     }
 
+    public static void ExecuteSQLFromFile(String fileName) {
+        List<String> dataList = Global.ReadTextFile(fileName);
+        Connection C = new Connection(ud_context);
+        for (int i = 0; i < dataList.size(); i++) {
+            C.Save(dataList.get(i));
+        }
+    }
+
     // Creating our initial tables
     // These is where we need to write create table statements.
     // This is called when database is created.
@@ -167,14 +168,6 @@ public class Connection extends SQLiteOpenHelper {
         }
     }
 
-    //Read data from database and return to Cursor variable
-    //----------------------------------------------------------------------------------------------
-    public Cursor ReadData(String SQL) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cur = db.rawQuery(SQL, null);
-        return cur;
-    }
-
 
     //Message Box
     //----------------------------------------------------------------------------------------------
@@ -189,6 +182,14 @@ public class Connection extends SQLiteOpenHelper {
                 .setPositiveButton("Ok", null);
         builder.show();
     }*/
+
+    //Read data from database and return to Cursor variable
+    //----------------------------------------------------------------------------------------------
+    public Cursor ReadData(String SQL) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cur = db.rawQuery(SQL, null);
+        return cur;
+    }
 
     //Check existence of data in database
     //----------------------------------------------------------------------------------------------
@@ -370,7 +371,7 @@ public class Connection extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         List<String> data = new ArrayList<String>();
-        downloadClass responseData = (downloadClass) gson.fromJson(response, downloadClass.class);
+        DownloadClass responseData = gson.fromJson(response, DownloadClass.class);
         data = responseData.getdata();
         return data;
     }
@@ -511,11 +512,11 @@ public class Connection extends SQLiteOpenHelper {
             response = dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>() {
+            Type collType = new TypeToken<DownloadClass>() {
             }.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response, collType);
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[] = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -601,11 +602,11 @@ public class Connection extends SQLiteOpenHelper {
             response = dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>() {
+            Type collType = new TypeToken<DownloadClass>() {
             }.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response, collType);
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[] = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -707,11 +708,11 @@ public class Connection extends SQLiteOpenHelper {
             response = dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>() {
+            Type collType = new TypeToken<DownloadClass>() {
             }.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response, collType);
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[] = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -784,11 +785,11 @@ public class Connection extends SQLiteOpenHelper {
             response = dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>() {
+            Type collType = new TypeToken<DownloadClass>() {
             }.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response, collType);
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[] = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -861,11 +862,11 @@ public class Connection extends SQLiteOpenHelper {
             response = dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>() {
+            Type collType = new TypeToken<DownloadClass>() {
             }.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response, collType);
+            DownloadClass responseData = gson.fromJson(response, collType);
             dataStatus = responseData.getdata();
 
         } catch (Exception e) {
@@ -894,10 +895,10 @@ public class Connection extends SQLiteOpenHelper {
 
                 //Process Response
                 if (response != null) {
-                    downloadClass d = new downloadClass();
-                    Type collType = new TypeToken<downloadClass>() {
+                    DownloadClass d = new DownloadClass();
+                    Type collType = new TypeToken<DownloadClass>() {
                     }.getType();
-                    downloadClass responseData = (downloadClass) gson.fromJson(response, collType);
+                    DownloadClass responseData = gson.fromJson(response, collType);
 
                     //upload all records as successfull upload then update status of upload=2 for unsuccessfull
                     for (int i = 0; i < responseData.getdata().size(); i++) {
@@ -964,15 +965,46 @@ public class Connection extends SQLiteOpenHelper {
             UniqueField = "TableName";
             Res = DownloadJSON(SQLStr, TableName, VariableList, UniqueField);
 
-            Sync_Download_Rebuild("UserList", "UserId='" + UserID + "'");
+            this.Sync_Download_Rebuild("UserList", "UserId='" + UserID + "'");
 
             //Project Specific Database Sync
             //--------------------------------------------------------------------------------------
-            Sync_Download_Rebuild("VillageList", "UserId='" + UserID + "'");
+            this.Sync_Download_Rebuild("Country", "");
+            this.Sync_Download_Rebuild("Sites", "SiteCode='" + Site + "'");
+            this.Sync_Download_Rebuild("UserList", "SiteCode='" + Site + "' and UserId='" + UserID + "'");
+            this.Sync_Download_Rebuild("Location", "");
+            this.Sync_Download_Rebuild("UserLocation", "UserId='" + UserID + "'");
+            this.Sync_Download_Rebuild("MedicineType", "");
+            this.Sync_Download_Rebuild("AntibioticType", "");
+            this.Sync_Download_Rebuild("Drug", "");
+            this.Sync_Download_Rebuild("Diagnosis", "");
+            this.Sync_Download_Rebuild("Symptom", "");
+            this.Sync_Download_Rebuild("refusalCode", "");
+            this.Sync_Download_Rebuild("Genus", "");
+            this.Sync_Download_Rebuild("Species", "");
 
+            this.Sync_Download_Rebuild("Physician", "SiteCode='" + Site + "'");
             //Update status on server
             //--------------------------------------------------------------------------------------
             ExecuteCommandOnServer("Update UserList set Setting='2' where UserId='" + UserID + "'");
+
+            //Download data from server
+            //------------------------------------------------------------------------------
+            String[] TableList = new String[]{
+                    "Screening",
+                    "idnHistory",
+                    "medRecord",
+                    "Admission",
+                    "Folup",
+                    "Medicine",
+                    "OthInvestig",
+                    "SampleAnalysis",
+                    "LabResult",
+                    "SampleStorage"
+            };
+
+            for (int i = 0; i < TableList.length; i++)
+                Sync_Download(TableList[i], UserID, "");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1016,11 +1048,18 @@ public class Connection extends SQLiteOpenHelper {
 
         //Download data from server
         //------------------------------------------------------------------------------
-        /*tableList.add("VillageList");
+        tableList.add("Symptom");
+        tableList.add("Diagnosis");
+        tableList.add("referralDept");
+        tableList.add("refusalCode");
+        tableList.add("Genus");
+        tableList.add("Species");
 
         for (int i = 0; i < tableList.size(); i++)
-            Sync_Download(tableList.get(i).toString(), UserId, "");*/
+            Sync_Download(tableList.get(i).toString(), UserId, "");
 
+        /*for(int i=0;i<TableList.length;i++)
+            Sync_Download(TableList[i], UserId, "");*/
     }
 
     //done
@@ -1116,11 +1155,11 @@ public class Connection extends SQLiteOpenHelper {
             response = dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>() {
+            Type collType = new TypeToken<DownloadClass>() {
             }.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response, collType);
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[] = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -1218,6 +1257,7 @@ public class Connection extends SQLiteOpenHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
 
 
         } catch (Exception e) {
@@ -1326,7 +1366,7 @@ public class Connection extends SQLiteOpenHelper {
         String SQLStr = "";
         String Res = "";
 
-        Cursor cur_H = ReadData("Select ColumnList as columnlist, UniqueID as uniqueid from DatabaseTab where lower(tablename)='" + TableName.toLowerCase() + "'");
+        Cursor cur_H = ReadData("Select ColumnList as columnlist, UniqueID as uniqueid from DatabaseTab where tablename='" + TableName + "'");
         cur_H.moveToFirst();
 
         while (!cur_H.isAfterLast()) {
@@ -1349,6 +1389,29 @@ public class Connection extends SQLiteOpenHelper {
         }
         return finalVarList;
     }
+
+
+
+    //Download Table List from server
+    /*private String[] TableListServer()
+    {
+        String SQLStr= "";
+        DownloadData d = new DownloadData();
+        d.Method_Name = "DownloadData";
+        d.SQLStr = "Select TableName from DatabaseTab";
+
+        String DataArray[] = null;
+
+        try {
+            DataArray = d.execute("").get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return DataArray;
+    }*/
 
     //To get the list of columns(string) in table
     //----------------------------------------------------------------------------------------------
@@ -1382,108 +1445,6 @@ public class Connection extends SQLiteOpenHelper {
         cur_H.close();
 
         return totalCol;
-    }
-
-    //Download Table List from server
-    /*private String[] TableListServer()
-    {
-        String SQLStr= "";
-        DownloadData d = new DownloadData();
-        d.Method_Name = "DownloadData";
-        d.SQLStr = "Select TableName from DatabaseTab";
-
-        String DataArray[] = null;
-
-        try {
-            DataArray = d.execute("").get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return DataArray;
-    }*/
-
-    /*public void TableStructureSync() {
-        String TableList[] = TableListServer();
-        String SQL = "";
-        String TableName = "";
-        for (int t = 0; t < TableList.length; t++) {
-            TableName = TableList[t];
-            SQL = "select (c.name+'^'+cast(c.length as varchar(10)))ColwithLength from sysobjects t,syscolumns c";
-            SQL += " where t.id=c.id and t.name='" + TableName + "' and lower(t.xtype)='u' order by colid";
-
-            //Local database
-            String[] local = GetColumnListArray(TableName);
-
-            //Server database
-            String[] server = DownloadArrayList(SQL);
-
-            String[] C;
-            Boolean matched = false;
-
-            //matched database columns(local and server)
-            for (int i = 0; i < server.length; i++) {
-                matched = false;
-                C = Connection.split(server[i], '^');
-                for (int j = 0; j < local.length; j++) {
-                    if (C[0].toString().toLowerCase().equals(local[j].toString().toLowerCase())) {
-                        matched = true;
-                        j = local.length;
-                    }
-                }
-                if (matched == false) {
-                    Save("Alter table " + TableName + " add column " + C[0].toString() + " varchar(" + C[1].toString() + ") default ''");
-                }
-            }
-        }
-
-    }*/
-
-    //To get the list of columns(string array) in table
-    //----------------------------------------------------------------------------------------------
-    public String[] GetColumnListArray(String TableName) {
-        Cursor cur = ReadData("SELECT * FROM " + TableName + " WHERE 0");
-        String[] columnNames;
-        try {
-            columnNames = cur.getColumnNames();
-        } finally {
-            cur.close();
-        }
-        return columnNames;
-    }
-
-    public boolean InsertData(String TableName, ContentValues content_value) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.insert(TableName, null, content_value);
-        return true;
-    }
-
-    public boolean UpdateData(String TableName, String UniqueID_Field, String UniqueID, ContentValues content_value) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TableName, content_value, UniqueID_Field + " = ? ", new String[]{UniqueID});
-        return true;
-    }
-
-    public Integer DeleteData(String TableName, String UniqueID_Field, String UniqueID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TableName,
-                UniqueID_Field + " = ? ",
-                new String[]{UniqueID});
-    }
-
-    public Cursor GetData(String TableName, String UniqueID_Field, String UniqueID) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TableName + " WHERE " +
-                UniqueID_Field + "=?", new String[]{UniqueID});
-        return res;
-    }
-
-    public Cursor GetAllData(String TableName) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TableName, null);
-        return res;
     }
 
     //TableStructureSync
@@ -1570,10 +1531,11 @@ public class Connection extends SQLiteOpenHelper {
             response=dload.execute(SQL).get();
 
             //Process Response
-            downloadClass d = new downloadClass();
+            DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
-            Type collType = new TypeToken<downloadClass>(){}.getType();
-            downloadClass responseData = (downloadClass) gson.fromJson(response,collType);
+            Type collType = new TypeToken<DownloadClass>() {
+            }.getType();
+            DownloadClass responseData = gson.fromJson(response, collType);
 
             String UField[]  = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -1709,45 +1671,51 @@ public class Connection extends SQLiteOpenHelper {
         return resp;
     }
 
-    public static void ExecuteSQLFromFile(String fileName)
+    //To get the list of columns(string array) in table
+    //----------------------------------------------------------------------------------------------
+    public String[] GetColumnListArray(String TableName)
     {
-        List<String> dataList = Global.ReadTextFile(fileName);
-        Connection C = new Connection(ud_context);
-        for(int i=0;i<dataList.size();i++)
-        {
-            C.Save(dataList.get(i));
+        //List<String> varList = new ArrayList<String>();
+        Cursor cur = ReadData("SELECT * FROM " + TableName + " WHERE 0");
+        String[] columnNames;
+        try {
+            columnNames = cur.getColumnNames();
+        } finally {
+            cur.close();
         }
+        return columnNames;
     }
 
-
-    public void DatabaseUpload(String DeviceID)
-    {
-        //Upload File from Specific Folder
-        String[] FilePathStrings;
-        String[] FileNameStrings;
-        File[] listFile;
-
-        File file = new File(Environment.getExternalStorageDirectory()+ File.separator + Global.DatabaseFolder);
-        file.mkdirs();
-        if (file.isDirectory()) {
-            listFile = file.listFiles();
-            FilePathStrings = new String[listFile.length];
-            FileNameStrings = new String[listFile.length];
-
-            for (int i = 0; i < listFile.length; i++) {
-                FilePathStrings[i] = listFile[i].getAbsolutePath();
-                FileNameStrings[i] = listFile[i].getName();
-
-                //Upload file to server
-                FileUpload myTask = new FileUpload();
-                String[] params   = new String[2];
-                if(listFile[i].getName().equalsIgnoreCase(ProjectSetting.DatabaseName))
-                {
-                    params[0]=listFile[i].getName();
-                    params[1]= DeviceID +"_"+ Global.CurrentDMY() +"_"+ listFile[i].getName();
-                    myTask.execute(params);
-                }
-            }
-        }
+    public boolean InsertData(String TableName, ContentValues content_value) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(TableName, null, content_value);
+        return true;
     }
+
+    public boolean UpdateData(String TableName, String UniqueID_Field, String UniqueID, ContentValues content_value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(TableName, content_value, UniqueID_Field + " = ? ", new String[]{UniqueID});
+        return true;
+    }
+
+    public Integer DeleteData(String TableName, String UniqueID_Field, String UniqueID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TableName,
+                UniqueID_Field + " = ? ",
+                new String[]{UniqueID});
+    }
+
+    public Cursor GetData(String TableName, String UniqueID_Field, String UniqueID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TableName + " WHERE " +
+                UniqueID_Field + "=?", new String[]{UniqueID});
+        return res;
+    }
+
+    public Cursor GetAllData(String TableName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TableName, null);
+        return res;
+    }
+
 }

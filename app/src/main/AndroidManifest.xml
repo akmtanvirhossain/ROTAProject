@@ -36,10 +36,13 @@
         <activity android:name="org.icddrb.standard.SettingForm" android:label="Device Setting"></activity>
         <activity android:name="org.icddrb.standard.MainMenu" android:label="Main Menu"></activity>
         <activity android:name="navigationDrawer.NavigationActivity" android:label="Nav"></activity>
+        <activity
+            android:name="org.icddrb.standard.SettingFormNew"
+            android:label="Device Settings" />
 
         //Android Manifest Code
         <!--<activity android:name="org.icddrb.data.Screening" android:label="Screening" />-->
-        <activity android:name=".AndroidTask" android:label="AndroidTask" />
+
 
         //Service
         <service android:name="org.icddrb.standard.DataSyncService"/>

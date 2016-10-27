@@ -16,7 +16,8 @@ public class FileUpload extends AsyncTask<String, Integer, Void>
         {
             //Upload File
         	FileInputStream fstrm = new FileInputStream(Environment.getExternalStorageDirectory()+ File.separator + ProjectSetting.DatabaseFolder + File.separator + params[0].toString());
-    	    // Set your server page url (and the file title/description)
+
+            // Set your server page url (and the file title/description)
     	    //HttpFileUpload hfu = new HttpFileUpload("http://203.190.254.42/mobdata/fileup.aspx", params[1].toString(),"description");
             HttpFileUpload hfu = new HttpFileUpload(
                     ProjectSetting.Namespace + "/"+

@@ -27,15 +27,14 @@ import Common.Global;
 import Common.ProjectSetting;
 
 public class LoginActivity extends Activity {
+    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     Connection C;
     Global g;
-    boolean netwoekAvailable=false;
-    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
-    private ProgressDialog dialog;
+    boolean networkAvailable = false;
     int count = 0;
-
     TextView lblStaffType;
     String   SystemUpdateDT="";
+    private ProgressDialog dialog;
     private  String Password="";
 
     @Override
@@ -59,12 +58,7 @@ public class LoginActivity extends Activity {
             lblSystemDate.setText("Version: 1.0, Built on:"+ SystemUpdateDT);
 
             //Check for Internet connectivity
-            if (Connection.haveNetworkConnection(LoginActivity.this)) {
-                netwoekAvailable=true;
-
-            } else {
-                netwoekAvailable=false;
-            }
+            networkAvailable = Connection.haveNetworkConnection(LoginActivity.this);
 
 
             //Rebuild Database
@@ -72,11 +66,11 @@ public class LoginActivity extends Activity {
 
             if(Integer.valueOf(TotalTab) == 0)
             {
-                if(netwoekAvailable)
+                if (networkAvailable)
                 {
                     //Call Setting Form
                     finish();
-                    Intent f1 = new Intent(getApplicationContext(),SettingForm.class);
+                    Intent f1 = new Intent(getApplicationContext(), SettingFormNew.class);
                     startActivity(f1);
                     return;
                 }
@@ -94,20 +88,13 @@ public class LoginActivity extends Activity {
             g.setDeviceNo(UniqueID);
 
             //**************************************************************************************
-            if(netwoekAvailable)
+            if (networkAvailable)
             {
-                //SyncScheduler.startOnlyIfConnectedToNetwork(getApplicationContext());
-                Intent syncService = new Intent(getApplicationContext(), DataSyncService.class);
-                startService(syncService);
-
                 //Reqular data sync
-                //Database Structure Update
-                //C.Sync_DatabaseStructure(UniqueID);
-                C.Sync_Download("DataCollector", UniqueID, "");
             }
             //**************************************************************************************
 
-            uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from DataCollector where Active='1' order by UserName"));
+            uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from UserList order by UserName"));
             String[] CL = uid.getSelectedItem().toString().split("-");
             uid.setSelection(Global.SpinnerItemPosition(uid,CL[0].length(),C.ReturnSingleValue("Select UserId from LastLogin")));
 
@@ -121,7 +108,7 @@ public class LoginActivity extends Activity {
             Button btnClose=(Button)findViewById(R.id.btnClose);
             btnClose.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    finishAffinity();
+                    finish();
                     System.exit(0);
                 }
             });
@@ -135,7 +122,7 @@ public class LoginActivity extends Activity {
                         String[] U = Connection.split(uid.getSelectedItem().toString(),'-');
                         g.setUserId(U[0]);
 
-                        if (!C.Existence("Select * from DataCollector where UserId='" + U[0] + "' and Pass='" + pass.getText().toString() + "'"))
+                        if (!C.Existence("Select * from UserList where UserId='" + U[0] + "' and Pass='" + pass.getText().toString() + "'"))
                         {
                             Connection.MessageBox(LoginActivity.this,"This is not a valid user id or password");
                             return;
@@ -145,24 +132,19 @@ public class LoginActivity extends Activity {
                         C.Save("Delete from LastLogin");
                         C.Save("Insert into LastLogin(UserId)Values('"+ U[0] +"')");
 
+
                         //Download Updated System
                         //...................................................................................
-                        if(netwoekAvailable==true)
+                        if (networkAvailable == true)
                         {
                             //Retrieve data from server for checking local device
                             String[] ServerVal  = Connection.split(C.ReturnResult("ReturnSingleValue","sp_ServerCheck '"+ UniqueID +"'"),',');
                             String ServerDate   = ServerVal[0].toString();
                             String UpdateDT     = ServerVal[1].toString();
-                            String DBUploadRequest = ServerVal[2].toString();
-
-                            /*if(DBUploadRequest.equals("1")) {
-                                C.DatabaseUpload(UniqueID);
-                                C.ExecuteCommandOnServer("Update UserList set DBRequest='2' where UserId='"+ UniqueID +"'");
-                            }*/
 
                             //Check for New Version
                             if (!UpdateDT.equals(SystemUpdateDT)) {
-                                systemDownload d = new systemDownload();
+                                SystemDownload d = new SystemDownload();
                                 d.setContext(getApplicationContext());
                                 d.execute(Global.UpdatedSystem);
                             }
@@ -250,7 +232,7 @@ public class LoginActivity extends Activity {
     }
 
     //Downloading updated system from the central server
-    class systemDownload extends AsyncTask<String,String,Void> {
+    class SystemDownload extends AsyncTask<String, String, Void> {
         private Context context;
 
         public void setContext(Context contextf){
@@ -292,7 +274,7 @@ public class LoginActivity extends Activity {
                 File file=Environment.getExternalStorageDirectory();
 
                 file.mkdirs();
-                File outputFile = new File(file.getAbsolutePath()+ File.separator + ProjectSetting.NewVersionName +".apk");
+                File outputFile = new File(file.getAbsolutePath() + File.separator + ProjectSetting.DatabaseName);
 
                 if(outputFile.exists()){
                     outputFile.delete();
@@ -328,7 +310,6 @@ public class LoginActivity extends Activity {
             return null;
         }
     }
-
 
 }
 

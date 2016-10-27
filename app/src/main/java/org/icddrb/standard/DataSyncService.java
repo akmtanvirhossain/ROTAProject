@@ -8,9 +8,10 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 
 import Common.Connection;
-import Common.Global;
 
-/* Created by TanvirHossain on 08/03/2015.*/
+/*
+ * Created by TanvirHossain on 08/03/2015.
+ */
 public class DataSyncService extends Service
 {
     Connection C;
@@ -32,7 +33,7 @@ public class DataSyncService extends Service
     }*/
 
     private void handleIntent(Intent intent) {
-        //obtain the wake lock
+        // obtain the wake lock
         /*
                 PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
                 mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Const.TAG);
@@ -47,41 +48,47 @@ public class DataSyncService extends Service
         }
 
         C = new Connection(this);
-        Global g = Global.getInstance();
-
         // do the actual work, in a separate thread
-        new DataSyncTask().execute(g.getDeviceNo());
+        new DataSyncTask().execute();
     }
 
-    private class DataSyncTask extends AsyncTask<String, Void, Void> {
+    //@SuppressWarnings("static-access")
+    @Override
+    public void onStart(Intent intent, int startId) {
+        handleIntent(intent);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleIntent(intent);
+        return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        //mWakeLock.release();
+    }
+
+    private class DataSyncTask extends AsyncTask<Void, Void, Void> {
         @Override
-        protected Void doInBackground(String... params) {
-            final String DeviceID = params[0].toString();
+        protected Void doInBackground(Void... params) {
             try {
                 new Thread() {
                     public void run() {
                         try {
 
-                            //Sync database structure
-                            C.Sync_DatabaseStructure(DeviceID);
-                            String[] ServerVal     = Connection.split(C.ReturnResult("ReturnSingleValue","sp_ServerCheck '"+ DeviceID +"'"),',');
-                            String DBUploadRequest = ServerVal[2].toString();
 
-                            //Sync database file
-                            if(DBUploadRequest.equals("1")) {
-                                C.DatabaseUpload(DeviceID);
-                                C.ExecuteCommandOnServer("Update UserList set DBRequest='2' where UserId='"+ DeviceID +"'");
-                            }
-
-                           /* //Download file from server
+                            //Download file from server
                             String fileName = "village.txt";
                             Connection.ExecuteSQLFromFile(fileName);
 
-                            *//*DownloadTextFile d = new DownloadTextFile();
+                            /*DownloadTextFile d = new DownloadTextFile();
                             d.setContext(getApplicationContext());
                             String fileURL   = ProjectSetting.Namespace + "/"+ ProjectSetting.apiName +"/Update/"+ fileName;
-                            d.execute(fileURL, fileName);*//*
-                            */
+                            d.execute(fileURL, fileName);*/
+
                         } catch (Exception e) {
 
                         }
@@ -102,27 +109,6 @@ public class DataSyncService extends Service
             // handle your data
             stopSelf();
         }
-    }
-
-    //@SuppressWarnings("static-access")
-    @Override
-    public void onStart(Intent intent, int startId)
-    {
-        handleIntent(intent);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        handleIntent(intent);
-        return START_NOT_STICKY;
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        //mWakeLock.release();
     }
 
 }

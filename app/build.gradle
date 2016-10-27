@@ -22,7 +22,6 @@ android {
         preDexLibraries = false
         javaMaxHeapSize "2g"
     }
-    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -34,4 +33,5 @@ dependencies {
     compile 'joda-time:joda-time:2.9.2'
     // for joda
     compile files('libs/ksoap2-android-assembly-2.4-jar-with-dependencies.jar')
+    compile files('libs/org.apache.http.legacy.jar')
 }

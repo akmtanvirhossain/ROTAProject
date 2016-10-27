@@ -1,7 +1,6 @@
 package Common;
 
 import android.app.ProgressDialog;
-import android.net.http.HttpAuthHeader;
 import android.os.AsyncTask;
 
 import org.ksoap2.SoapEnvelope;
@@ -32,16 +31,11 @@ public class UploadDataJSON extends AsyncTask<String, Void, String> {
 		                SoapObject request = new SoapObject(WSDL_TARGET_NAMESPACE,Method_Name);
 		                HttpTransportSE androidHttpTransport = new HttpTransportSE(SOAP_ADDRESS);
 
-						//authentication
-						//HttpAuthHeader authHead = new HttpAuthHeader("");
-						//authHead.setUsername("abc");
-						//authHead.setPassword("cba");
 		                
 		                request.addProperty("JSONString",urls[0]);
-						request.setProperty(0,0);
-		                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-		                envelope.dotNet=true;
 
+					SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+		                envelope.dotNet=true;
 		                envelope.setOutputSoapObject(request);
 
 		                androidHttpTransport.call(ProjectSetting.Namespace+Method_Name, envelope);
