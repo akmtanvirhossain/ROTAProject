@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import Common.FileUpload;
 import Common.Global;
 import Common.ProjectSetting;
 import Utility.CompressZip;
+import Utility.MySharedPreferences;
 
 public class MainMenu extends Activity {
 
@@ -119,6 +121,8 @@ public class MainMenu extends Activity {
             });
 
 
+            /* Start Usage of Zip Utility class */
+
             Button btnZip = (Button) findViewById(R.id.cmdZip);
 
             btnZip.setOnClickListener(new View.OnClickListener() {
@@ -146,8 +150,47 @@ public class MainMenu extends Activity {
                     compressZip.unzip(zipLocation, output);
                 }
             });
-        }
-        catch (Exception ex)
+
+            /* End Usage of Zip Utility class */
+
+
+
+            /* Start Usage of SharedPreferences class */
+            final MySharedPreferences mySharedPreferences = new MySharedPreferences();
+            final EditText txtSPrefInput = (EditText) findViewById(R.id.txtSPrefInput);
+            final EditText txtSPrefOutput = (EditText) findViewById(R.id.txtSPrefOutput);
+            Button cmdSPrefSave = (Button) findViewById(R.id.cmdSPrefSave);
+            cmdSPrefSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mySharedPreferences.save(MainMenu.this, "KeyName", txtSPrefInput.getText().toString());
+                }
+            });
+            Button cmdSPrefGet = (Button) findViewById(R.id.cmdSPrefGet);
+            cmdSPrefGet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String value = mySharedPreferences.getValue(MainMenu.this, "KeyName");
+                    txtSPrefOutput.setText(value);
+                }
+            });
+            Button cmdSPrefRemove = (Button) findViewById(R.id.cmdSPrefRemove);
+            cmdSPrefRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mySharedPreferences.removeValue(MainMenu.this, "KeyName");
+                    txtSPrefOutput.setText("Removed");
+                }
+            });
+            Button cmdSPrefClear = (Button) findViewById(R.id.cmdSPrefClear);
+            cmdSPrefClear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mySharedPreferences.clearSharedPreference(MainMenu.this);
+                }
+            });
+            /* End Usage of SharedPreferences class */
+        } catch (Exception ex)
         {
             Connection.MessageBox(MainMenu.this,ex.getMessage());
         }

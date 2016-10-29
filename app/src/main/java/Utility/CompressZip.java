@@ -57,6 +57,24 @@ public class CompressZip {
         compressZip.zip(s, inputPath + inputFile);
 
      */
+
+
+    /*
+      Button btnZip = (Button) findViewById(R.id.cmdZip);
+
+            btnZip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CompressZip compressZip = new CompressZip();
+                    String[] file = new String[1];
+                    file[0] = Environment.getExternalStorageDirectory() + "/" + Global.DatabaseFolder + "/" + Global.DatabaseName;
+                    String path = File.separator + Global.DatabaseFolder + File.separator + "Zip" + File.separator;
+                    String output = "testfile.zip";
+                    compressZip.zip(file, path, output);
+                }
+            });
+
+     */
     public void zip(@NonNull String[] _files, @NonNull String path, @NonNull String zipFileName) {
         try {
 
@@ -99,6 +117,20 @@ public class CompressZip {
         }
     }
 
+    /*
+               Button unZip = (Button) findViewById(R.id.cmdUnzip);
+            unZip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CompressZip compressZip = new CompressZip();
+                    String zipPath = File.separator + Global.DatabaseFolder + File.separator + "Zip" + File.separator;
+                    String zipName = "testfile.zip";
+                    String zipLocation = Environment.getExternalStorageDirectory() + zipPath + zipName;
+                    String output = File.separator + Global.DatabaseFolder + File.separator + "Unzip";
+                    compressZip.unzip(zipLocation, output);
+                }
+            });
+     */
     public void unzip(@NonNull String _zipFile, @NonNull String _targetLocation) {
 
         //create target location folder if not exist
