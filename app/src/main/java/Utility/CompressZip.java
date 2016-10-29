@@ -9,6 +9,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -22,13 +23,15 @@ public class CompressZip {
 
     public static boolean createDirIfNotExists(String path) {
         boolean ret = true;
-        File file = new File(Environment.getExternalStorageDirectory(), path);
-        if (!file.exists()) {
-            if (!file.mkdirs()) {
+        File dir = new File(Environment.getExternalStorageDirectory(), path);
+
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
                 Log.e("createDirIfNotExists: ", "Problem creating  folder");
                 ret = false;
             }
         }
+
         return ret;
     }
 
@@ -54,10 +57,23 @@ public class CompressZip {
         compressZip.zip(s, inputPath + inputFile);
 
      */
-    public void zip(@NonNull String[] _files, @NonNull String zipFileName) {
+    public void zip(@NonNull String[] _files, @NonNull String path, @NonNull String zipFileName) {
         try {
+
+            //create target location folder if not exist
+            createDirIfNotExists(path);
+            File mZipFile = new File(Environment.getExternalStorageDirectory() + path, zipFileName);
+            if (mZipFile.exists()) {
+                mZipFile.delete();
+            } else {
+                try {
+                    mZipFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             BufferedInputStream origin = null;
-            FileOutputStream dest = new FileOutputStream(zipFileName);
+            FileOutputStream dest = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + path + File.separator + zipFileName);
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
                     dest));
             byte data[] = new byte[BUFFER];
@@ -83,7 +99,7 @@ public class CompressZip {
         }
     }
 
-    public void unzip(@NonNull String _zipFile, String _targetLocation) {
+    public void unzip(@NonNull String _zipFile, @NonNull String _targetLocation) {
 
         //create target location folder if not exist
         createDirIfNotExists(_targetLocation);
@@ -98,7 +114,7 @@ public class CompressZip {
                 if (ze.isDirectory()) {
                     createDirIfNotExists(ze.getName());
                 } else {
-                    FileOutputStream fout = new FileOutputStream(_targetLocation + ze.getName());
+                    FileOutputStream fout = new FileOutputStream(Environment.getExternalStorageDirectory() + _targetLocation + File.separator + ze.getName());
                     for (int c = zin.read(); c != -1; c = zin.read()) {
                         fout.write(c);
                     }

@@ -97,9 +97,39 @@
 
 
             <Button
-                android:id="@+id/cmdDataSync"
+                android:id="@+id/cmdZip"
                 style="@style/menuButtonStyle"
                 android:layout_width="fill_parent"
+                android:layout_marginBottom="5sp"
+                android:layout_marginLeft="20sp"
+                android:layout_marginRight="20sp"
+                android:layout_marginTop="20sp"
+                android:background="@drawable/button_style_blue"
+                android:gravity="center|center_vertical"
+                android:text="ZIP"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/cmdUnzip"
+                style="@style/menuButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5sp"
+                android:layout_marginLeft="20sp"
+                android:layout_marginRight="20sp"
+                android:layout_marginTop="20sp"
+                android:background="@drawable/button_style_blue"
+                android:gravity="center|center_vertical"
+                android:text="UNZIP"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/cmdDataSync"
+                style="@style/menuButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="5sp"
                 android:layout_marginLeft="20sp"
                 android:layout_marginRight="20sp"
