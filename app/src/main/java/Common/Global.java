@@ -20,7 +20,7 @@ public class Global {
 	//New version
 	//public static String NewVersionName  = ProjectSetting.NewVersionName;
 	public static String UpdatedSystem   = ProjectSetting.Namespace + "/"+ ProjectSetting.apiName +"/Update/"+ ProjectSetting.NewVersionName +".txt";
-	public static String CommonDB = ProjectSetting.Namespace + "/" + ProjectSetting.apiName + "/CommonDB/standardDatabase.txt";//+ ProjectSetting.DatabaseName;
+	public static String CommonDB = ProjectSetting.Namespace + "/" + ProjectSetting.apiName + "/CommonDB/CHAMPSDatabase.txt";
 	//Database
 	public static String DatabaseFolder  = ProjectSetting.DatabaseFolder;
 	public static String DatabaseName    = ProjectSetting.DatabaseName;
