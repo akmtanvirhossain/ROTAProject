@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import Common.Connection;
-import DataSync.DataSyncService;
+import org.icddrb.standard.DataSyncService;
 
 import static DataSync.Log.logInfo;
 

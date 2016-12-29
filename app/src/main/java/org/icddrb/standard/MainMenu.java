@@ -40,19 +40,6 @@ public class MainMenu extends Activity {
 
             USERID = g.getUserId();
 
-            cmdDataUpload = (Button) findViewById(R.id.cmdDataUpload);
-            cmdDataUpload.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    //Upload file to server
-                    FileUpload myTask = new FileUpload();
-                    String[] params = new String[2];
-                    params[0] = ProjectSetting.DatabaseName; //Source database name
-                    params[1] = g.getDeviceNo() + "_" + Global.CurrentDMY() + "_" + ProjectSetting.DatabaseName + ".txt"; //Destination database name
-                    myTask.execute(params);
-
-                }
-            });
-
             cmdDataSync = (Button) findViewById(R.id.cmdDataSync);
             cmdDataSync.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
@@ -121,41 +108,9 @@ public class MainMenu extends Activity {
             });
 
 
-            /* Start Usage of Zip Utility class */
-
-            Button btnZip = (Button) findViewById(R.id.cmdZip);
-
-            btnZip.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CompressZip compressZip = new CompressZip();
-                    String[] file = new String[1];
-                    file[0] = Environment.getExternalStorageDirectory() + "/" + Global.DatabaseFolder + "/" + Global.DatabaseName;
-                    String path = File.separator + Global.DatabaseFolder + File.separator + "Zip" + File.separator;
-                    String output = "testfile.zip";
-                    compressZip.zip(file, path, output);
-                }
-            });
-
-
-            Button unZip = (Button) findViewById(R.id.cmdUnzip);
-            unZip.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CompressZip compressZip = new CompressZip();
-                    String zipPath = File.separator + Global.DatabaseFolder + File.separator + "Zip" + File.separator;
-                    String zipName = "testfile.zip";
-                    String zipLocation = Environment.getExternalStorageDirectory() + zipPath + zipName;
-                    String output = File.separator + Global.DatabaseFolder + File.separator + "Unzip";
-                    compressZip.unzip(zipLocation, output);
-                }
-            });
-
-            /* End Usage of Zip Utility class */
-
-
 
             /* Start Usage of SharedPreferences class */
+            /*
             final MySharedPreferences mySharedPreferences = new MySharedPreferences();
             final EditText txtSPrefInput = (EditText) findViewById(R.id.txtSPrefInput);
             final EditText txtSPrefOutput = (EditText) findViewById(R.id.txtSPrefOutput);
@@ -189,7 +144,10 @@ public class MainMenu extends Activity {
                     mySharedPreferences.clearSharedPreference(MainMenu.this);
                 }
             });
+            */
             /* End Usage of SharedPreferences class */
+
+
         } catch (Exception ex)
         {
             Connection.MessageBox(MainMenu.this,ex.getMessage());

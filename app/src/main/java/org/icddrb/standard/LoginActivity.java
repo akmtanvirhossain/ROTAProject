@@ -91,6 +91,8 @@ public class LoginActivity extends Activity {
             if (networkAvailable)
             {
                 //Reqular data sync
+                C.Sync_DatabaseStructure(UniqueID);
+                C.Sync_Download("DatabasTab",UniqueID,"");
             }
             //**************************************************************************************
 
