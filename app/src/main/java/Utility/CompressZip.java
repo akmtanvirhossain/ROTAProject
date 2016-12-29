@@ -24,14 +24,12 @@ public class CompressZip {
     public static boolean createDirIfNotExists(String path) {
         boolean ret = true;
         File dir = new File(Environment.getExternalStorageDirectory(), path);
-
         if (!dir.exists()) {
             if (!dir.mkdirs()) {
                 Log.e("createDirIfNotExists: ", "Problem creating  folder");
                 ret = false;
             }
         }
-
         return ret;
     }
 
@@ -80,7 +78,7 @@ public class CompressZip {
 
             //create target location folder if not exist
             createDirIfNotExists(path);
-            File mZipFile = new File(Environment.getExternalStorageDirectory() + path, zipFileName);
+            File mZipFile = new File(path, zipFileName);
             if (mZipFile.exists()) {
                 mZipFile.delete();
             } else {
@@ -91,9 +89,9 @@ public class CompressZip {
                 }
             }
             BufferedInputStream origin = null;
-            FileOutputStream dest = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + path + File.separator + zipFileName);
-            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
-                    dest));
+            FileOutputStream dest = new FileOutputStream(path + File.separator + zipFileName);
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+
             byte data[] = new byte[BUFFER];
 
             for (int i = 0; i < _files.length; i++) {
@@ -131,6 +129,8 @@ public class CompressZip {
                 }
             });
      */
+
+
     public void unzip(@NonNull String _zipFile, @NonNull String _targetLocation) {
 
         //create target location folder if not exist

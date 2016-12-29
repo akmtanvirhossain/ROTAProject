@@ -44,32 +44,6 @@
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/cmdInpatient"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Inpatient"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/cmdSurgical"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Surgical Ward"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp" />
-
-            <Button
                 android:id="@+id/cmdLaboratory"
                 style="@style/menuButtonStyle"
                 android:layout_width="fill_parent"
@@ -96,103 +70,6 @@
                 android:textSize="20sp" />
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/txtSPrefInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@color/default_color"
-                    android:ems="10"
-                    android:inputType="text" />
-
-                <EditText
-                    android:id="@+id/txtSPrefOutput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@color/default_color"
-                    android:ems="10"
-                    android:inputType="none" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/cmdSPrefSave"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Save" />
-
-                    <Button
-                        android:id="@+id/cmdSPrefGet"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Get" />
-
-                    <Button
-                        android:id="@+id/cmdSPrefRemove"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Delete" />
-
-                    <Button
-                        android:id="@+id/cmdSPrefClear"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Clear" />
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/cmdZip"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:layout_marginTop="20sp"
-                android:background="@drawable/button_style_blue"
-                android:gravity="center|center_vertical"
-                android:text="ZIP"
-                android:textColor="#ffffff"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/cmdUnzip"
-                style="@style/menuButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:layout_marginTop="20sp"
-                android:background="@drawable/button_style_blue"
-                android:gravity="center|center_vertical"
-                android:text="UNZIP"
-                android:textColor="#ffffff"
-                android:textSize="20sp" />
-
             <Button
                 android:id="@+id/cmdDataSync"
                 style="@style/menuButtonStyle"
@@ -205,20 +82,6 @@
                 android:background="@drawable/button_style_blue"
                 android:gravity="center|center_vertical"
                 android:text="Data Sync"
-                android:textColor="#ffffff"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/cmdDataUpload"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:layout_marginTop="20sp"
-                android:background="@drawable/button_style_blue"
-                android:gravity="center|center_vertical"
-                android:text="Data Upload"
                 android:textColor="#ffffff"
                 android:textSize="20sp" />
 
