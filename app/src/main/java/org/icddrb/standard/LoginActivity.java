@@ -70,7 +70,7 @@ public class LoginActivity extends Activity {
                 {
                     //Call Setting Form
                     finish();
-                    Intent f1 = new Intent(getApplicationContext(), SettingFormNew.class);
+                    Intent f1 = new Intent(getApplicationContext(), SettingForm.class);
                     startActivity(f1);
                     return;
                 }
@@ -92,7 +92,7 @@ public class LoginActivity extends Activity {
             {
                 //Reqular data sync
                 C.Sync_DatabaseStructure(UniqueID);
-                C.Sync_Download("DatabasTab",UniqueID,"");
+                //C.Sync_Download("DatabasTab",UniqueID,"");
             }
             //**************************************************************************************
 
@@ -166,7 +166,7 @@ public class LoginActivity extends Activity {
                                     public void run() {
                                         try {
                                             finish();
-                                            Intent f1 = new Intent(getApplicationContext(),MainMenu.class);
+                                            Intent f1 = new Intent(getApplicationContext(),MainActivity.class);
                                             startActivity(f1);
                                         } catch (Exception e) {
 
@@ -184,7 +184,7 @@ public class LoginActivity extends Activity {
                                 public void run() {
                                     try {
                                         finish();
-                                        Intent f1 = new Intent(getApplicationContext(),MainMenu.class);
+                                        Intent f1 = new Intent(getApplicationContext(),MainActivity.class);
                                         startActivity(f1);
                                     } catch (Exception e) {
 

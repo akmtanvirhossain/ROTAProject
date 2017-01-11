@@ -5,7 +5,7 @@ package Common;
  */
 public class ProjectSetting {
     public static String ProjectName    = "standard";
-    public static String Namespace      = "http://ipaddress/";
+    public static String Namespace      = "http://chu.icddrb.org/";
 
     public static String apiName        = ProjectName.toLowerCase();
     public static String NewVersionName = ProjectName.toLowerCase() +"_update";
