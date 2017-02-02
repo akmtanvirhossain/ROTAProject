@@ -81,9 +81,8 @@ public class LoginActivity extends Activity {
                 }
             }
 
-
             //Device Unique ID
-            final String UniqueID = C.ReturnSingleValue("Select UserId from UserList");
+            final String UniqueID = C.ReturnSingleValue("Select DeviceId from DeviceList");
             UniqueUserId.setText("Unique ID :"+ UniqueID);
             g.setDeviceNo(UniqueID);
 
@@ -92,11 +91,11 @@ public class LoginActivity extends Activity {
             {
                 //Reqular data sync
                 C.Sync_DatabaseStructure(UniqueID);
-                //C.Sync_Download("DatabasTab",UniqueID,"");
+                C.Sync_Download("DataCollector",UniqueID,"");
             }
             //**************************************************************************************
 
-            uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from UserList order by UserName"));
+            uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from DataCollector order by UserName"));
             String[] CL = uid.getSelectedItem().toString().split("-");
             uid.setSelection(Global.SpinnerItemPosition(uid,CL[0].length(),C.ReturnSingleValue("Select UserId from LastLogin")));
 
@@ -124,7 +123,7 @@ public class LoginActivity extends Activity {
                         String[] U = Connection.split(uid.getSelectedItem().toString(),'-');
                         g.setUserId(U[0]);
 
-                        if (!C.Existence("Select * from UserList where UserId='" + U[0] + "' and Pass='" + pass.getText().toString() + "'"))
+                        if (!C.Existence("Select * from DataCollector where UserId='" + U[0] + "' and Pass='" + pass.getText().toString() + "'"))
                         {
                             Connection.MessageBox(LoginActivity.this,"This is not a valid user id or password");
                             return;
@@ -276,7 +275,7 @@ public class LoginActivity extends Activity {
                 File file=Environment.getExternalStorageDirectory();
 
                 file.mkdirs();
-                File outputFile = new File(file.getAbsolutePath() + File.separator + ProjectSetting.DatabaseName);
+                File outputFile = new File(file.getAbsolutePath()+ File.separator + ProjectSetting.NewVersionName +".apk");
 
                 if(outputFile.exists()){
                     outputFile.delete();

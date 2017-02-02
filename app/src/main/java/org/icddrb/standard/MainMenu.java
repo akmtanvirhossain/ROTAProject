@@ -5,21 +5,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import Common.Connection;
-import Common.FileUpload;
 import Common.Global;
-import Common.ProjectSetting;
-import Utility.CompressZip;
-import Utility.MySharedPreferences;
 
 public class MainMenu extends Activity {
 
@@ -38,7 +31,7 @@ public class MainMenu extends Activity {
             C = new Connection(this);
             g = Global.getInstance();
 
-            USERID = g.getUserId();
+            USERID = g.getDeviceNo();
 
             cmdDataSync = (Button) findViewById(R.id.cmdDataSync);
             cmdDataSync.setOnClickListener(new View.OnClickListener() {

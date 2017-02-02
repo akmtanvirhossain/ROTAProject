@@ -2,11 +2,7 @@ package Utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
 
-import Common.Global;
 import Common.ProjectSetting;
 
 
@@ -36,7 +32,7 @@ public class MySharedPreferences {
         editor.apply(); //4
     }
 
-    public String getValue(Context context, String key) {
+    public static String getValue(Context context, String key) {
         SharedPreferences settings;
         String text;
 

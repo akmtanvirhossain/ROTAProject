@@ -16,6 +16,8 @@ import android.widget.ArrayAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.icddrb.standard.R;
+
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -280,7 +282,7 @@ public class Connection extends SQLiteOpenHelper {
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.dbContext,
-                android.R.layout.simple_spinner_item, dataList);
+                R.layout.multiline_spinner_dropdown_item, dataList);
 
         return dataAdapter;
     }
@@ -308,7 +310,7 @@ public class Connection extends SQLiteOpenHelper {
 
     //Find the variable positions in an array list
     //----------------------------------------------------------------------------------------------
-    private int VarPosition(String VariableName, String[] ColumnList) {
+    public int VarPosition(String VariableName, String[] ColumnList) {
         int pos = 0;
         for (int i = 0; i < ColumnList.length; i++) {
             if (VariableName.trim().equalsIgnoreCase(ColumnList[i].toString().trim())) {
@@ -935,7 +937,7 @@ public class Connection extends SQLiteOpenHelper {
 
     //Rebuild Local Database from Server
     //----------------------------------------------------------------------------------------------
-    public void RebuildDatabase(String Site, String UserID) {
+    public void RebuildDatabase(String DeviceID) {
         List<String> listItem = new ArrayList<String>();
         listItem = DownloadJSONList("Select TableName+'^'+TableScript from DatabaseTab");
 
@@ -956,7 +958,7 @@ public class Connection extends SQLiteOpenHelper {
         try {
             //Remove data from Sync_Management
             //--------------------------------------------------------------------------------------
-            ExecuteCommandOnServer("Delete from Sync_Management where UserId='" + UserID + "'");
+            ExecuteCommandOnServer("Delete from Sync_Management where UserId='" + DeviceID + "'");
 
             //Master Database Sync (Required for any database system)
             //--------------------------------------------------------------------------------------
@@ -966,46 +968,26 @@ public class Connection extends SQLiteOpenHelper {
             UniqueField = "TableName";
             Res = DownloadJSON(SQLStr, TableName, VariableList, UniqueField);
 
-            this.Sync_Download_Rebuild("UserList", "UserId='" + UserID + "'");
+            this.Sync_Download_Rebuild("DeviceList", "DeviceId='" + DeviceID + "'");
+            this.Sync_Download_Rebuild("DataCollector", "");
 
             //Project Specific Database Sync
             //--------------------------------------------------------------------------------------
-            this.Sync_Download_Rebuild("Country", "");
-            this.Sync_Download_Rebuild("Sites", "SiteCode='" + Site + "'");
-            this.Sync_Download_Rebuild("UserList", "SiteCode='" + Site + "' and UserId='" + UserID + "'");
-            this.Sync_Download_Rebuild("Location", "");
-            this.Sync_Download_Rebuild("UserLocation", "UserId='" + UserID + "'");
-            this.Sync_Download_Rebuild("MedicineType", "");
-            this.Sync_Download_Rebuild("AntibioticType", "");
-            this.Sync_Download_Rebuild("Drug", "");
-            this.Sync_Download_Rebuild("Diagnosis", "");
-            this.Sync_Download_Rebuild("Symptom", "");
-            this.Sync_Download_Rebuild("refusalCode", "");
-            this.Sync_Download_Rebuild("Genus", "");
-            this.Sync_Download_Rebuild("Species", "");
 
-            this.Sync_Download_Rebuild("Physician", "SiteCode='" + Site + "'");
             //Update status on server
             //--------------------------------------------------------------------------------------
-            ExecuteCommandOnServer("Update UserList set Setting='2' where UserId='" + UserID + "'");
+            ExecuteCommandOnServer("Update DeviceList set Setting='2' where DeviceId='" + DeviceID + "'");
 
             //Download data from server
             //------------------------------------------------------------------------------
+            /*
             String[] TableList = new String[]{
                     "Screening",
-                    "idnHistory",
-                    "medRecord",
-                    "Admission",
-                    "Folup",
-                    "Medicine",
-                    "OthInvestig",
-                    "SampleAnalysis",
-                    "LabResult",
-                    "SampleStorage"
             };
 
             for (int i = 0; i < TableList.length; i++)
-                Sync_Download(TableList[i], UserID, "");
+                Sync_Download(TableList[i], DeviceID, "");
+            */
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1270,7 +1252,7 @@ public class Connection extends SQLiteOpenHelper {
     }
 
     //done
-    private String[] Sync_Parameter(String TableName) {
+    public String[] Sync_Parameter(String TableName) {
         String VariableList = "";
         String UniqueField = "";
         String SQLStr = "";
@@ -1442,7 +1424,7 @@ public class Connection extends SQLiteOpenHelper {
         int totalCol = 0;
         Cursor cur_H;
         cur_H = ReadData("pragma table_info('" + TableName + "')");
-        totalCol = cur_H.getColumnCount();
+        totalCol = cur_H.getCount();
         cur_H.close();
 
         return totalCol;

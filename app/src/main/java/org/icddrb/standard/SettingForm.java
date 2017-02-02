@@ -19,10 +19,7 @@ import Common.Global;
 public class SettingForm extends Activity {
     Connection C;
     Global g;
-    //private ProgressDialog dialog;
-
-    String Site   = "";
-    String UserID = "";
+    static String DeviceID = "";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +35,7 @@ public class SettingForm extends Activity {
             }
 
             final Spinner spnUser = (Spinner)findViewById(R.id.spnUser);
-            SpinnerItem(spnUser, "select UserId+'-'+UserName from UserList order by UserId");
+            SpinnerItem(spnUser, "select DeviceId+'-'+DeviceName from DeviceList order by DeviceId");
 
             Button cmdSave = (Button)findViewById(R.id.cmdSave);
             cmdSave.setOnClickListener(new View.OnClickListener() {
@@ -47,9 +44,9 @@ public class SettingForm extends Activity {
                         String SQLStr   = "";
 
                         String[] User = spnUser.getSelectedItem().toString().split("-");
-                        UserID = User[0];
+                        DeviceID = User[0];
 
-                        String Setting = C.ReturnResult("Existence", "Select UserId from UserList where UserId='"+ Connection.SelectedSpinnerValue(spnUser.getSelectedItem().toString(),"-") +"' and Setting='1'");
+                        String Setting = C.ReturnResult("Existence", "Select DeviceId from DeviceId where DeviceId='"+ Connection.SelectedSpinnerValue(spnUser.getSelectedItem().toString(),"-") +"' and Setting='1'");
                         if (Setting.equals("2")) {
                             Connection.MessageBox(SettingForm.this, "Device ID :"+ spnUser.getSelectedItem().toString() +" is not allowed to configure a mobile device, contact with administrator.");
                             return;
@@ -62,7 +59,7 @@ public class SettingForm extends Activity {
                         new Thread() {
                             public void run() {
                                 try {
-                                    C.RebuildDatabase(Site, UserID);
+                                    C.RebuildDatabase(DeviceID);
                                 } catch (Exception e) {
 
                                 }
