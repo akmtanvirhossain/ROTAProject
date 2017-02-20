@@ -10,6 +10,7 @@
         android:layout_height="4dip"
         android:layout_marginBottom="5sp"
         android:background="@color/pageHeadingBack" />
+
     <include
         layout="@layout/form_heading"
         android:layout_width="fill_parent"
@@ -23,7 +24,7 @@
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbarStyle="outsideInset"
         android:scrollbars="vertical">
-
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingTop="0sp">
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -39,136 +40,46 @@
                 android:layout_marginRight="20sp"
                 android:background="@drawable/button_style_gray"
                 android:gravity="center|center_vertical"
-                android:text="Outpatient"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/cmdLaboratory"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Hospital Laboratory"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/cmdLabNetwork"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Laboratory Network"
+                android:text="Menu Button"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp" />
 
 
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="0sp" android:layout_weight="2">
             <Button
                 android:id="@+id/cmdDataSync"
                 style="@style/menuButtonStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="5sp"
                 android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
+                android:layout_marginRight="10sp"
                 android:layout_marginTop="20sp"
-                android:background="@drawable/button_style_blue"
+                android:background="@drawable/button_style_sky"
                 android:gravity="center|center_vertical"
                 android:text="Data Sync"
                 android:textColor="#ffffff"
-                android:textSize="20sp" />
+                android:textSize="20sp" android:layout_weight="1" />
 
             <Button
                 android:id="@+id/cmdExit"
                 style="@style/menuButtonStyle"
                 android:layout_width="fill_parent"
                 android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
+                android:layout_marginLeft="10sp"
                 android:layout_marginRight="20sp"
                 android:layout_marginTop="20sp"
-                android:background="@drawable/button_style_blue"
+                android:background="@drawable/button_style_yellow"
                 android:gravity="center|center_vertical"
                 android:text="Exit"
                 android:textColor="#ffffff"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/cmdSampleCollection"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Sample Collection"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/cmdFollowup"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Follow-up"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/cmdVA"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Verbal Autopsy"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/cmdHCUtilization"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Health Care Utilization"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/cmdBloodCulture"
-                style="@style/menuButtonStyle"
-                android:layout_width="fill_parent"
-                android:layout_marginBottom="5sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:background="@drawable/button_style_gray"
-                android:gravity="center|center_vertical"
-                android:text="Blood Culture"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:visibility="gone" />
-
-    </LinearLayout>
-</ScrollView>
+                android:textSize="20sp" android:layout_weight="1"/>
+        </LinearLayout>
+        </LinearLayout>
+  </ScrollView>
 </LinearLayout>

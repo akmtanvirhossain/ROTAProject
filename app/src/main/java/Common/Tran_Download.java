@@ -29,10 +29,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -374,12 +372,12 @@ public class Tran_Download {
                 SQL += " and "+ WhereClause;
             }
 
-            Res = DownloadJSON_Update_Sync_Management(SQL, TableName, VariableList, UniqueField, UserId);
+            Res = Sync_Download_Sync_Management(SQL, TableName, VariableList, UniqueField, UserId);
         }
     }
 
     //download data from server and include those id's into Table: Sync_Management
-    private String DownloadJSON_Update_Sync_Management(String SQL, String TableName,String ColumnList, String UniqueField, String UserId)
+    private String Sync_Download_Sync_Management(String SQL, String TableName,String ColumnList, String UniqueField, String UserId)
     {
         Connection C = new Connection(context);
         String WhereClause="";

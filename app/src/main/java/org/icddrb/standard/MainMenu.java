@@ -13,14 +13,16 @@ import java.util.List;
 
 import Common.Connection;
 import Common.Global;
+import Utility.MySharedPreferences;
 
 public class MainMenu extends Activity {
-
-    static String USERID = "";
+    static String DEVICEID  = "";
+    static String ENTRYUSER = "";
     Button cmdDataUpload;
     Button cmdDataSync;
     Connection C;
     Global g;
+    MySharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +32,8 @@ public class MainMenu extends Activity {
             setContentView(R.layout.main_menu);
             C = new Connection(this);
             g = Global.getInstance();
-
-            USERID = g.getDeviceNo();
+            DEVICEID    = sp.getValue(this,"deviceid");
+            ENTRYUSER   = sp.getValue(this,"userid");
 
             cmdDataSync = (Button) findViewById(R.id.cmdDataSync);
             cmdDataSync.setOnClickListener(new View.OnClickListener() {
@@ -58,18 +60,8 @@ public class MainMenu extends Activity {
 
                                         List<String> tableList = new ArrayList<String>();
                                         tableList.add("Screening");
-                                        tableList.add("idnHistory");
-                                        tableList.add("medRecord");
-                                        tableList.add("Admission");
-                                        tableList.add("Folup");
-                                        tableList.add("Medicine");
-                                        tableList.add("OthInvestig");
 
-                                        //Lab
-                                        tableList.add("SampleAnalysis");
-                                        tableList.add("LabResult");
-
-                                        C.DataSync_UploadDownload(tableList, USERID);
+                                        C.DataSync_UploadDownload(tableList, DEVICEID);
 
                                     } catch (Exception e) {
 
@@ -99,47 +91,6 @@ public class MainMenu extends Activity {
                     adb.show();
                 }
             });
-
-
-
-            /* Start Usage of SharedPreferences class */
-            /*
-            final MySharedPreferences mySharedPreferences = new MySharedPreferences();
-            final EditText txtSPrefInput = (EditText) findViewById(R.id.txtSPrefInput);
-            final EditText txtSPrefOutput = (EditText) findViewById(R.id.txtSPrefOutput);
-            Button cmdSPrefSave = (Button) findViewById(R.id.cmdSPrefSave);
-            cmdSPrefSave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mySharedPreferences.save(MainMenu.this, "KeyName", txtSPrefInput.getText().toString());
-                }
-            });
-            Button cmdSPrefGet = (Button) findViewById(R.id.cmdSPrefGet);
-            cmdSPrefGet.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String value = mySharedPreferences.getValue(MainMenu.this, "KeyName");
-                    txtSPrefOutput.setText(value);
-                }
-            });
-            Button cmdSPrefRemove = (Button) findViewById(R.id.cmdSPrefRemove);
-            cmdSPrefRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mySharedPreferences.removeValue(MainMenu.this, "KeyName");
-                    txtSPrefOutput.setText("Removed");
-                }
-            });
-            Button cmdSPrefClear = (Button) findViewById(R.id.cmdSPrefClear);
-            cmdSPrefClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mySharedPreferences.clearSharedPreference(MainMenu.this);
-                }
-            });
-            */
-            /* End Usage of SharedPreferences class */
-
 
         } catch (Exception ex)
         {

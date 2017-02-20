@@ -13,4 +13,6 @@ public class ProjectSetting {
     public static String DatabaseName   = ProjectName.toUpperCase() +"Database.db";
     public static String zipDatabaseName= ProjectName.toUpperCase() +"Database.zip";
     public static String Organization   = "ICDDR,B";
+
+    public static String VersionDate    = "21082016"; //Format: DDMMYYYY
 }

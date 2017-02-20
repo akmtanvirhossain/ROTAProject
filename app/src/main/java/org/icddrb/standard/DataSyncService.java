@@ -8,13 +8,16 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 
 import Common.Connection;
+import Common.Global;
+import Utility.MySharedPreferences;
 
 /*
  * Created by TanvirHossain on 08/03/2015.
  */
 public class DataSyncService extends Service
 {
-    Connection C;
+    Global g;
+    MySharedPreferences sp;
     private NotificationManager mManager;
 
     @Override
@@ -29,17 +32,9 @@ public class DataSyncService extends Service
     {
         // TODO Auto-generated method stub
         super.onCreate();
-        C=new Connection(this);
     }*/
 
     private void handleIntent(Intent intent) {
-        // obtain the wake lock
-        /*
-                PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-                mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Const.TAG);
-                mWakeLock.acquire();
-        */
-
         // check the global background data setting
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         if (!cm.getBackgroundDataSetting()) {
@@ -47,48 +42,29 @@ public class DataSyncService extends Service
             return;
         }
 
-        C = new Connection(this);
         // do the actual work, in a separate thread
-        new DataSyncTask().execute();
+        new DataSyncTask().execute(sp.getValue(this,"deviceid"));
     }
 
-    //@SuppressWarnings("static-access")
-    @Override
-    public void onStart(Intent intent, int startId) {
-        handleIntent(intent);
-    }
+    private class DataSyncTask extends AsyncTask<String, Void, Void> {
+        String UniqueID = "";
+        String SiteCode = "";
+        String CountryCode = "";
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        handleIntent(intent);
-        return START_NOT_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        //mWakeLock.release();
-    }
-
-    private class DataSyncTask extends AsyncTask<Void, Void, Void> {
         @Override
-        protected Void doInBackground(Void... params) {
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            UniqueID = params[0].toString();
+
             try {
                 new Thread() {
                     public void run() {
                         try {
-
-
-                            //Download file from server
-                            String fileName = "village.txt";
-                            Connection.ExecuteSQLFromFile(fileName);
-
-                            /*DownloadTextFile d = new DownloadTextFile();
-                            d.setContext(getApplicationContext());
-                            String fileURL   = ProjectSetting.Namespace + "/"+ ProjectSetting.apiName +"/Update/"+ fileName;
-                            d.execute(fileURL, fileName);*/
-
+                            Connection.SyncDataService(UniqueID);
                         } catch (Exception e) {
 
                         }
@@ -109,6 +85,27 @@ public class DataSyncService extends Service
             // handle your data
             stopSelf();
         }
+    }
+
+    //@SuppressWarnings("static-access")
+    @Override
+    public void onStart(Intent intent, int startId)
+    {
+        handleIntent(intent);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleIntent(intent);
+        return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        //mWakeLock.release();
     }
 
 }

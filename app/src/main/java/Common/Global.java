@@ -1,4 +1,7 @@
 package Common;
+import android.os.Environment;
+import android.widget.Spinner;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import android.os.Environment;
-import android.widget.Spinner;
 
 public class Global {
 	public static char VariableSeperator = '^';
@@ -565,7 +565,7 @@ public class Global {
 		return dataList;
 	}
 
-	public String getUserId() {
+	/*public String getUserId() {
 		return this._UserId;
 	}
 
@@ -620,7 +620,7 @@ public class Global {
 	public void setLocationID(String Location) {
 		this._Location = Location;
 	}
-
+*/
 	//Time Now
 	//...........................................................................................................
 	public String CurrentTime24() {

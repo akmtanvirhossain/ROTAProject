@@ -14,17 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import Common.Connection;
 import Common.Global;
 import Common.ProjectSetting;
+import Utility.MySharedPreferences;
 
 public class LoginActivity extends Activity {
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
@@ -36,6 +35,7 @@ public class LoginActivity extends Activity {
     String   SystemUpdateDT="";
     private ProgressDialog dialog;
     private  String Password="";
+    MySharedPreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,9 @@ public class LoginActivity extends Activity {
             setContentView(R.layout.login_activity);
             C = new Connection(this);
             g = Global.getInstance();
+            sp = new MySharedPreferences();
+            sp.save(this,"deviceid","");
+            sp.save(this,"userid","");
 
             final TextView UniqueUserId      = (TextView)findViewById(R.id.UniqueUserId);
             final Spinner uid      = (Spinner)findViewById(R.id.userId);
@@ -54,7 +57,7 @@ public class LoginActivity extends Activity {
 
             //Need to update date every time whenever shared updated system
             //*********************************************************************
-            SystemUpdateDT = "21082016";  //Format: DDMMYYYY
+            SystemUpdateDT = ProjectSetting.VersionDate;
             lblSystemDate.setText("Version: 1.0, Built on:"+ SystemUpdateDT);
 
             //Check for Internet connectivity
@@ -84,14 +87,13 @@ public class LoginActivity extends Activity {
             //Device Unique ID
             final String UniqueID = C.ReturnSingleValue("Select DeviceId from DeviceList");
             UniqueUserId.setText("Unique ID :"+ UniqueID);
-            g.setDeviceNo(UniqueID);
+            sp.save(this,"deviceid",UniqueID);
 
             //**************************************************************************************
             if (networkAvailable)
             {
-                //Reqular data sync
-                C.Sync_DatabaseStructure(UniqueID);
-                C.Sync_Download("DataCollector",UniqueID,"");
+                Intent syncService = new Intent(this, DataSyncService.class);
+                startService(syncService);
             }
             //**************************************************************************************
 
@@ -121,7 +123,7 @@ public class LoginActivity extends Activity {
                     try
                     {
                         String[] U = Connection.split(uid.getSelectedItem().toString(),'-');
-                        g.setUserId(U[0]);
+                        sp.save(LoginActivity.this,"userid",U[0]);
 
                         if (!C.Existence("Select * from DataCollector where UserId='" + U[0] + "' and Pass='" + pass.getText().toString() + "'"))
                         {
@@ -132,7 +134,6 @@ public class LoginActivity extends Activity {
                         //Store Last Login information
                         C.Save("Delete from LastLogin");
                         C.Save("Insert into LastLogin(UserId)Values('"+ U[0] +"')");
-
 
                         //Download Updated System
                         //...................................................................................

@@ -166,9 +166,16 @@ public class Connection extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public void CreateTable(String TableName, String SQL) {
         SQLiteDatabase db = this.getWritableDatabase();
-        if (!TableExists(TableName)) {
-            db.execSQL(SQL);
+        try {
+            if (!TableExists(TableName)) {
+                db.execSQL(SQL);
+            }
+        }catch(Exception ex){
+
+        }finally {
+            db.close();
         }
+
     }
 
 
@@ -230,8 +237,13 @@ public class Connection extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public void Save(String SQL) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(SQL);
-        db.close();
+        try {
+            db.execSQL(SQL);
+        }catch(Exception ex){
+        }finally {
+            db.close();
+        }
+
     }
 
     //Generate data list
@@ -269,7 +281,6 @@ public class Connection extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public ArrayAdapter<String> getArrayAdapter(String SQL) {
         List<String> dataList = new ArrayList<String>();
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, null);
         if (cursor.moveToFirst()) {
@@ -1774,6 +1785,22 @@ public class Connection extends SQLiteOpenHelper {
                 }
             }
         }
+    }
+
+    //06 Feb 2017
+    public static void SyncDataService(String UniqueID)
+    {
+        try {
+            Connection C = new Connection(ud_context);
+
+            //Reqular data sync
+            C.Sync_DatabaseStructure(UniqueID);
+            C.Sync_Download("DataCollector", UniqueID, "");
+        }
+        catch(Exception ex)
+        {
+        }
+
     }
 
 }
