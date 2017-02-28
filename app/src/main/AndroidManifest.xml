@@ -49,7 +49,7 @@
         <!-- <activity android:name="org.icddrb.data.Screening" android:label="Screening" /> -->
 
         //Service
-        <service android:name=".DataSyncService" />
+        <service android:name="DataSync.DataSyncService" />
 
         <activity
             android:name=".LogActivity"
