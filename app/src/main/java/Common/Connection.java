@@ -1794,8 +1794,25 @@ public class Connection extends SQLiteOpenHelper {
             Connection C = new Connection(ud_context);
 
             //Reqular data sync
+            //--------------------------------------------------------------------------------------
             C.Sync_DatabaseStructure(UniqueID);
             C.Sync_Download("DataCollector", UniqueID, "");
+
+            //Sync_Download
+            // Parameter 1: table Name
+            // Parameter 2: UniqueID of Device
+            // Parameter 3: Where Condition
+            //--------------------------------------------------------------------------------------
+            C.Sync_Download("DataCollector", UniqueID, "");
+
+            //Sync_Upload
+            // Parameter 1: table list
+            //--------------------------------------------------------------------------------------
+            List<String> tableList_Upload   = new ArrayList<String>();
+            //tableList_Upload.add("");
+            for(int u=0; u<tableList_Upload.size();u++) {
+                C.Sync_Upload(tableList_Upload);
+            }
         }
         catch(Exception ex)
         {

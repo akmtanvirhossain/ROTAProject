@@ -14,15 +14,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import Common.Connection;
 import Common.Global;
 import Common.ProjectSetting;
+import DataSync.Sync_Service;
 import Utility.MySharedPreferences;
 
 public class LoginActivity extends Activity {
@@ -92,7 +95,7 @@ public class LoginActivity extends Activity {
             //**************************************************************************************
             if (networkAvailable)
             {
-                Intent syncService = new Intent(this, DataSyncService.class);
+                Intent syncService = new Intent(this, Sync_Service.class);
                 startService(syncService);
             }
             //**************************************************************************************
@@ -166,7 +169,7 @@ public class LoginActivity extends Activity {
                                     public void run() {
                                         try {
                                             finish();
-                                            Intent f1 = new Intent(getApplicationContext(),MainActivity.class);
+                                            Intent f1 = new Intent(getApplicationContext(),MainMenu.class);
                                             startActivity(f1);
                                         } catch (Exception e) {
 
@@ -184,7 +187,7 @@ public class LoginActivity extends Activity {
                                 public void run() {
                                     try {
                                         finish();
-                                        Intent f1 = new Intent(getApplicationContext(),MainActivity.class);
+                                        Intent f1 = new Intent(getApplicationContext(),MainMenu.class);
                                         startActivity(f1);
                                     } catch (Exception e) {
 

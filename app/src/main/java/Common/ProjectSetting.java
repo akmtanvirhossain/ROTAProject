@@ -15,4 +15,5 @@ public class ProjectSetting {
     public static String Organization   = "ICDDR,B";
 
     public static String VersionDate    = "21082016"; //Format: DDMMYYYY
+
 }
