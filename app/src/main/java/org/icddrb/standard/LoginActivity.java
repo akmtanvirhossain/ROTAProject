@@ -187,7 +187,7 @@ public class LoginActivity extends Activity {
                                 public void run() {
                                     try {
                                         finish();
-                                        Intent f1 = new Intent(getApplicationContext(),MainMenu.class);
+                                        Intent f1 = new Intent(getApplicationContext(),MainActivity.class);
                                         startActivity(f1);
                                     } catch (Exception e) {
 

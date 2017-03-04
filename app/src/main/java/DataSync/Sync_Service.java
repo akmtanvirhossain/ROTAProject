@@ -66,7 +66,7 @@ public class Sync_Service extends Service {
         }
 
         // do the actual work, in a separate thread
-        new DataSyncTask().execute(sp.getValue(this,"deviceid"));
+        new DataSyncTask().execute(MySharedPreferences.getValue(this,"deviceid"));
     }
 
 

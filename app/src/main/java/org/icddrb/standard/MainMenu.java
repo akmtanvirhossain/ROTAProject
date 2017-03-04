@@ -32,8 +32,8 @@ public class MainMenu extends Activity {
             setContentView(R.layout.main_menu);
             C = new Connection(this);
             g = Global.getInstance();
-            DEVICEID    = sp.getValue(this,"deviceid");
-            ENTRYUSER   = sp.getValue(this,"userid");
+            DEVICEID    = MySharedPreferences.getValue(this,"deviceid");
+            ENTRYUSER   = MySharedPreferences.getValue(this,"userid");
 
             cmdDataSync = (Button) findViewById(R.id.cmdDataSync);
             cmdDataSync.setOnClickListener(new View.OnClickListener() {

@@ -45,16 +45,16 @@
         <activity
             android:name=".SettingFormNew"
             android:label="Device Settings" />
+
         //Android Manifest Code
         <!-- <activity android:name="org.icddrb.data.Screening" android:label="Screening" /> -->
 
         //Service
-        <service android:name="DataSync.DataSyncService" />
+        <service android:name=".DataSyncService" />
 
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/CustomTheme"></activity>
     </application>
-
 </manifest>

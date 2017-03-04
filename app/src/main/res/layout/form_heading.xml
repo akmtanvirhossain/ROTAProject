@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#F3F3F3"
     android:isScrollContainer="true"
     android:orientation="vertical"
     android:overScrollMode="always"
@@ -15,7 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20sp"
-        android:background="#F3F3F3"
         android:visibility="visible">
 
         <ImageView
@@ -27,7 +25,7 @@
             android:scaleType="center"
             android:src="@drawable/logo"
             android:text="@string/app_name"
-            android:textColor="#FF0000"
+            android:textColor="#FFFFFF"
             android:textSize="30sp" />
     </LinearLayout>
 
@@ -37,7 +35,6 @@
         android:layout_gravity="center"
         android:layout_marginBottom="10sp"
         android:layout_marginTop="5sp"
-
         android:visibility="visible">
 
         <TextView
@@ -47,7 +44,7 @@
             android:paddingLeft="10px"
             android:paddingRight="10px"
             android:text="@string/app_name"
-            android:textColor="#006699"
+            android:textColor="#000000"
             android:textSize="30sp" />
 
     </LinearLayout>

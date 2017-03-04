@@ -1,4 +1,4 @@
-package DataSync;
+package org.icddrb.standard;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -43,7 +43,7 @@ public class DataSyncService extends Service
         }
 
         // do the actual work, in a separate thread
-        new DataSyncTask().execute(sp.getValue(this,"deviceid"));
+        new DataSyncTask().execute(MySharedPreferences.getValue(this,"deviceid"));
     }
 
     private class DataSyncTask extends AsyncTask<String, Void, Void> {

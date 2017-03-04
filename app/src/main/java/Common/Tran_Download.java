@@ -197,7 +197,7 @@ public class Tran_Download {
             DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
             Type collType = new TypeToken<DownloadClass>(){}.getType();
-            DownloadClass responseData = (DownloadClass) gson.fromJson(response,collType);
+            DownloadClass responseData = gson.fromJson(response,collType);
 
             String UField[]  = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -395,7 +395,7 @@ public class Tran_Download {
             DownloadClass d = new DownloadClass();
             Gson gson = new Gson();
             Type collType = new TypeToken<DownloadClass>(){}.getType();
-            DownloadClass responseData = (DownloadClass) gson.fromJson(response,collType);
+            DownloadClass responseData = gson.fromJson(response,collType);
 
             String UField[]  = UniqueField.split(",");
             String VarList[] = ColumnList.split(",");
@@ -411,7 +411,7 @@ public class Tran_Download {
             database.beginTransaction();
             for(int i=0; i<responseData.getdata().size(); i++)
             {
-                String VarData[] = C.split(responseData.getdata().get(i).toString(),'^');
+                String VarData[] = Connection.split(responseData.getdata().get(i).toString(),'^');
 
                 //Generate where clause
                 SQL="";

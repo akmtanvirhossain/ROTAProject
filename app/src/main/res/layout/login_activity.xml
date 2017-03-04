@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:scrollbars="vertical" android:background="#F3F3F3">
+    android:scrollbars="vertical" android:background="#E5E4E2">
     <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -72,14 +72,14 @@
     </LinearLayout>
 
     <LinearLayout android:layout_weight="0.07" android:layout_marginLeft="50sp" android:layout_marginRight="50sp"  android:orientation="horizontal" android:layout_marginTop="0sp" android:layout_marginBottom="20sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_gravity="center">
-        <Button android:id="@+id/btnLogin"  android:background="@drawable/button_style_gray"
+        <Button android:id="@+id/btnLogin"  android:background="@drawable/button_style_green"
             android:layout_width="wrap_content" android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
             android:layout_marginBottom="10sp"
             android:text="Login" android:textColor="#FFFFFF"/>
-        <Button android:id="@+id/btnClose" android:layout_marginLeft="20sp"
-            android:background="@drawable/button_style_gray" android:layout_weight="1"
+        <Button android:id="@+id/btnClose" android:layout_marginLeft="20sp" android:visibility="gone"
+            android:background="@drawable/button_style_green" android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
