@@ -56,5 +56,6 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/CustomTheme"></activity>
+        <activity android:name=".RecycleActivity" />
     </application>
 </manifest>

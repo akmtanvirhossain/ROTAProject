@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,7 @@ public class MainMenu extends Activity {
     static String ENTRYUSER = "";
     Button cmdDataUpload;
     Button cmdDataSync;
+    Button cmdOutpatient;
     Connection C;
     Global g;
     MySharedPreferences sp;
@@ -34,6 +36,12 @@ public class MainMenu extends Activity {
             g = Global.getInstance();
             DEVICEID    = MySharedPreferences.getValue(this,"deviceid");
             ENTRYUSER   = MySharedPreferences.getValue(this,"userid");
+            cmdOutpatient = (Button) findViewById(R.id.cmdOutpatient);
+            cmdOutpatient.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    Intent f1 = new Intent(getApplicationContext(),RecycleActivity.class);
+                    startActivity(f1);
+                }});
 
             cmdDataSync = (Button) findViewById(R.id.cmdDataSync);
             cmdDataSync.setOnClickListener(new View.OnClickListener() {

@@ -1,4 +1,4 @@
-package DataSync;
+package org.icddrb.standard;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 
@@ -40,6 +41,7 @@ public class Sync_Service extends Service {
     private NotificationManager mManager;
     PowerManager.WakeLock wakeLock;
     PowerManager c;
+    Bundle IDbundle;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -57,6 +59,9 @@ public class Sync_Service extends Service {
         //wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "MyWakelockTag");
     }
 
+    static String DEVICEID  = "";
+
+
     private void handleIntent(Intent intent) {
         // check the global background data setting
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -65,8 +70,10 @@ public class Sync_Service extends Service {
             return;
         }
 
+        DEVICEID    = sp.getValue(this, "deviceid");
+
         // do the actual work, in a separate thread
-        new DataSyncTask().execute(MySharedPreferences.getValue(this,"deviceid"));
+        new DataSyncTask().execute(DEVICEID);
     }
 
 
@@ -103,12 +110,13 @@ public class Sync_Service extends Service {
 
         @Override
         protected Void doInBackground(String... params) {
-            final String DevID = params[0].toString();
+            final String[] ID = params[0].toString().split("-");
             try {
                 new Thread() {
                     public void run() {
                         try {
-                            Connection.SyncDataService(DevID);
+                            Connection.SyncDataService(ID[0]);
+
                         } catch (Exception e) {
 
                         }

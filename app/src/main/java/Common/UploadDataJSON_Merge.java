@@ -9,13 +9,13 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 
-public class UploadDataJSON extends AsyncTask<String, Void, String> {
+public class UploadDataJSON_Merge extends AsyncTask<String, Void, String> {
 			//Method Name
-			public String Method_Name="UploadDataJSON";
+			public String Method_Name="Sync_UploadDataMerge";
 
 			public String WSDL_TARGET_NAMESPACE = ProjectSetting.Namespace;
 			public String SOAP_ACTION = ProjectSetting.Namespace+Method_Name;
-			public String SOAP_ADDRESS =Global.Soap_Address;
+			public String SOAP_ADDRESS = Global.Soap_Address;
 			ProgressDialog dialog;
 			String Response=null;
 			
@@ -34,7 +34,7 @@ public class UploadDataJSON extends AsyncTask<String, Void, String> {
 		                
 		                request.addProperty("JSONString",urls[0]);
 
-						SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+					SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
 		                envelope.dotNet=true;
 		                envelope.setOutputSoapObject(request);
 

@@ -46,7 +46,7 @@ public class SettingForm extends Activity {
                         String[] User = spnUser.getSelectedItem().toString().split("-");
                         DeviceID = User[0];
 
-                        String Setting = C.ReturnResult("Existence", "Select DeviceId from DeviceId where DeviceId='"+ Connection.SelectedSpinnerValue(spnUser.getSelectedItem().toString(),"-") +"' and Setting='1'");
+                        String Setting = C.ReturnResult("Existence", "Select DeviceId from DeviceList where DeviceId='"+ Connection.SelectedSpinnerValue(spnUser.getSelectedItem().toString(),"-") +"' and Setting='1'");
                         if (Setting.equals("2")) {
                             Connection.MessageBox(SettingForm.this, "Device ID :"+ spnUser.getSelectedItem().toString() +" is not allowed to configure a mobile device, contact with administrator.");
                             return;

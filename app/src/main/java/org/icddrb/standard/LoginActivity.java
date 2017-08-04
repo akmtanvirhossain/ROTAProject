@@ -25,9 +25,8 @@ import java.net.URL;
 import Common.Connection;
 import Common.Global;
 import Common.ProjectSetting;
-import DataSync.Sync_Service;
 import Utility.MySharedPreferences;
-
+//test push
 public class LoginActivity extends Activity {
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     Connection C;
