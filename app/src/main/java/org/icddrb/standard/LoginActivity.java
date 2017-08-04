@@ -26,7 +26,7 @@ import Common.Connection;
 import Common.Global;
 import Common.ProjectSetting;
 import Utility.MySharedPreferences;
-//test push
+//test push bitbucket
 public class LoginActivity extends Activity {
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     Connection C;
