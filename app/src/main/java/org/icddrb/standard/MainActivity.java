@@ -1,6 +1,11 @@
 package org.icddrb.standard;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -16,15 +21,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import Common.Connection;
+import Common.FileUpload;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView bottom_nav_view;
+    Boolean netwoekAvailable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,118 @@ public class MainActivity extends AppCompatActivity
 
         GridView gv = (GridView) findViewById(R.id.gridview);
         gv.setAdapter(new menuAdapter(this));
+
+        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                try
+                {
+                    if(position==0)
+                    {
+                        //Intent f1 = new Intent(getApplicationContext(),HHListing.class);
+                        //startActivity(f1);
+                    }
+                    else if(position==3)
+                    {
+                        if (Connection.haveNetworkConnection(MainActivity.this)) {
+                            netwoekAvailable=true;
+
+                        } else {
+                            netwoekAvailable=false;
+                        }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder
+                                .setTitle("Message")
+                                .setMessage("আপনি কি তথ্য ডাটা বেজ সার্ভারে আপলোড/ডাউনলোড করতে চান[হ্যাঁ/না]?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (which){
+                                            case DialogInterface.BUTTON_POSITIVE:
+
+                                                if(netwoekAvailable==false)
+                                                {
+                                                    Connection.MessageBox(MainActivity.this, "Internet connection is not avialable.");
+                                                    return;
+                                                }
+
+                                                try
+                                                {
+                                                    String ResponseString="Status:";
+
+                                                    final ProgressDialog progDailog = ProgressDialog.show(
+                                                            MainActivity.this, "", "অপেক্ষা করুন ...", true);
+
+                                                    new Thread() {
+                                                        public void run() {
+                                                            String ResponseString="Status:";
+                                                            String response;
+
+                                                            try {
+
+
+                                                                Connection.MessageBox(MainActivity.this, "তথ্য ডাটাবেজ সার্ভারে সম্পূর্ণ ভাবে আপলোড হয়েছে। ");
+
+                                                            } catch (Exception e) {
+
+                                                            }
+                                                            progDailog.dismiss();
+
+                                                        }
+                                                    }.start();
+
+                                                }
+                                                catch(Exception ex)
+                                                {
+                                                    Connection.MessageBox(MainActivity.this, ex.getMessage());
+                                                }
+
+                                                break;
+
+                                            case DialogInterface.BUTTON_NEGATIVE:
+                                                //No button clicked
+                                                break;
+                                        }
+                                    }
+                                })
+                                .setNegativeButton("No", null)	//Do nothing on no
+                                .show();
+                    }
+
+                    //Exit from the system
+                    //*******************************************************************************
+                    else if(position==4)
+                    {
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder
+                                .setTitle("Exit")
+                                .setMessage("Do you want to exit from the system[Y/N]?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (which){
+                                            case DialogInterface.BUTTON_POSITIVE:
+                                                finish();
+                                                System.exit(0);
+                                                break;
+
+                                            case DialogInterface.BUTTON_NEGATIVE:
+                                                //No button clicked
+                                                break;
+                                        }
+                                    }
+                                })
+                                .setNegativeButton("No", null)	//Do nothing on no
+                                .show();
+                    }
+
+                }
+                catch(Exception ex)
+                {
+                    Connection.MessageBox(MainActivity.this, ex.getMessage());
+                }
+            }
+        });
     }
 
     @Override
