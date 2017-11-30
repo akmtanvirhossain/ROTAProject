@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.icddrb.standard.MainActivity"
+    android:background="@color/mainmenu_background_color">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/CustomTheme.AppBarOverlay"
+        android:background="@color/form_background_color"
+        android:padding="0dp">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/theme_color"
+            app:popupTheme="@style/CustomTheme.PopupOverlay">
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout android:layout_width="match_parent"
+        android:layout_weight="1"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_height="match_parent" android:padding="10dp">
+
+        <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnWidth="150dp"
+            android:rowHeight="150dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="5dp"
+            android:horizontalSpacing="5dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center"/>
+        <!--<GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_margin="0.5dp"
+            android:columnWidth="90dp"
+            android:numColumns="auto_fit"
+            android:rowCount="3" xmlns:grid="http://schemas.android.com/apk/res-auto">
+            <Button
+                android:id="@+id/b_1"
+                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
+
+            <Button
+                android:id="@+id/b_2"
+                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
+
+            <Button
+                android:id="@+id/b_3"
+                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
+
+            <Button
+                android:id="@+id/b_4"
+                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
+
+            <Button
+                android:id="@+id/b_5"
+                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
+
+            <Button
+                android:id="@+id/b_6"
+                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
+        </GridLayout>
+        <LinearLayout android:layout_height="75dp" android:visibility="gone"
+            android:id="@+id/bacon"
+            android:orientation="vertical"
+            android:layout_width="fill_parent">
+            <TextureView android:id="@+id/bacon_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextureView android:id="@+id/bacon_time_elapsed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        -->
+    </FrameLayout>
+    <android.support.design.widget.BottomNavigationView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bottom_navigation_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemBackground="@color/theme_color"
+        app:itemIconTint="@color/color_white"
+        app:itemTextColor="@color/color_white"
+        app:menu="@menu/menu_bottom_navigation" android:layout_gravity="bottom|center"/>
+
+
+    <android.support.design.widget.FloatingActionButton android:visibility="gone"
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+</android.support.design.widget.CoordinatorLayout>

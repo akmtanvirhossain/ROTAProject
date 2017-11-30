@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,6 +22,8 @@ public class SettingForm extends Activity {
     Connection C;
     Global g;
     static String DeviceID = "";
+    ProgressDialog progDailog;
+    int jumpTime = 0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +58,19 @@ public class SettingForm extends Activity {
 
                         String ResponseString="Status:";
 
-                        final ProgressDialog progDailog = ProgressDialog.show(SettingForm.this, "", "Please Wait . . .", true);
+                        progDailog = new ProgressDialog(SettingForm.this);
+                        progDailog.setMessage("Rebuilding database, Please Wait . . .");
+                        progDailog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                        //progDailog.setIcon(R.drawable.champsicon);
+                        progDailog.setIndeterminate(false);
+                        progDailog.setCancelable(false);
+                        progDailog.setProgress(0);
+                        progDailog.show();
 
                         new Thread() {
                             public void run() {
                                 try {
-                                    C.RebuildDatabase(DeviceID);
+                                    C.RebuildDatabase(DeviceID, progDailog, progressHandler);
                                 } catch (Exception e) {
 
                                 }
@@ -79,6 +90,14 @@ public class SettingForm extends Activity {
                         return;
                     }
                 }
+
+
+                Handler progressHandler = new Handler() {
+                    public void handleMessage(Message msg) {
+                        progDailog.setMessage(Global.getInstance().getProgressMessage());
+                        progDailog.incrementProgressBy(jumpTime);
+                    }
+                };
             });
         }
         catch(Exception ex)

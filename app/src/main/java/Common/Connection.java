@@ -2,6 +2,7 @@ package Common;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,8 +12,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.ArrayAdapter;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -23,7 +25,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import Utility.*;
+
+import Utility.CompressZip;
 
 //--------------------------------------------------------------------------------------------------
 // Created by TanvirHossain on 17/03/2015.
@@ -546,9 +549,11 @@ public class Connection extends SQLiteOpenHelper {
         return data;
     }
 
-    public String DownloadJSON(String SQL, String TableName, String ColumnList, String UniqueField) {
+    //Final
+    public String DownloadJSON(String SQL, String TableName, String ColumnList, String UniqueField, String UserId) {
         String WhereClause = "";
         int varPos = 0;
+        int varPos_modifyDate = 0;
 
         String response = "";
         String resp = "";
@@ -568,75 +573,94 @@ public class Connection extends SQLiteOpenHelper {
             String VarList[] = ColumnList.split(",");
 
             List<String> dataStatus = new ArrayList<>();
+            String modifyDate = "";
+            String UID = "";
+            String USID = "";
+            String DataList = "";
+            DataClassProperty dd;
+            List<DataClassProperty> dataTemp = new ArrayList<DataClassProperty>();
+            List<DataClassProperty> data     = new ArrayList<DataClassProperty>();
 
-            for (int i = 0; i < responseData.getdata().size(); i++) {
-                String VarData[] = split(responseData.getdata().get(i).toString(), '^');
+            String downloadSyncStatus = "";
 
-                //Generate where clause
-                SQL = "";
-                WhereClause = "";
-                varPos = 0;
-                for (int j = 0; j < UField.length; j++) {
-                    varPos = VarPosition(UField[j].toString(), VarList);
-                    if (j == 0) {
-                        WhereClause = UField[j].toString() + "=" + "'" + VarData[varPos].toString() + "'";
+            if (responseData != null & responseData.getdata().size()>0) {
+                SQL = "Insert or replace into "+ TableName +"("+ ColumnList +")Values";
+                for (int i = 0; i < responseData.getdata().size(); i++) {
+                    String VarData[] = split(responseData.getdata().get(i).toString(), '^');
+
+                    //Generate where clause/Unique ID
+                    //------------------------------------------------------------------------------
+                    //Generate Unique ID
+                    //------------------------------------------------------------------------------
+                    for (int j = 0; j < UField.length; j++) {
+                        varPos = VarPosition(UField[j].toString(), VarList);
+
+                        if (j == 0) {
+                            UID += VarData[varPos].toString();
+                        } else {
+                            UID += VarData[varPos].toString();
+                        }
+                    }
+
+                    varPos_modifyDate = VarPosition("modifyDate", VarList);
+                    modifyDate = VarData[varPos_modifyDate].toString();//.replace("null", "");
+
+                    //------------------------------------------------------------------------------
+                    if (i == 0) {
+                        SQL += "('" + responseData.getdata().get(i).toString().replace("^","','").replace("null","") +"')";
                     } else {
-                        WhereClause += " and " + UField[j].toString() + "=" + "'" + VarData[varPos].toString() + "'";
-                    }
-                }
-
-                //Update command
-                if (Existence("Select " + VarList[0] + " from " + TableName + " Where " + WhereClause)) {
-                    for (int r = 0; r < VarList.length; r++) {
-                        if (r == 0) {
-                            SQL = "Update " + TableName + " Set ";
-                            SQL += VarList[r] + " = '" + VarData[r].toString() + "'";
-                        } else {
-                            if (r == VarData.length - 1) {
-                                SQL += "," + VarList[r] + " = '" + VarData[r].toString() + "'";
-                                SQL += " Where " + WhereClause;
-                            } else {
-                                SQL += "," + VarList[r] + " = '" + VarData[r].toString() + "'";
-                            }
-                        }
+                        SQL += ",('" + responseData.getdata().get(i).toString().replace("^","','").replace("null","") +"')";
                     }
 
-                    Save(SQL);
-                }
-                //Insert command
-                else {
+                    //Populate class with data for sync_management
+                    //------------------------------------------------------------------------------
+                    DataList = TableName + "^" + UID + "^" + UserId + "^" + modifyDate;
+                    dd = new DataClassProperty();
+                    dd.setdatalist(DataList);
+                    dd.setuniquefieldwithdata("" +
+                            "TableName='" + TableName + "' and " +
+                            "UniqueID='" + UID + "' and " +
+                            "UserId='" + UserId + "' and " +
+                            "modifyDate='" + modifyDate + "'");
+                    dataTemp.add(dd);
 
-                    SQL = "Insert into " + TableName + "(" + ColumnList + ")Values(";
-                    SQL += "'" + responseData.getdata().get(i).toString().replace("^","','").replace("null","") +"');";
-
-                    /*for (int r = 0; r < VarList.length; r++) {
-                        if (r == 0) {
-                            SQL = "Insert into " + TableName + "(" + ColumnList + ")Values(";
-                            SQL += "'" + VarData[r].toString() + "'";
-                        } else {
-                            SQL += ",'" + VarData[r].toString() + "'";
-                        }
-                    }
-                    SQL += ")";*/
-
-                    Save(SQL);
+                    UID = "";
                 }
 
-                dataStatus.add(WhereClause);
-            }
+                //If there have no error then response send back to server
+                downloadSyncStatus = SaveData(SQL);
+                if(downloadSyncStatus.length()==0){
+                    data = dataTemp;
+                }else{
+                    resp = downloadSyncStatus;
+                }
 
+                //Update data to Server on sync management
+                //------------------------------------------------------------------------------
+                DataClass dt = new DataClass();
+                dt.settablename("Sync_Management");
+                dt.setcolumnlist("TableName, UniqueID, UserId, modifyDate");
+                dt.setuniquefields("TableName, UniqueID, UserId, modifyDate");
+                dt.setdata(data);
 
-            //Status back to server
-            if (dataStatus.size() > 0) {
+                Gson gson1 = new Gson();
+                String json1 = gson1.toJson(dt);
+                String resp1 = "";
 
+                UploadDataJSON u = new UploadDataJSON();
+
+                try {
+                    resp1 = u.execute(json1).get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
 
         } catch (Exception e) {
-            resp = e.getMessage();
+            resp += e.getMessage();
             e.printStackTrace();
         }
-
         return resp;
     }
 
@@ -1034,15 +1058,7 @@ public class Connection extends SQLiteOpenHelper {
 
     //Rebuild Local Database from Server
     //----------------------------------------------------------------------------------------------
-    public void RebuildDatabase(String CountryCode, String FaciCode, String DeviceID) {
-        List<String> listItem = new ArrayList<String>();
-        listItem = DownloadJSONList("Select TableName+'^'+TableScript from DatabaseTab");
-
-        for (int i = 0; i < listItem.size(); i++) {
-            String VarData[] = split(listItem.get(i), '^');
-            CreateTable(VarData[0], VarData[1]);
-        }
-
+    public void RebuildDatabase(String DeviceID, final ProgressDialog progDialog, Handler progHandler) {
         //------------------------------------------------------------------------------------------
         //Data Sync: Download data from server
         //------------------------------------------------------------------------------------------
@@ -1057,50 +1073,54 @@ public class Connection extends SQLiteOpenHelper {
             //--------------------------------------------------------------------------------------
             ExecuteCommandOnServer("Delete from Sync_Management where UserId='" + DeviceID + "'");
 
+            progHandler.post(new Runnable() {
+                public void run() {
+                    progDialog.setProgress(3);
+                    progDialog.setMessage("Rebuilding database ...");
+                }
+            });
+            List<String> listItem = new ArrayList<String>();
+            listItem = DownloadJSONList("Select TableName+'^'+TableScript from DatabaseTab");
+            for (int i = 0; i < listItem.size(); i++) {
+                String VarData[] = split(listItem.get(i), '^');
+                CreateTable(VarData[0], VarData[1]);
+            }
             //Master Database Sync (Required for any database system)
             //--------------------------------------------------------------------------------------
-            SQLStr = "Select TableName, TableScript, ColumnList, UniqueID, BatchSize from DatabaseTab";
+            progHandler.post(new Runnable() {
+                public void run() {
+                    progDialog.setProgress(6);
+                    progDialog.setMessage("Downloading Master Data ...");
+                }
+            });
             TableName = "DatabaseTab";
-            VariableList = "TableName, TableScript, ColumnList, UniqueID, BatchSize";
+            VariableList = "TableName, TableScript, ColumnList, UniqueID, Sync_Upload, Sync_Download, BatchSize, modifyDate";
             UniqueField = "TableName";
-            Res = DownloadJSON(SQLStr, TableName, VariableList, UniqueField);
-
-            /*
-            this.Sync_Download_Rebuild("Country", "CountryCode='"+ CountryCode +"'");
-            this.Sync_Download_Rebuild("Facility", "CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"'");
-            this.Sync_Download_Rebuild("DeviceList", "DeviceId='" + DeviceID + "'");
-            this.Sync_Download_Rebuild("DataCollector", "CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"'");
-            this.Sync_Download_Rebuild("DCJobType", "");
-            this.Sync_Download_Rebuild("ObjTableList","");
-            this.Sync_Download_Rebuild("ObjVarList","");*/
-
-            this.Sync_Download("Country", DeviceID, "CountryCode='"+ CountryCode +"'");
-            this.Sync_Download("Facility", DeviceID, "CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"'");
-            this.Sync_Download("DeviceList", DeviceID, "DeviceId='" + DeviceID + "'");
-            this.Sync_Download("DataCollector", DeviceID, "CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"'");
-            this.Sync_Download("DCJobType", DeviceID, "");
-            this.Sync_Download("ObjTableList", DeviceID, "");
-            this.Sync_Download("ObjVarList", DeviceID, "");
-
-            this.Sync_Download("Registration", DeviceID,"CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"' and DeviceID='"+ DeviceID +"'");
-            this.Sync_Download("ObsHisCurPreg", DeviceID,"CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"' and DeviceID='"+ DeviceID +"'");
-            this.Sync_Download("KmcPreObs", DeviceID,"CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"' and DeviceID='"+ DeviceID +"'");
-
-            //Update status on server
+            this.Sync_Download_DatabaseTab(TableName, VariableList, UniqueField,DeviceID,"");
             //--------------------------------------------------------------------------------------
-            ExecuteCommandOnServer("Update DeviceList set Setting='2' where DeviceId='" + DeviceID + "'");
+
+            this.Sync_Download("DeviceList", DeviceID, "DeviceId='" + DeviceID + "'");
+
+            progHandler.post(new Runnable() {
+                public void run() {
+                    progDialog.setProgress(6);
+                    progDialog.setMessage("Downloading Data Collectors Data ...");
+                }
+            });
+            this.Sync_Download("DataCollector", DeviceID, "");
 
             //Download data from server
             //------------------------------------------------------------------------------
-            /*
 
-            String[] TableList = new String[]{
-                    "Screening",
-            };
-
-            for (int i = 0; i < TableList.length; i++)
-                Sync_Download(TableList[i], DeviceID, "");
-            */
+            //Update status on server
+            //--------------------------------------------------------------------------------------
+            progHandler.post(new Runnable() {
+                public void run() {
+                    progDialog.setProgress(100);
+                    progDialog.setMessage("Finishing Setting ...");
+                }
+            });
+            ExecuteCommandOnServer("Update DeviceList set Setting='2' where DeviceId='" + DeviceID + "'");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1108,7 +1128,7 @@ public class Connection extends SQLiteOpenHelper {
     }
 
     //For Rebuild database: done
-    public void Sync_Download_Rebuild(String TableName, String WhereCondition) {
+    /*public void Sync_Download_Rebuild(String TableName, String WhereCondition) {
         String VariableList = "";
         String SQL_VariableList = "";
         String UniqueField = "";
@@ -1134,7 +1154,7 @@ public class Connection extends SQLiteOpenHelper {
         cur_H.close();
 
         Res = DownloadJSON(SQLString, TableName, VariableList, UniqueField);
-    }
+    }*/
 
     public void DataSync_UploadDownload(List<String> tableList, String UserId) {
 
@@ -1158,7 +1178,7 @@ public class Connection extends SQLiteOpenHelper {
             Sync_Download(TableList[i], UserId, "");*/
     }
 
-    //done
+    //Final
     //batch wise data sync : based on the value of Column BatchSize in DatabaseTab table
     public void Sync_Download(String TableName, String UserId, String WhereClause) {
         //Retrieve sync parameter
@@ -1207,7 +1227,8 @@ public class Connection extends SQLiteOpenHelper {
         //Calculate batch size
         //------------------------------------------------------------------------------------------
         //0(zero) means all selected data
-        Integer batchSize = Integer.valueOf(ReturnSingleValue("select ifnull(batchsize,0)batchsize from DatabaseTab where TableName='" + TableName + "'"));
+        //Integer batchSize = Integer.valueOf(ReturnSingleValue("select ifnull(batchsize,0)batchsize from DatabaseTab where TableName='" + TableName + "'"));
+        Integer batchSize = 400;
         Integer totalBatch = 1;
 
         if (batchSize == 0) {
@@ -1221,18 +1242,94 @@ public class Connection extends SQLiteOpenHelper {
 
         //Execute batch download
         //------------------------------------------------------------------------------------------
-        for (int i = 0; i < totalBatch; i++) {
-            SQL = "Select top " + batchSize + " " + SQL_VariableList + " from " + TableName + " as t";
-            SQL += " where not exists(select * from Sync_Management where";
-            SQL += " lower(TableName)  = lower('" + TableName + "') and";
-            SQL += " UniqueID   = " + UID + " and";
-            SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
-            SQL += " UserId   ='" + UserId + "')";
-            if (WhereClause.length() > 0) {
-                SQL += " and " + WhereClause;
-            }
+        try {
+            for (int i = 0; i < totalBatch; i++) {
+                SQL = "Select top " + batchSize + " " + SQL_VariableList + " from " + TableName + " as t";
+                SQL += " where not exists(select * from Sync_Management where";
+                SQL += " lower(TableName)  = lower('" + TableName + "') and";
+                SQL += " UniqueID   = " + UID + " and";
+                SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
+                SQL += " UserId   ='" + UserId + "')";
+                if (WhereClause.length() > 0) {
+                    SQL += " and " + WhereClause;
+                }
 
-            Res = DownloadJSON_Update_Sync_Management(SQL, TableName, VariableList, UniqueField, UserId);
+                Res = DownloadJSON(SQL, TableName, VariableList, UniqueField, UserId);
+            }
+        }catch(Exception ex){
+
+        }
+    }
+
+
+    //Final
+    public void Sync_Download_DatabaseTab(String TableName, String VariableList, String UniqueField, String UserId, String WhereClause) {
+        String SQL = "";
+        String Res = "";
+
+        //Generate Unique ID field
+        //------------------------------------------------------------------------------------------
+        String[] U = UniqueField.split(",");
+        String UID = "";
+        for (int i = 0; i < U.length; i++) {
+            if (i == 0)
+                UID = "cast(t." + U[i] + " as varchar(50))";
+            else
+                UID += "+cast(t." + U[i] + " as varchar(50))";
+        }
+
+        //calculate total records
+        //------------------------------------------------------------------------------------------
+        Integer totalRecords = 0;
+        SQL = "Select Count(*)totalRec from " + TableName + " as t";
+        SQL += " where not exists(select * from Sync_Management where";
+        SQL += " lower(TableName)  = lower('" + TableName + "') and";
+        SQL += " UniqueID   = " + UID + " and";
+        SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
+
+        SQL += " UserId   ='" + UserId + "')";
+        if (WhereClause.length() > 0) {
+            SQL += " and " + WhereClause;
+        }
+
+        String totalRec = ReturnResult("ReturnSingleValue", SQL);
+        if (totalRec == null)
+            totalRecords = 0;
+        else
+            totalRecords = Integer.valueOf(totalRec);
+
+        //Calculate batch size
+        //------------------------------------------------------------------------------------------
+         Integer batchSize = 400;
+        Integer totalBatch = 1;
+
+        if (batchSize == 0) {
+            totalBatch = 1;
+            batchSize = totalRecords;
+        } else if (batchSize > 0) {
+            totalBatch = totalRecords / batchSize;
+            if (totalRecords % batchSize > 0)
+                totalBatch += 1;
+        }
+
+        //Execute batch download
+        //------------------------------------------------------------------------------------------
+        try {
+            for (int i = 0; i < totalBatch; i++) {
+                SQL = "Select top " + batchSize + " " + VariableList + " from " + TableName + " as t";
+                SQL += " where not exists(select * from Sync_Management where";
+                SQL += " lower(TableName)  = lower('" + TableName + "') and";
+                SQL += " UniqueID   = " + UID + " and";
+                SQL += " convert(varchar(19),modifydate,120) = convert(varchar(19),t.modifydate,120) and";
+                SQL += " UserId   ='" + UserId + "')";
+                if (WhereClause.length() > 0) {
+                    SQL += " and " + WhereClause;
+                }
+
+                Res = DownloadJSON(SQL, TableName, VariableList, UniqueField, UserId);
+            }
+        }catch(Exception ex){
+
         }
     }
 
@@ -1363,136 +1460,6 @@ public class Connection extends SQLiteOpenHelper {
     }
 
     //done
-    //download data from server and include those id's into Table: Sync_Management
-//download data from server and include those id's into Table: Sync_Management
-    private String DownloadJSON_Update_Sync_Management(String SQL, String TableName, String ColumnList, String UniqueField, String UserId) {
-        String WhereClause = "";
-        int varPos = 0;
-
-        String response = "";
-        String resp = "";
-
-        try {
-
-            DownloadDataJSON dload = new DownloadDataJSON();
-            response = dload.execute(SQL).get();
-
-            //Process Response
-            DownloadClass d = new DownloadClass();
-            Gson gson = new Gson();
-            Type collType = new TypeToken<DownloadClass>() {
-            }.getType();
-            DownloadClass responseData = gson.fromJson(response, collType);
-
-            String UField[] = UniqueField.split(",");
-            String VarList[] = ColumnList.split(",");
-
-            List<String> dataStatus = new ArrayList<>();
-            String modifyDate = "";
-            String UID = "";
-            String USID = "";
-            String DataList = "";
-            DataClassProperty dd;
-            List<DataClassProperty> data = new ArrayList<DataClassProperty>();
-
-            for (int i = 0; i < responseData.getdata().size(); i++) {
-                String VarData[] = split(responseData.getdata().get(i).toString(), '^');
-
-                //Generate where clause
-                SQL = "";
-                WhereClause = "";
-                varPos = 0;
-                for (int j = 0; j < UField.length; j++) {
-                    varPos = VarPosition(UField[j].toString(), VarList);
-                    if (j == 0) {
-                        WhereClause = UField[j].toString() + "=" + "'" + VarData[varPos].toString().replace("'", "") + "'";
-                        UID = VarData[varPos].toString();
-                    } else {
-                        WhereClause += " and " + UField[j].toString() + "=" + "'" + VarData[varPos].toString().replace("'", "") + "'";
-                        UID += VarData[varPos].toString();
-                    }
-                }
-
-                //Update command
-                if (Existence("Select " + VarList[0] + " from " + TableName + " Where " + WhereClause)) {
-                    for (int r = 0; r < VarList.length; r++) {
-                        if (r == 0) {
-                            SQL = "Update " + TableName + " Set ";
-                            SQL += VarList[r] + " = '" + VarData[r].toString().replace("'", "") + "'";
-                        } else {
-                            if (r == VarData.length - 1) {
-                                SQL += "," + VarList[r] + " = '" + VarData[r].toString().replace("'", "") + "'";
-                                SQL += " Where " + WhereClause;
-                            } else {
-                                SQL += "," + VarList[r] + " = '" + VarData[r].toString().replace("'", "") + "'";
-                            }
-                        }
-
-                        if (VarList[r].toString().toLowerCase().equals("modifydate"))
-                            modifyDate = VarData[r].toString();
-                    }
-
-                    Save(SQL);
-                }
-                //Insert command
-                else {
-                    for (int r = 0; r < VarList.length; r++) {
-                        if (r == 0) {
-                            SQL = "Insert into " + TableName + "(" + ColumnList + ")Values(";
-                            SQL += "'" + VarData[r].toString().replace("'", "") + "'";
-                        } else {
-                            SQL += ",'" + VarData[r].toString().replace("'", "") + "'";
-                        }
-
-                        if (VarList[r].toString().toLowerCase().equals("modifydate"))
-                            modifyDate = VarData[r].toString();
-
-                    }
-                    SQL += ")";
-
-                    Save(SQL);
-                }
-
-                DataList = TableName + "^" + UID + "^" + UserId + "^" + modifyDate;
-                dd = new DataClassProperty();
-                dd.setdatalist(DataList);
-                dd.setuniquefieldwithdata("" +
-                        "TableName='" + TableName + "' and " +
-                        "UniqueID='" + UID + "' and " +
-                        "UserId='" + UserId + "' and " +
-                        "modifyDate='" + modifyDate + "'");
-                data.add(dd);
-            }
-
-            DataClass dt = new DataClass();
-            dt.settablename("Sync_Management");
-            dt.setcolumnlist("TableName, UniqueID, UserId, modifyDate");
-            dt.setuniquefields(UniqueField);
-            dt.setdata(data);
-
-            Gson gson1 = new Gson();
-            String json1 = gson1.toJson(dt);
-            String resp1 = "";
-
-            UploadDataJSON u = new UploadDataJSON();
-
-            try {
-                resp1 = u.execute(json1).get();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-
-        } catch (Exception e) {
-            resp = e.getMessage();
-            e.printStackTrace();
-        }
-
-        return resp;
-    }
-
-    //done
     public String[] Sync_Parameter(String TableName) {
         String VariableList = "";
         String UniqueField = "";
@@ -1521,7 +1488,6 @@ public class Connection extends SQLiteOpenHelper {
         return ParaList;
     }
 
-    //done
     private String Convert_VariableList(String TableName, String VariableList) {
         String finalVariableList = "";
         String[] tempList = VariableList.split(",");
@@ -1553,7 +1519,6 @@ public class Connection extends SQLiteOpenHelper {
         return finalVariableList;
     }
 
-    //done
     private String DateVariableList(String TableName) {
         Cursor cur_H = ReadData("PRAGMA table_info('" + TableName + "')");
         cur_H.moveToFirst();
@@ -1576,7 +1541,6 @@ public class Connection extends SQLiteOpenHelper {
         return dateVariable;
     }
 
-    //done
     //Upload data to server
     public void Sync_Upload(List<String> tableList) {
         for (int i = 0; i < tableList.size(); i++) {
@@ -1584,7 +1548,6 @@ public class Connection extends SQLiteOpenHelper {
         }
     }
 
-    //done
     private void Sync_Upload_Process(String TableName) {
         String VariableList = "";
         String UniqueField = "";
@@ -1603,51 +1566,6 @@ public class Connection extends SQLiteOpenHelper {
         cur_H.close();
 
         Res = UploadJSON(TableName, VariableList, UniqueField);
-    }
-
-
-    private String Discard_UploadDT_modifyDate(String VariableList) {
-        String finalVarList = "";
-        String[] VList = VariableList.split(",");
-        for (int i = 0; i < VList.length; i++) {
-            if (!VList[i].equalsIgnoreCase("uploaddt") & !VList[i].equalsIgnoreCase("modifydate"))
-                finalVarList += finalVarList.length() == 0 ? VList[i] : "," + VList[i];
-        }
-        return finalVarList;
-    }
-
-    //To get the list of columns(string) in table
-    //----------------------------------------------------------------------------------------------
-    public String GetColumnList(String TableName) {
-        String CList = "";
-        Cursor cur_H;
-        cur_H = ReadData("pragma table_info('" + TableName + "')");
-
-        cur_H.moveToFirst();
-        int RecordCount = 0;
-
-        while (!cur_H.isAfterLast()) {
-            if (RecordCount == 0)
-                CList += cur_H.getString(cur_H.getColumnIndex("name"));
-            else
-                CList += "," + cur_H.getString(cur_H.getColumnIndex("name"));
-
-            RecordCount += 1;
-            cur_H.moveToNext();
-        }
-        cur_H.close();
-
-        return CList;
-    }
-
-    public int GetTotalColumn(String TableName) {
-        int totalCol = 0;
-        Cursor cur_H;
-        cur_H = ReadData("pragma table_info('" + TableName + "')");
-        totalCol = cur_H.getCount();
-        cur_H.close();
-
-        return totalCol;
     }
 
     //TableStructureSync
@@ -1879,7 +1797,6 @@ public class Connection extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public String[] GetColumnListArray(String TableName)
     {
-        //List<String> varList = new ArrayList<String>();
         Cursor cur = ReadData("SELECT * FROM " + TableName + " WHERE 0");
         String[] columnNames;
         try {
@@ -1997,7 +1914,6 @@ public class Connection extends SQLiteOpenHelper {
         }
     }
 
-    //06 Feb 2017
     public static void SyncDataService(String UniqueID)
     {
         try {
@@ -2007,18 +1923,12 @@ public class Connection extends SQLiteOpenHelper {
             //--------------------------------------------------------------------------------------
             C.Sync_DatabaseStructure(UniqueID);
             C.Sync_Download("DataCollector", UniqueID, "");
-            //C.Sync_Download("AreaDB",UniqueID,"CCode='"+ CountryCode +"'");
 
             //Sync_Download
             // Parameter 1: table Name
             // Parameter 2: UniqueID of Device
             // Parameter 3: Where Condition
             //--------------------------------------------------------------------------------------
-            //C.Sync_Download("Registration", UniqueID,"CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"' and DeviceID='"+ UniqueID +"'");
-            //C.Sync_Download("ObsHisCurPreg", UniqueID,"CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"' and DeviceID='"+ UniqueID +"'");
-            //C.Sync_Download("KmcPreObs", UniqueID,"CountryCode='"+ CountryCode +"' and FaciCode='"+ FaciCode +"' and DeviceID='"+ UniqueID +"'");
-
-
 
             //Sync_Upload
             // Parameter 1: table list

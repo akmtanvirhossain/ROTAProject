@@ -52,6 +52,7 @@ public class LoginActivity extends Activity {
             sp.save(this,"deviceid","");
             sp.save(this,"userid","");
 
+
             final TextView UniqueUserId      = (TextView)findViewById(R.id.UniqueUserId);
             final Spinner uid      = (Spinner)findViewById(R.id.userId);
             final EditText pass    = (EditText)findViewById(R.id.pass);
@@ -119,6 +120,8 @@ public class LoginActivity extends Activity {
             });
 
             //Login -----------------------------------------------------------------------
+
+
             Button loginButton = (Button) findViewById(R.id.btnLogin);
             loginButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
@@ -168,7 +171,7 @@ public class LoginActivity extends Activity {
                                     public void run() {
                                         try {
                                             finish();
-                                            Intent f1 = new Intent(getApplicationContext(),MainMenu.class);
+                                            Intent f1 = new Intent(getApplicationContext(),MainActivity.class);
                                             startActivity(f1);
                                         } catch (Exception e) {
 
@@ -206,7 +209,7 @@ public class LoginActivity extends Activity {
                             public void run() {
                                 try {
                                     finish();
-                                    Intent f1 = new Intent(getApplicationContext(),MainMenu.class);
+                                    Intent f1 = new Intent(getApplicationContext(),MainActivity.class);
                                     startActivity(f1);
                                 } catch (Exception e) {
 
@@ -223,6 +226,7 @@ public class LoginActivity extends Activity {
             Connection.MessageBox(LoginActivity.this, ex.getMessage());
         }
     }
+
 
     //Install application
     private void InstallApplication()

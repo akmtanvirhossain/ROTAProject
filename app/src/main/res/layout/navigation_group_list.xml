@@ -21,6 +21,4 @@
         android:layout_alignParentTop="true"
         android:textAlignment="center"
         android:gravity="center_vertical" />
-
-
 </RelativeLayout>

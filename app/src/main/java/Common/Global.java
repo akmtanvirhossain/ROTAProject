@@ -1,7 +1,4 @@
 package Common;
-import android.os.Environment;
-import android.widget.Spinner;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import android.os.Environment;
+import android.widget.Spinner;
 
 public class Global {
 	public static char VariableSeperator = '^';
@@ -48,6 +48,10 @@ public class Global {
 		}
 		return instance;
 	}
+
+	private String _progressMessage;
+	public void setProgressMessage(String progressMessage){this._progressMessage = progressMessage;}
+	public String getProgressMessage(){ return this._progressMessage;}
 
 	//String Function
 	//...........................................................................................................

@@ -24,7 +24,14 @@
     -->
     <color name="pageHeadingBack">#FFC4005F</color>
     <color name="theme_color">#FFC4005F</color>
+    <color name="form_background_color">#F3F3F3</color>
+    <color name="mainmenu_background_color">#D7D7D7</color>
+    <color name="mainmenu_button_color">#FFFFFF</color>
+
     <color name="save_button_color">#69CB3F</color>
+
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_light_gray">#999999</color>
 
 
     <!-- Recycle View -->
