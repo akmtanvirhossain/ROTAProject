@@ -25,6 +25,7 @@ import java.net.URL;
 import Common.Connection;
 import Common.Global;
 import Common.ProjectSetting;
+import Common.Security_Permission;
 import Utility.MySharedPreferences;
 //dhaka
 public class LoginActivity extends Activity {
@@ -46,6 +47,9 @@ public class LoginActivity extends Activity {
         {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.login_activity);
+
+            Security_Permission my_permission=new Security_Permission(getApplicationContext(),LoginActivity.this);
+
             C = new Connection(this);
             g = Global.getInstance();
             sp = new MySharedPreferences();
@@ -72,6 +76,7 @@ public class LoginActivity extends Activity {
 
             if(Integer.valueOf(TotalTab) == 0)
             {
+
                 if (networkAvailable)
                 {
                     //Call Setting Form
