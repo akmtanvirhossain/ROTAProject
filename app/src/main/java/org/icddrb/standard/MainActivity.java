@@ -216,14 +216,30 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_DataSync) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_Exit) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder
+                    .setTitle("Exit")
+                    .setMessage("Do you want to exit from the system[Y/N]?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    finish();
+                                    System.exit(0);
+                                    break;
 
-        } else if (id == R.id.nav_manage) {
-
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    })
+                    .setNegativeButton("No", null)	//Do nothing on no
+                    .show();
         }
 
 

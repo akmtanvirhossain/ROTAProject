@@ -35,19 +35,23 @@
             android:label="Nav" />
 
         //Android Manifest Code
-        <!-- <activity android:name="org.icddrb.data.Screening" android:label="Screening" /> -->
 
-        //Service
-        <service android:name=".DataSyncService" />
 
-        <activity android:name=".LoginActivity" android:label="@string/app_name" android:theme="@style/CustomTheme">
+        <activity android:name=".Splash_Screen" android:label="@string/app_name" android:theme="@style/CustomTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        //Activity
+        <activity android:name=".LoginActivity" />
         <activity android:name=".RecycleActivity" />
         <activity android:name=".MainActivity" />
+
+
+        //Service
+        <service android:name=".DataSyncService" />
+
     </application>
 </manifest>
