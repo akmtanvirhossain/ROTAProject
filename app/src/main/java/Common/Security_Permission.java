@@ -19,7 +19,7 @@ public class Security_Permission implements ActivityCompat.OnRequestPermissionsR
     private Context context;
     private Activity activity;
 
-    public static final String TAG = "MY_PERMISSION";
+    public static final String TAG = "Security Permission";
 
     private static final int REQUEST_Code = 0;
 

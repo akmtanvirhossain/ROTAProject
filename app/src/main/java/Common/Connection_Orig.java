@@ -7,18 +7,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-//import android.database.sqlite.SQLiteDatabase;
-//import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.Handler;
 import android.widget.ArrayAdapter;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-//import org.icddrb.standard.R;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
+
 import org.icddrb.standard.R;
 
 import java.io.File;
@@ -29,38 +29,62 @@ import java.util.concurrent.ExecutionException;
 
 import Utility.CompressZip;
 
+//import android.database.sqlite.SQLiteDatabase;
+//import android.database.sqlite.SQLiteOpenHelper;
+//import org.icddrb.standard.R;
+
 //--------------------------------------------------------------------------------------------------
 // Created by TanvirHossain on 17/03/2015.
 //--------------------------------------------------------------------------------------------------
 
-public class Connection extends SQLiteOpenHelper {
+public class Connection_Orig extends SQLiteOpenHelper {
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
     private static final String DB_NAME    = Global.DatabaseName;
     private static final String DBLocation = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + DB_NAME;
-    //public static final String PASS_PHRASE="!@#ABC";
+    public static final String PASS_PHRASE="!@#ABC";
 
     // Todo table name
     private static final String TABLE_TODO = "todo_items";
     private static Context ud_context;
     private Context dbContext;
 
-    public Connection(Context context) {
+    public Connection_Orig(Context context) {
         super(context, DBLocation, null, DATABASE_VERSION);
         dbContext = context;
         ud_context = context;
     }
 
-    /*private static Connection instance;
-    static public  synchronized  Connection getInstance(Context context)
+    private static Connection_Orig instance;
+    static public  synchronized Connection_Orig getInstance(Context context)
     {
         if(instance == null)
-            instance= new Connection(context);
+            instance= new Connection_Orig(context);
         return instance;
-    }*/
+    }
 
+    // Creating our initial tables
+    // These is where we need to write create table statements.
+    // This is called when database is created.
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        //db.execSQL("Create Table abc(sid varchar(10))");
+    }
+
+    // Upgrading the database between versions
+    // This method is called when database is upgraded like modifying the table structure,
+    // adding constraints to database, etc
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (newVersion == 1) {
+            // Wipe older tables if existed
+            //db.execSQL("DROP TABLE IF EXISTS " + TABLE_TODO);
+            // Create tables again
+            onCreate(db);
+        }
+    }
 
     //Split function
     //----------------------------------------------------------------------------------------------
@@ -143,30 +167,9 @@ public class Connection extends SQLiteOpenHelper {
 
     public static void ExecuteSQLFromFile(String fileName) {
         List<String> dataList = Global.ReadTextFile(fileName);
-        Connection C = new Connection(ud_context);
+        Connection_Orig C = new Connection_Orig(ud_context);
         for (int i = 0; i < dataList.size(); i++) {
             C.Save(dataList.get(i));
-        }
-    }
-
-    // Creating our initial tables
-    // These is where we need to write create table statements.
-    // This is called when database is created.
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        //db.execSQL("Create Table abc(sid varchar(10))");
-    }
-
-    // Upgrading the database between versions
-    // This method is called when database is upgraded like modifying the table structure,
-    // adding constraints to database, etc
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion == 1) {
-            // Wipe older tables if existed
-            //db.execSQL("DROP TABLE IF EXISTS " + TABLE_TODO);
-            // Create tables again
-            onCreate(db);
         }
     }
 
@@ -175,7 +178,7 @@ public class Connection extends SQLiteOpenHelper {
     public boolean TableExists(String TableName) {
         Cursor c = null;
         boolean tableExists = false;
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase(PASS_PHRASE);
         try {
             c = db.rawQuery("Select * from " + TableName, null);
             tableExists = true;
@@ -189,7 +192,7 @@ public class Connection extends SQLiteOpenHelper {
     //Create database tables
     //----------------------------------------------------------------------------------------------
     public void CreateTable(String TableName, String SQL) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHRASE);
         try {
             if (!TableExists(TableName)) {
                 db.execSQL(SQL);
@@ -220,16 +223,16 @@ public class Connection extends SQLiteOpenHelper {
     //Read data from database and return to Cursor variable
     //----------------------------------------------------------------------------------------------
     public Cursor ReadData(String SQL) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase(PASS_PHRASE);
         Cursor cur = db.rawQuery(SQL, null);
-        //db.close();
+        db.close();
         return cur;
     }
 
     //Check existence of data in database
     //----------------------------------------------------------------------------------------------
     public boolean Existence(String SQL) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase(PASS_PHRASE);
         Cursor cur = db.rawQuery(SQL, null);
         if (cur.getCount() == 0) {
             cur.close();
@@ -245,7 +248,7 @@ public class Connection extends SQLiteOpenHelper {
     //Return single result based on the SQL query
     //----------------------------------------------------------------------------------------------
     public String ReturnSingleValue(String SQL) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase(PASS_PHRASE);
         Cursor cur = db.rawQuery(SQL, null);
         String retValue = "";
         cur.moveToFirst();
@@ -261,7 +264,7 @@ public class Connection extends SQLiteOpenHelper {
     //Save/Update/Delete data in to database
     //----------------------------------------------------------------------------------------------
     public void Save(String SQL) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHRASE);
         try {
             db.execSQL(SQL);
         }catch(Exception ex){
@@ -274,7 +277,7 @@ public class Connection extends SQLiteOpenHelper {
     //Date: 22 Jun 2017 for DataSync
     public String SaveData(String SQL) {
         String response = "";
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHRASE);
         try {
             db.execSQL(SQL);
         }catch(Exception ex){
@@ -284,6 +287,7 @@ public class Connection extends SQLiteOpenHelper {
         }
         return response;
     }
+
 
     //Generate data list
     //----------------------------------------------------------------------------------------------
@@ -320,7 +324,7 @@ public class Connection extends SQLiteOpenHelper {
     //----------------------------------------------------------------------------------------------
     public ArrayAdapter<String> getArrayAdapter(String SQL) {
         List<String> dataList = new ArrayList<String>();
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase(PASS_PHRASE);
         Cursor cursor = db.rawQuery(SQL, null);
         if (cursor.moveToFirst()) {
             do {
@@ -331,8 +335,7 @@ public class Connection extends SQLiteOpenHelper {
         db.close();
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.dbContext,
-                R.layout.multiline_spinner_dropdown_item, dataList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.dbContext, R.layout.multiline_spinner_dropdown_item, dataList);
 
         return dataAdapter;
     }
@@ -1814,33 +1817,33 @@ public class Connection extends SQLiteOpenHelper {
     }
 
     public boolean InsertData(String TableName, ContentValues content_value) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHRASE);
         db.insert(TableName, null, content_value);
         return true;
     }
 
     public boolean UpdateData(String TableName, String UniqueID_Field, String UniqueID, ContentValues content_value) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHRASE);
         db.update(TableName, content_value, UniqueID_Field + " = ? ", new String[]{UniqueID});
         return true;
     }
 
     public Integer DeleteData(String TableName, String UniqueID_Field, String UniqueID) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHRASE);
         return db.delete(TableName,
                 UniqueID_Field + " = ? ",
                 new String[]{UniqueID});
     }
 
     public Cursor GetData(String TableName, String UniqueID_Field, String UniqueID) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHRASE);
         Cursor res = db.rawQuery("SELECT * FROM " + TableName + " WHERE " +
                 UniqueID_Field + "=?", new String[]{UniqueID});
         return res;
     }
 
     public Cursor GetAllData(String TableName) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase(PASS_PHRASE);
         Cursor res = db.rawQuery("SELECT * FROM " + TableName, null);
         return res;
     }
@@ -1923,7 +1926,7 @@ public class Connection extends SQLiteOpenHelper {
     public static void SyncDataService(String UniqueID)
     {
         try {
-            Connection C = new Connection(ud_context);
+            Connection_Orig C = new Connection_Orig(ud_context);
 
             //Reqular data sync
             //--------------------------------------------------------------------------------------
@@ -1953,8 +1956,8 @@ public class Connection extends SQLiteOpenHelper {
     //Data Sync only Registration and Assignment of Patient
     public static void RegistrationDataSync(Context cont)
     {
-        Connection C = new Connection(ud_context);
-        if (Connection.haveNetworkConnection(cont)) {
+        Connection_Orig C = new Connection_Orig(ud_context);
+        if (Connection_Orig.haveNetworkConnection(cont)) {
             List<String> tableList = new ArrayList<String>();
             tableList.add("Registration");
             C.Sync_Upload(tableList);
@@ -1966,84 +1969,16 @@ public class Connection extends SQLiteOpenHelper {
     {
         String response = "";
         try {
-            Connection C = new Connection(ud_context);
+            Connection_Orig C = new Connection_Orig(ud_context);
 
             //Upload
             List<String> tableList = new ArrayList<String>();
             tableList.add("Registration");
-            tableList.add("ObsHisCurPreg");
-            tableList.add("KmcPreObs");
-
-            tableList.add("KMC_DataExt");
-            tableList.add("LD_DataExt");
-
-            tableList.add("KMC_Feed");
-            tableList.add("KMC_Init");
-            tableList.add("KMC_Pos");
-            tableList.add("KMC_Treat");
-            tableList.add("KMC_Outcome");
-
-            tableList.add("Observation");
-            tableList.add("LD_Outcome");
-            tableList.add("ObjPauseLog");
-
-            tableList.add("RecallSurvS1");
-            tableList.add("RecallSurvS2");
-            tableList.add("RecallSurvS3");
-            tableList.add("RecallSurvS4");
-            tableList.add("RecallSurvS5");
-            tableList.add("MRS_FinalStatus");
-            tableList.add("MRS_FollowUp");
-            tableList.add("Acs_Veri");
-
-            tableList.add("Infver_Pdetail");
-            tableList.add("Infver_Denomin");
-            tableList.add("Infver_SupCare");
-            tableList.add("Infver_Anti");
-            tableList.add("Infver_labInv");
-            tableList.add("Infver_Outcome");
-
             C.Sync_Upload(tableList);
 
 
             //Download
             C.Sync_Download("DataCollector",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("DCJobType",   DEVICEID,"");
-            C.Sync_Download("ObjTableList",DEVICEID,"");
-            C.Sync_Download("ObjVarList",  DEVICEID,"");
-
-            C.Sync_Download("Registration", DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("KmcPreObs",    DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("ObsHisCurPreg",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-
-            C.Sync_Download("Observation",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("LD_Outcome", DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("ObjPauseLog", DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-
-            C.Sync_Download("KMC_Init", DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("KMC_Pos",  DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("KMC_Feed", DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("KMC_Treat",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("KMC_Outcome",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-
-            C.Sync_Download("KMC_DataExt",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("LD_DataExt",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-
-            C.Sync_Download("RecallSurvS1",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("RecallSurvS2",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("RecallSurvS3",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("RecallSurvS4",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("RecallSurvS5",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("MRS_FinalStatus",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-
-            C.Sync_Download("Acs_Veri",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-
-            C.Sync_Download("Infver_Pdetail",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("Infver_Denomin",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("Infver_SupCare",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("Infver_Anti",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("Infver_labInv",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
-            C.Sync_Download("Infver_Outcome",DEVICEID,"CountryCode='"+ COUNTRYCODE +"' and FaciCode='"+ FACICODE +"'");
 
             response = "done";
         }
@@ -2056,7 +1991,7 @@ public class Connection extends SQLiteOpenHelper {
 
     //DC wise Access , different location
     public static String[] DCLocationAccess(String UserId){
-        Connection C = new Connection(ud_context);
+        Connection_Orig C = new Connection_Orig(ud_context);
         //Select d.UserId,d.UserName,l.LocCode from DataCollector d inner join LocationDC l on d.FaciCode=l.FaciCode and d.UserId=l.UserId
         String[] d = C.getArrayList("Select l.LocCode from DataCollector d inner join LocationDC l on d.FaciCode=l.FaciCode and d.UserId=l.UserId");
         return d;
