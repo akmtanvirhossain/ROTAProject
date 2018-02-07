@@ -48,10 +48,12 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".RecycleActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".data_form_master" />
 
 
         //Service
         <service android:name=".DataSyncService" />
+        <service android:name=".Sync_Service" />
 
     </application>
 </manifest>

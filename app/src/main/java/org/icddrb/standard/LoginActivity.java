@@ -48,7 +48,7 @@ public class LoginActivity extends Activity {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.login_activity);
 
-            Security_Permission my_permission=new Security_Permission(getApplicationContext(),LoginActivity.this);
+            Security_Permission my_permission = new Security_Permission(getApplicationContext(),LoginActivity.this);
 
             C = new Connection(this);
             g = Global.getInstance();
@@ -107,14 +107,8 @@ public class LoginActivity extends Activity {
 
             uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from DataCollector order by UserName"));
             String[] CL = uid.getSelectedItem().toString().split("-");
-            uid.setSelection(Global.SpinnerItemPosition(uid,CL[0].length(),C.ReturnSingleValue("Select UserId from LastLogin")));
+            //uid.setSelection(Global.SpinnerItemPosition(uid,CL[0].length(),C.ReturnSingleValue("Select UserId from LastLogin")));
 
-
-            //Only for removing the data of training: 17 Nov 2015
-            /*if(Global.DateNowDMY().equals("11/02/2016") & g.getDistrict().equals("12") & g.getUpazila().equals("63"))
-            {
-                //C.Save("Delete from BirthDeath where date(endt) <= '2016-02-10'");
-            }*/
 
             Button btnClose=(Button)findViewById(R.id.btnClose);
             btnClose.setOnClickListener(new View.OnClickListener() {

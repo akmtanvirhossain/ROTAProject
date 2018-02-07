@@ -1930,6 +1930,8 @@ public class Connection extends SQLiteOpenHelper {
             C.Sync_DatabaseStructure(UniqueID);
             C.Sync_Download("DataCollector", UniqueID, "");
 
+            C.Sync_Download("module_variable", UniqueID, "");
+
             //Sync_Download
             // Parameter 1: table Name
             // Parameter 2: UniqueID of Device
@@ -1942,7 +1944,7 @@ public class Connection extends SQLiteOpenHelper {
             //C.Sync_Upload(ProjectSetting.TableList_Upload());
 
             //Database File Upload
-            C.DatabaseUploadZip(UniqueID);
+            //C.DatabaseUploadZip(UniqueID);
         }
         catch(Exception ex)
         {

@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -28,19 +27,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import Common.Connection;
-import Common.FileUpload;
-import Common.Security_Permission;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView bottom_nav_view;
     Boolean netwoekAvailable = false;
-
+    Bundle IDbundle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.standard_navigation_drawer);
+        IDbundle = new Bundle();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,8 +71,11 @@ public class MainActivity extends AppCompatActivity
                 {
                     if(position==0)
                     {
-                        //Intent f1 = new Intent(getApplicationContext(),HHListing.class);
-                        //startActivity(f1);
+                        IDbundle.putString("moduleid", "1");
+                        IDbundle.putString("dataid", "1235");
+                        Intent intent = new Intent(getApplicationContext(), data_form_master.class);
+                        intent.putExtras(IDbundle);
+                        startActivity(intent);
                     }
                     else if(position==3)
                     {
