@@ -314,7 +314,7 @@ public class data_form_master extends AppCompatActivity {
             holder.chkData.setVisibility(View.GONE);
             holder.btnData.setVisibility(View.GONE);
 
-            //Radio Button
+            //EditText
             //**************************************************************************************
             if(varlist.getcontrol_type().equals("1"))
             {
@@ -331,6 +331,7 @@ public class data_form_master extends AppCompatActivity {
                 else
                     holder.txtData.setInputType(InputType.TYPE_CLASS_TEXT);
             }
+
             //Radio Button
             //**************************************************************************************
             else if(varlist.getcontrol_type().equals("2"))
@@ -428,7 +429,13 @@ public class data_form_master extends AppCompatActivity {
 
 
             //**************************************************************************************
+            //module_variable_DataModel varlist1 = variableList.get(position + i);
+            //varlist1.setactive("1");
 
+            mAdapter.variableList.set(position, varlist);
+            //recyclerView.invalidate();
+            //mAdapter.notifyItemChanged(position);
+            mAdapter.notifyDataSetChanged();
 
         }
 
