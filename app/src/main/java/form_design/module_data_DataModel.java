@@ -132,7 +132,8 @@ import android.content.Context;
             String SQL = "";
             try
               {
-                 SQL = "Update "+ TableName +" Set Upload='2',modifyDate='" + _modifyDate + "' ,variable_data = '"+ _variable_data +"',data_desc = '"+ _data_desc +"',status = '"+ _status +"',entry_date = '"+ _entry_date +"',first_entry_time = '"+ _first_entry_time +"',final_entry_time = '"+ _final_entry_time +"'  Where module_id='"+ _module_id +"' and variable_name='"+ _variable_name +"' and data_id='"+ _data_id +"'";
+//                 SQL = "Update "+ TableName +" Set Upload='2',modifyDate='" + _modifyDate + "' ,variable_data = '"+ _variable_data +"',data_desc = '"+ _data_desc +"',status = '"+ _status +"',entry_date = '"+ _entry_date +"',first_entry_time = '"+ _first_entry_time +"',final_entry_time = '"+ _final_entry_time +"'  Where module_id='"+ _module_id +"' and variable_name='"+ _variable_name +"' and data_id='"+ _data_id +"'";
+                 SQL = "Update "+ TableName +" Set Upload='2',modifyDate='" + _modifyDate + "' ,variable_data = '"+ _variable_data +"',data_desc = '"+ _data_desc +"',status = '"+ _status +"',entry_date = '"+ _entry_date +"',final_entry_time = '"+ _final_entry_time +"'  Where module_id='"+ _module_id +"' and variable_name='"+ _variable_name +"' and data_id='"+ _data_id +"'";
                  response = C.SaveData(SQL);
                  C.close();
               }

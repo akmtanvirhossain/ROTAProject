@@ -118,6 +118,47 @@ import android.content.Context;
         _modifyDate = newValue;
         }
 
+        //*************** sakib start ********************
+        private String _image = "";
+        private String _audio= "";
+        private String _video = "";
+
+     public String get_data_id() {
+         return _data_id;
+     }
+
+     public void set_data_id(String _data_id) {
+         this._data_id = _data_id;
+     }
+
+     private String _data_id = "";
+
+     public String get_image() {
+         return _image;
+     }
+
+     public void set_image(String _image) {
+         this._image = _image;
+     }
+
+     public String get_audio() {
+         return _audio;
+     }
+
+     public void set_audio(String _audio) {
+         this._audio = _audio;
+     }
+
+     public String get_video() {
+         return _video;
+     }
+
+     public void set_video(String _video) {
+         this._video = _video;
+     }
+
+     //*************** sakib end **********************
+
         String TableName = "module_variable";
 
         public String SaveUpdateData(Context context)
@@ -210,7 +251,7 @@ import android.content.Context;
 
      private String _variable_data = "";
      public String getvariable_data(){
-         return _variable_option;
+         return _variable_data;
      }
 
      private String _data_desc = "";
@@ -220,7 +261,7 @@ import android.content.Context;
 
      private String _status = "";
      public String getstatus(){
-         return _variable_option;
+         return _status;
      }
 
      public List<module_variable_DataModel> SelectAll_WithVariableData(Context context, String SQL)
@@ -246,9 +287,20 @@ import android.content.Context;
              d._color = cur.getString(cur.getColumnIndex("color"));
              d._active = cur.getString(cur.getColumnIndex("active"));
 
+
              d._variable_data = cur.getString(cur.getColumnIndex("variable_data"));
              d._data_desc = cur.getString(cur.getColumnIndex("data_desc"));
              d._status = cur.getString(cur.getColumnIndex("status"));
+
+             //*************** sakib start ********************
+
+             d._image=cur.getString(cur.getColumnIndex("variable_image"));
+             d._audio=cur.getString(cur.getColumnIndex("variable_audio"));
+             d._video=cur.getString(cur.getColumnIndex("variable_video"));
+             d._data_id=cur.getString(cur.getColumnIndex("data_id"));
+
+             //*************** sakib end **********************
+
 
              data.add(d);
 

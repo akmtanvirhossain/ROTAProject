@@ -1,11 +1,21 @@
 package org.icddrb.standard;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,23 +31,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import Common.Connection;
 import Common.Global;
+import DataSync.Log;
 import Utility.MySharedPreferences;
+import form_design.module_data_DataModel;
 import form_design.module_variable_DataModel;
 
 /**
@@ -99,6 +123,10 @@ public class data_form_master extends AppCompatActivity {
     RadioButton rdoChildSl2;
     RadioButton rdoChildSl3;
 
+    Boolean video_flag=true;
+    private static boolean audio_flag=true;
+    private static MediaPlayer mp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +142,8 @@ public class data_form_master extends AppCompatActivity {
         DATAID      = IDbundle.getString("dataid");
 
         VARIABLENAME = "";
+
+        mp = new MediaPlayer();
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -194,6 +224,14 @@ public class data_form_master extends AppCompatActivity {
         prepareVariableListData(MODULEID, DATAID);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mp.stop();
+        mp.reset();
+        audio_flag=true;
+    }
+
     public void refreshAdapter(){
         mAdapter.notifyDataSetChanged();
     }
@@ -213,8 +251,8 @@ public class data_form_master extends AppCompatActivity {
 
         //Populate data for form generate
         SQL = "Select v.module_id,v. variable_name,v. variable_desc,v. variable_seq,v. control_type,\n" +
-                " v. variable_option,v. variable_length,v. data_type,v. skip_rule,v. color,v. active,\n" +
-                " d.variable_data,d.data_desc,d.status\n" +
+                " v. variable_option,v. variable_length,v. data_type,v. skip_rule,v. color,v.active,v. variable_image,v. variable_audio,v. variable_video,\n" +
+                " ifnull(d.variable_data,'')variable_data,ifnull(d.data_desc,'')data_desc, ifnull(d.data_id,'')data_id, ifnull(d.status,'')status\n" +
                 " from module_variable v\n" +
                 " left outer join module_data d on v.module_id=d.module_id and v.variable_name=d.variable_name \n" +
                 " and d.data_id='"+ Data_Id +"'\n" +
@@ -235,6 +273,14 @@ public class data_form_master extends AppCompatActivity {
         }
     }
 
+    public String millsToDateFormat(long mills) {
+
+        Date date = new Date(mills);
+        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        String dateFormatted = formatter.format(date);
+        return dateFormatted; //note that it will give you the time in GMT+0
+    }
+
     //RadioButton[] rb;
     RadioButton rdo_butt;
     String[] item_list;
@@ -245,6 +291,7 @@ public class data_form_master extends AppCompatActivity {
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView objDescription, dataDescription,rdoData_Value;
             public LinearLayout objCheckList;
+            public RelativeLayout resource,secVideo;
             public Spinner spnDataList;
             public EditText txtData;
             public RadioGroup rdoData;
@@ -252,10 +299,21 @@ public class data_form_master extends AppCompatActivity {
             public ImageButton btnData;
             public View lineImportant;
 
+            Button btnAudio,btnVideo;
+            ImageView ivImage;
+
+            VideoView secVideoView;
+            Bitmap thumb;
+            BitmapDrawable bitmapDrawable = null;
+
+
+
+
             public MyViewHolder(View view) {
                 super(view);
                 objDescription = (TextView) view.findViewById(R.id.objDescription);
                 objCheckList = (LinearLayout) view.findViewById(R.id.objCheckList);
+                resource = (RelativeLayout) view.findViewById(R.id.resource);
 
                 dataDescription = (TextView) view.findViewById(R.id.dataDescription);
                 spnDataList = (Spinner) view.findViewById(R.id.spnDataList);
@@ -268,6 +326,19 @@ public class data_form_master extends AppCompatActivity {
                 txtData.setInputType(InputType.TYPE_CLASS_NUMBER);
                 txtData.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
                 lineImportant = (View) view.findViewById(R.id.lineImportant);
+
+
+                //********************* sakib start *********************
+
+                btnAudio= (Button) view.findViewById(R.id.btnAudio);
+                ivImage= (ImageView) view.findViewById(R.id.ivImage);
+                btnVideo= (Button) view.findViewById(R.id.btnVideo);
+
+                secVideoView= (VideoView) view.findViewById(R.id.secVideoView);
+                secVideo=(RelativeLayout) view.findViewById(R.id.secVideo);
+
+                //********************* sakib end *********************
+
             }
         }
 
@@ -279,7 +350,7 @@ public class data_form_master extends AppCompatActivity {
         @Override
         public VariableListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.module_variable_view_item, parent, false);
+                    .inflate(R.layout.module_variable_view_item_sakib, parent, false);
 
             return new VariableListAdapter.MyViewHolder(itemView);
         }
@@ -314,11 +385,134 @@ public class data_form_master extends AppCompatActivity {
             holder.chkData.setVisibility(View.GONE);
             holder.btnData.setVisibility(View.GONE);
 
+            holder.resource.setVisibility(View.GONE);
+            holder.ivImage.setVisibility(View.GONE);
+            holder.btnAudio.setVisibility(View.GONE);
+            holder.btnVideo.setVisibility(View.GONE);
+            holder.secVideoView.setVisibility(View.GONE);
+            holder.secVideo.setVisibility(View.GONE);
+
+
+            //********************* sakib start *********************
+            if(varlist.get_image().length()!=0) {
+                holder.resource.setVisibility(View.VISIBLE);
+                holder.ivImage.setVisibility(View.VISIBLE);
+                holder.ivImage.setBackground(Drawable.createFromPath(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_image()));
+            }
+            if(varlist.get_audio().length()!=0) {
+                holder.resource.setVisibility(View.VISIBLE);
+                holder.btnAudio.setVisibility(View.VISIBLE);
+            }if(varlist.get_video().length()!=0) {
+                holder.resource.setVisibility(View.VISIBLE);
+                holder.btnVideo.setVisibility(View.VISIBLE);
+
+
+
+                holder.secVideoView.setVideoURI(Uri.parse(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_video()));
+                holder.thumb = ThumbnailUtils.createVideoThumbnail(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_video(),
+                        MediaStore.Images.Thumbnails.MINI_KIND);
+                holder.bitmapDrawable = new BitmapDrawable(holder.secVideoView.getResources(), holder.thumb);
+                holder.secVideoView.setBackground(holder.bitmapDrawable);
+
+                MediaController mediaController = new MediaController(holder.secVideoView.getContext());
+                holder.secVideoView.setMediaController(mediaController);
+                mediaController.setMediaPlayer(holder.secVideoView);
+                mediaController.setAnchorView(holder.secVideoView);
+                holder.secVideoView.requestFocus();
+
+            }
+
+            holder.ivImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Connection.MessageBox(data_form_master.this,"Image Clicked !!!");
+                    ImageView image = new ImageView(data_form_master.this);
+                    image.setBackground(Drawable.createFromPath(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_image()));
+
+                    AlertDialog.Builder builder =
+                            new AlertDialog.Builder(data_form_master.this).
+                                    setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).
+                                    setView(image);
+                    builder.create().show();
+
+                }
+            });
+
+            holder.btnAudio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Connection.MessageBox(data_form_master.this,"Button Audio Clicked !!!: "+varlist.get_audio());
+
+
+                    if(audio_flag)
+                    {
+                        try {
+                            mp.setDataSource(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_audio());
+                            mp.setVolume(100,100);
+                            mp.prepare();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mp.start();
+                        holder.btnAudio.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.mute));
+                        audio_flag=false;
+                    }else
+                    {
+                        mp.stop();
+                        mp.reset();
+                        audio_flag=true;
+                        holder.btnAudio.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.speaker));
+                    }
+
+                }
+            });
+
+            holder.btnVideo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Connection.MessageBox(data_form_master.this,"Button Video Clicked !!!: "+varlist.get_video());
+
+                    if(video_flag)
+                    {
+                        holder.secVideoView.setVisibility(View.VISIBLE);
+                        holder.secVideo.setVisibility(View.VISIBLE);
+                        holder.secVideoView.setVideoURI(Uri.parse(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_video()));
+                        holder.secVideoView.start();
+                        holder.btnVideo.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.pause));
+                        holder.secVideoView.setBackground(null);
+                        video_flag=false;
+                    }else
+                    {
+
+                        holder.secVideoView.stopPlayback();
+                        holder.secVideoView.setBackground(holder.bitmapDrawable);
+                        holder.btnVideo.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.play));
+                        holder.secVideoView.setVisibility(View.GONE);
+                        holder.secVideo.setVisibility(View.GONE);
+
+                        video_flag=true;
+                    }
+                }
+            });
+
+
+
+            //********************* sakib end *********************
+
             //EditText
             //**************************************************************************************
             if(varlist.getcontrol_type().equals("1"))
             {
                 holder.txtData.setVisibility(View.VISIBLE);
+
+                holder.txtData.setText(varlist.getvariable_data());
+                Log.logError(varlist.getvariable_data());
+
                 //Length
                 if (varlist.getvariable_length().length() != 0)
                     holder.txtData.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Integer.valueOf(varlist.getvariable_length()))});
@@ -330,6 +524,17 @@ public class data_form_master extends AppCompatActivity {
                     holder.txtData.setInputType(InputType.TYPE_CLASS_NUMBER);
                 else
                     holder.txtData.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                holder.txtData.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if(!hasFocus & holder.txtData.getText().length()!=0) {
+//                            Connection.MessageBox(data_form_master.this, v.getTag() + "");
+
+                            saveData(varlist,holder.txtData.getText().toString());
+                        }
+                    }
+                });
             }
 
             //Radio Button
@@ -352,13 +557,29 @@ public class data_form_master extends AppCompatActivity {
                     }
                 }
 
+                if(varlist.getvariable_data().length()>0) {
+
+                    for (int i = 0; i < holder.rdoData.getChildCount(); i++) {
+                        rdo_butt = (RadioButton) holder.rdoData.getChildAt(i);
+                        if (varlist.getvariable_data().equals(varlist.getvariable_option().split(",")[i].split("-")[0])) {
+                            holder.rdoData.check(rdo_butt.getId());
+                        }
+                    }
+                }
+
                 holder.rdoData.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
+
                         for (int i = 0; i < holder.rdoData.getChildCount(); i++)
                         {
                             rdo_butt = (RadioButton)holder.rdoData.getChildAt(i);
-                            if (rdo_butt.isChecked())
-                                Connection.MessageBox(data_form_master.this,varlist.getvariable_option().split(",")[i].split("-")[0]);
+                            if (rdo_butt.isChecked()) {
+
+                                Connection.MessageBox(data_form_master.this, varlist.getvariable_option().split(",")[i].split("-")[0]);
+
+                                saveData(varlist,varlist.getvariable_option().split(",")[i].split("-")[0]);
+
+                            }
                         }
 
                         switch (checkedId) {
@@ -377,6 +598,7 @@ public class data_form_master extends AppCompatActivity {
             {
                 holder.spnDataList.setVisibility(View.VISIBLE);
 
+
                 //populate data
                 int pos = 0;
                 String[] Opn = varlist.getvariable_option().split(",");
@@ -389,6 +611,8 @@ public class data_form_master extends AppCompatActivity {
                 ArrayAdapter<String> adptrMotEthnicity = new ArrayAdapter<String>(data_form_master.this, android.R.layout.simple_spinner_item, listSpinnerItem);
                 holder.spnDataList.setAdapter(adptrMotEthnicity);
 
+
+
                 if (varlist.getvariable_data().length() > 0) {
                     for (int i = 0; i < holder.spnDataList.getCount(); i++) {
                         if ((holder.spnDataList.getItemAtPosition(i).equals(varlist.getvariable_data()))) {
@@ -397,6 +621,14 @@ public class data_form_master extends AppCompatActivity {
                     }
                     holder.spnDataList.setSelection(pos);
                 }
+//                if (varlist.getvariable_data()!= null ) {
+//                    for (int i = 0; i < holder.spnDataList.getCount(); i++) {
+//                        if ((holder.spnDataList.getItemAtPosition(i).equals(varlist.getvariable_data()))) {
+//                            pos = i;
+//                        }
+//                    }
+//                    holder.spnDataList.setSelection(pos);
+//                }
 
                 holder.spnDataList.setOnTouchListener(new View.OnTouchListener() {
                     @Override
@@ -410,7 +642,10 @@ public class data_form_master extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int p, long id) {
                         if (spinnerTouched == true) {
+//                            Connection.MessageBox(data_form_master.this,holder.spnDataList.getItemAtPosition(p).toString());
 
+
+                            saveData(varlist,holder.spnDataList.getItemAtPosition(p).toString());
                         }
                     }
 
@@ -425,25 +660,75 @@ public class data_form_master extends AppCompatActivity {
             //**************************************************************************************
             else if(varlist.getcontrol_type().equals("4")) {
                 holder.chkData.setVisibility(View.VISIBLE);
+
+                if(varlist.getvariable_data().equals("1"))
+                    holder.chkData.setChecked(true);
+                else
+                    holder.chkData.setChecked(false);
+
+
+                holder.chkData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        int data;
+
+                        if(isChecked)
+                            data=1;
+                        else
+                            data=2;
+
+                        saveData(varlist,""+data);
+
+                    }
+                });
             }
+
 
 
             //**************************************************************************************
             //module_variable_DataModel varlist1 = variableList.get(position + i);
             //varlist1.setactive("1");
 
-            mAdapter.variableList.set(position, varlist);
-            //recyclerView.invalidate();
-            //mAdapter.notifyItemChanged(position);
-            mAdapter.notifyDataSetChanged();
+//            mAdapter.variableList.set(position, varlist);
+//            //recyclerView.invalidate();
+//            //mAdapter.notifyItemChanged(position);
+//            mAdapter.notifyDataSetChanged();
 
         }
+
+        public void saveData(module_variable_DataModel varlist,String data)
+        {
+            module_data_DataModel module_data_dataModel=new module_data_DataModel();
+            module_data_dataModel.setmodule_id(MODULEID);
+            module_data_dataModel.setvariable_name(varlist.getvariable_name());
+            module_data_dataModel.setdata_id(DATAID);
+            module_data_dataModel.setvariable_data(data);
+            module_data_dataModel.setdata_desc(varlist.getdata_desc());
+            module_data_dataModel.setstatus(varlist.getstatus());
+            module_data_dataModel.setentry_date(Global.DateNowYMD());
+            module_data_dataModel.setfirst_entry_time(millsToDateFormat(new Date().getTime()));
+            module_data_dataModel.setfinal_entry_time(millsToDateFormat(new Date().getTime()));
+
+            module_data_dataModel.setDeviceID(DEVICEID);
+            module_data_dataModel.setEntryUser(ENTRYUSER);
+
+//                                module_data_dataModel.setUp(Connection.De);
+
+            module_data_dataModel.setmodifyDate(Global.DateTimeNowYMDHMS());
+
+            module_data_dataModel.SaveUpdateData(data_form_master.this);
+
+        }
+
+
 
         @Override
         public int getItemCount() {
             return variableList.size();
         }
     }
+
+
 
 
     public class module_variable_DataModel_old {
