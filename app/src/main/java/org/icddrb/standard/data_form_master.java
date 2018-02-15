@@ -501,7 +501,6 @@ public class data_form_master extends AppCompatActivity {
             });
 
 
-
             //********************* sakib end *********************
 
             //EditText
