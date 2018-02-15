@@ -26,6 +26,7 @@ import Common.Connection;
 import Common.Global;
 import Common.ProjectSetting;
 import Common.Security_Permission;
+import Stat.Stat_Funcation;
 import Utility.MySharedPreferences;
 //dhaka
 public class LoginActivity extends Activity {
@@ -56,6 +57,8 @@ public class LoginActivity extends Activity {
             sp.save(this,"deviceid","");
             sp.save(this,"userid","");
 
+            //Stat_Funcation stat = new Stat_Funcation();
+            //stat.get_z_score(null);
 
             final TextView UniqueUserId      = (TextView)findViewById(R.id.UniqueUserId);
             final Spinner uid      = (Spinner)findViewById(R.id.userId);
@@ -99,10 +102,10 @@ public class LoginActivity extends Activity {
 
             //**************************************************************************************
             if (networkAvailable)
-            {
-                Intent syncService = new Intent(this, Sync_Service.class);
-                startService(syncService);
-            }
+        {
+            Intent syncService = new Intent(this, Sync_Service.class);
+            startService(syncService);
+        }
             //**************************************************************************************
 
             uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from DataCollector order by UserName"));

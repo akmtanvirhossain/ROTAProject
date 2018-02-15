@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/objCheckList"
-    android:layout_width="match_parent" android:gravity="start|top"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/secVariable"
+    android:layout_width="match_parent" android:gravity="left|top"
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
     android:clickable="false"
@@ -26,7 +26,7 @@
             <!--android:layout_weight="3"-->
 
             <TextView android:id="@+id/objDescription" android:paddingLeft="10dp"
-                android:textColor="#006699" android:gravity="start|top"
+                android:textColor="#006699" android:gravity="left|top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_gravity="left|top"

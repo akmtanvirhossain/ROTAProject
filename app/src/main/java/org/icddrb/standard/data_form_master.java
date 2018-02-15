@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -133,6 +134,7 @@ public class data_form_master extends AppCompatActivity {
         setContentView(R.layout.data_form_master);
         g = Global.getInstance();
         C = new Connection(this);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         DEVICEID    = sp.getValue(this, "deviceid");
         ENTRYUSER   = sp.getValue(this, "userid");
@@ -142,6 +144,11 @@ public class data_form_master extends AppCompatActivity {
         DATAID      = IDbundle.getString("dataid");
 
         VARIABLENAME = "";
+        ImageButton cmdBack = (ImageButton) findViewById(R.id.cmdBack);
+        cmdBack.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                finish();
+            }});
 
         mp = new MediaPlayer();
 
@@ -242,12 +249,16 @@ public class data_form_master extends AppCompatActivity {
 
         //Populate data for update
         SQL ="Insert into module_data(module_id, variable_name, data_id, variable_data, data_desc, status, entry_date, first_entry_time, final_entry_time, DeviceId, EntryUser, Upload, modifyDate)\n" +
-                " select module_id, variable_name, '"+ Data_Id +"' data_id, '' variable_data, '' data_desc, 1 status, null entry_date, null first_entry_time, null final_entry_time, '"+ DEVICEID +"' DeviceId, '"+ ENTRYUSER +"' EntryUser, 2 Upload, getdate() modifyDate\n" +
+                " select module_id, variable_name, '"+ Data_Id +"' data_id, '' variable_data, '' data_desc, 1 status, null entry_date, null first_entry_time, null final_entry_time, '"+ DEVICEID +"' DeviceId, '"+ ENTRYUSER +"' EntryUser, 2 Upload, '" + Global.DateTimeNowYMDHMS() + "' modifyDate\n" +
                 " from module_variable v where module_id='"+ Module_Id +"' and not exists(select * from module_data where module_id=v.module_id and variable_name=v.variable_name and " +
                 " data_id='"+ Data_Id +"')\n" +
                 " order by variable_seq";
 
-        C.Save(SQL);
+        String resp = C.SaveData(SQL);
+        if(resp.length()>0){
+            Connection.MessageBox(this,resp.toString());
+            return;
+        }
 
         //Populate data for form generate
         SQL = "Select v.module_id,v. variable_name,v. variable_desc,v. variable_seq,v. control_type,\n" +
@@ -284,13 +295,15 @@ public class data_form_master extends AppCompatActivity {
     //RadioButton[] rb;
     RadioButton rdo_butt;
     String[] item_list;
+    String[] skip_rule;
+    String temp_selection = "";
 
     public class VariableListAdapter extends RecyclerView.Adapter<VariableListAdapter.MyViewHolder> {
         private List<module_variable_DataModel> variableList;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView objDescription, dataDescription,rdoData_Value;
-            public LinearLayout objCheckList;
+            public LinearLayout secVariable;
             public RelativeLayout resource,secVideo;
             public Spinner spnDataList;
             public EditText txtData;
@@ -308,11 +321,10 @@ public class data_form_master extends AppCompatActivity {
 
 
 
-
             public MyViewHolder(View view) {
                 super(view);
                 objDescription = (TextView) view.findViewById(R.id.objDescription);
-                objCheckList = (LinearLayout) view.findViewById(R.id.objCheckList);
+                secVariable = (LinearLayout) view.findViewById(R.id.secVariable);
                 resource = (RelativeLayout) view.findViewById(R.id.resource);
 
                 dataDescription = (TextView) view.findViewById(R.id.dataDescription);
@@ -391,7 +403,7 @@ public class data_form_master extends AppCompatActivity {
             holder.btnVideo.setVisibility(View.GONE);
             holder.secVideoView.setVisibility(View.GONE);
             holder.secVideo.setVisibility(View.GONE);
-
+            holder.secVariable.setVisibility(View.GONE);
 
             //********************* sakib start *********************
             if(varlist.get_image().length()!=0) {
@@ -501,11 +513,14 @@ public class data_form_master extends AppCompatActivity {
             });
 
 
+            if(varlist.getstatus().equalsIgnoreCase("1")){
+                holder.secVariable.setVisibility(View.VISIBLE);
+            }
             //********************* sakib end *********************
 
             //EditText
             //**************************************************************************************
-            if(varlist.getcontrol_type().equals("1"))
+            if(varlist.getcontrol_type().equals("1") & varlist.getstatus().equalsIgnoreCase("1"))
             {
                 holder.txtData.setVisibility(View.VISIBLE);
 
@@ -538,7 +553,7 @@ public class data_form_master extends AppCompatActivity {
 
             //Radio Button
             //**************************************************************************************
-            else if(varlist.getcontrol_type().equals("2"))
+            else if(varlist.getcontrol_type().equals("2") & varlist.getstatus().equalsIgnoreCase("1"))
             {
                 holder.rdoData.setVisibility(View.VISIBLE);
                 holder.rdoData.removeAllViews();
@@ -573,12 +588,32 @@ public class data_form_master extends AppCompatActivity {
                         {
                             rdo_butt = (RadioButton)holder.rdoData.getChildAt(i);
                             if (rdo_butt.isChecked()) {
-
-                                Connection.MessageBox(data_form_master.this, varlist.getvariable_option().split(",")[i].split("-")[0]);
-
+                                //Connection.MessageBox(data_form_master.this, varlist.getvariable_option().split(",")[i].split("-")[0]);
+                                temp_selection = varlist.getvariable_option().split(",")[i].split("-")[0];
                                 saveData(varlist,varlist.getvariable_option().split(",")[i].split("-")[0]);
 
                             }
+                        }
+
+                        //Skip Rule
+                        //2:OxyGiv,3:FHSChk1-FHSChk2
+                        skip_rule = varlist.getskip_rule().split(",");
+                        for(int j = 0; j < skip_rule.length; j++) {
+                            if(temp_selection.equalsIgnoreCase(skip_rule[j].split(":")[0])){
+                                String[] skip_variable_list = skip_rule[j].split(":")[1].split("-");
+                                for(int s = 0; s < skip_variable_list.length; s++){
+                                    for(int k=0; k < variableList.size(); k++){
+                                        module_variable_DataModel variable_date_update = variableList.get(k);
+                                        if (skip_variable_list[s].equalsIgnoreCase(variable_date_update.getvariable_name())) {
+                                            variable_date_update.setactive("2");
+                                            C.Save("Update module_data set status='2' where module_id='"+ MODULEID +"' and variable_name='"+ variable_date_update.getvariable_name() +"' and data_id='"+ DATAID +"'");
+                                            //mAdapter.notifyItemChanged(k, varlist);
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+                            }
+
                         }
 
                         switch (checkedId) {
@@ -593,7 +628,7 @@ public class data_form_master extends AppCompatActivity {
 
             //Spinner
             //**************************************************************************************
-            else if(varlist.getcontrol_type().equals("3"))
+            else if(varlist.getcontrol_type().equals("3") & varlist.getstatus().equalsIgnoreCase("1"))
             {
                 holder.spnDataList.setVisibility(View.VISIBLE);
 
@@ -657,7 +692,7 @@ public class data_form_master extends AppCompatActivity {
 
             //CheckBox
             //**************************************************************************************
-            else if(varlist.getcontrol_type().equals("4")) {
+            else if(varlist.getcontrol_type().equals("4") & varlist.getstatus().equalsIgnoreCase("1")) {
                 holder.chkData.setVisibility(View.VISIBLE);
 
                 if(varlist.getvariable_data().equals("1"))
@@ -719,6 +754,10 @@ public class data_form_master extends AppCompatActivity {
 
         }
 
+        public void UpdateStatus(String module_id, String variable_name, String data_id)
+        {
+                //C.Save("Update module_data set status='2' where module_id='"+ MODULEID +"' and variable_name='"+ variable_date_update.getvariable_name() +"' and data_id='"+ DATAID +"'");
+        }
 
 
         @Override
