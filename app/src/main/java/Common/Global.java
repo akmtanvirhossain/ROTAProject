@@ -123,6 +123,7 @@ public class Global {
 		return CurrentDateYYYYMMDD;
 	}
 
+
 	//Format: DD/MM/YYYY
 	public static String DateNowDMY()
 	{

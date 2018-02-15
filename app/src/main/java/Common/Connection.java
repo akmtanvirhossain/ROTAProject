@@ -32,7 +32,6 @@ import Utility.CompressZip;
 //--------------------------------------------------------------------------------------------------
 // Created by TanvirHossain on 17/03/2015.
 //--------------------------------------------------------------------------------------------------
-
 public class Connection extends SQLiteOpenHelper {
     // Database Version
     private static final int DATABASE_VERSION = 1;

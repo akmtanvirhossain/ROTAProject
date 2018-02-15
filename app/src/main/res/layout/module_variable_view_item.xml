@@ -10,7 +10,6 @@
 	android:layout_marginTop="5sp"
 	android:paddingBottom="10sp">
 
-
 	<TextView android:id="@+id/objDescription" android:paddingLeft="10dp"
 		android:textColor="#006699" android:gravity="left|top"
 		android:layout_width="match_parent"
