@@ -113,13 +113,13 @@ public class LoginActivity extends Activity {
             //uid.setSelection(Global.SpinnerItemPosition(uid,CL[0].length(),C.ReturnSingleValue("Select UserId from LastLogin")));
 
 
-            Button btnClose=(Button)findViewById(R.id.btnClose);
+            /*Button btnClose=(Button)findViewById(R.id.btnClose);
             btnClose.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     finish();
                     System.exit(0);
                 }
-            });
+            });*/
 
             //Login -----------------------------------------------------------------------
 

@@ -40,7 +40,7 @@
             android:verticalSpacing="5dp"
             android:horizontalSpacing="5dp"
             android:stretchMode="columnWidth"
-            android:gravity="center"/>
+            android:gravity="center" android:padding="10dp"/>
         <!--<GridLayout
             android:layout_width="match_parent"
             android:layout_height="350dp"

@@ -32,6 +32,13 @@
     <color name="color_white">#FFFFFF</color>
     <color name="color_light_gray">#999999</color>
 
+    <!--login page-->
+    <color name="login_page_background">#D7D7D7</color>
+    <color name="login_page_text_color">#000000</color>
+
+    <!--Splash Screen-->
+    <color name="splash_screen_background">#D7D7D7</color>
+    <color name="splash_screen_text_color">#000000</color>
 
     <!-- Recycle View -->
     <color name="colorPrimary">#3F51B5</color>
