@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -48,7 +49,7 @@ public class LoginActivity extends Activity {
         {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.login_activity);
-
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             Security_Permission my_permission = new Security_Permission(getApplicationContext(),LoginActivity.this);
 
             C = new Connection(this);
