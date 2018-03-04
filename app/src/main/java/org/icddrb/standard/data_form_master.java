@@ -13,6 +13,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
@@ -159,12 +160,16 @@ public class data_form_master extends AppCompatActivity {
 
         mAdapter = new VariableListAdapter(variableList);
 
+
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+
+
+
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
@@ -292,6 +297,8 @@ public class data_form_master extends AppCompatActivity {
         return dateFormatted; //note that it will give you the time in GMT+0
     }
 
+
+
     //RadioButton[] rb;
     RadioButton rdo_butt;
     String[] item_list;
@@ -367,6 +374,8 @@ public class data_form_master extends AppCompatActivity {
             return new VariableListAdapter.MyViewHolder(itemView);
         }
 
+
+
         @Override
         public void onBindViewHolder(final VariableListAdapter.MyViewHolder holder, final int position) {
             final module_variable_DataModel varlist = variableList.get(position);
@@ -406,6 +415,12 @@ public class data_form_master extends AppCompatActivity {
             holder.secVariable.setVisibility(View.GONE);
 
             //********************* sakib start *********************
+            if(varlist.get_image().length()==0 & varlist.get_audio().length()==0 & varlist.get_video().length()==0)
+            {
+                holder.resource.setVisibility(View.GONE);
+
+            }
+
             if(varlist.get_image().length()!=0) {
                 holder.resource.setVisibility(View.VISIBLE);
                 holder.ivImage.setVisibility(View.VISIBLE);
@@ -591,34 +606,194 @@ public class data_form_master extends AppCompatActivity {
                                 //Connection.MessageBox(data_form_master.this, varlist.getvariable_option().split(",")[i].split("-")[0]);
                                 temp_selection = varlist.getvariable_option().split(",")[i].split("-")[0];
                                 saveData(varlist,varlist.getvariable_option().split(",")[i].split("-")[0]);
+                                varlist.set_variable_data(temp_selection.trim());
 
                             }
                         }
 
                         //Skip Rule
                         //2:OxyGiv,3:FHSChk1-FHSChk2
-                        skip_rule = varlist.getskip_rule().split(",");
-                        for(int j = 0; j < skip_rule.length; j++) {
-                            if(temp_selection.equalsIgnoreCase(skip_rule[j].split(":")[0])){
-                                String[] skip_variable_list = skip_rule[j].split(":")[1].split("-");
-                                for(int s = 0; s < skip_variable_list.length; s++){
-                                    for(int k=0; k < variableList.size(); k++){
-                                        module_variable_DataModel variable_date_update = variableList.get(k);
-                                        if (skip_variable_list[s].equalsIgnoreCase(variable_date_update.getvariable_name())) {
-                                            variable_date_update.setactive("2");
-                                            C.Save("Update module_data set status='2' where module_id='"+ MODULEID +"' and variable_name='"+ variable_date_update.getvariable_name() +"' and data_id='"+ DATAID +"'");
-                                            //mAdapter.notifyItemChanged(k, varlist);
-                                            mAdapter.notifyDataSetChanged();
-                                        }
+//                        skip_rule = varlist.getskip_rule().split(",");
+//                        for(int j = 0; j < skip_rule.length; j++) {
+//                            if(temp_selection.equalsIgnoreCase(skip_rule[j].split(":")[0])){
+//                                String[] skip_variable_list = skip_rule[j].split(":")[1].split("-");
+//                                for(int s = 0; s < skip_variable_list.length; s++){
+//                                    for(int k=0; k < variableList.size(); k++){
+//                                        module_variable_DataModel variable_date_update = variableList.get(k);
+//                                        if (skip_variable_list[s].equalsIgnoreCase(variable_date_update.getvariable_name())) {
+//                                            variable_date_update.setactive("2");
+//                                            C.Save("Update module_data set status='2' where module_id='"+ MODULEID +"' and variable_name='"+ variable_date_update.getvariable_name() +"' and data_id='"+ DATAID +"'");
+//                                            //mAdapter.notifyItemChanged(k, varlist);
+//                                            mAdapter.notifyDataSetChanged();
+//                                        }
+//                                    }
+//                                }
+//                            }
+//
+//                        }
+
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(varlist.getskip_rule().trim().length() > 0)
+                                { // 1st if started
+                                    if(varlist.getskip_rule().trim().contains(","))
+                                    {
+                                        skip_rule = varlist.getskip_rule().split(",");
+                                    }else
+                                    {
+                                        skip_rule[0]=varlist.getskip_rule().trim();
                                     }
-                                }
+
+                                    for(int j = 0; j < skip_rule.length; j++) { // for loop started
+//                                Log.logError(skip_rule[j].split(":")[0].trim());
+//                                Log.logError(temp_selection.trim());
+                                        if(temp_selection.trim().equals(skip_rule[j].split(":")[0].trim()))
+                                        {
+                                            String skip_variable_list = skip_rule[j].split(":")[1];
+                                            if (skip_variable_list.contains("-")) {
+
+                                            } else {
+                                                for (int k = 0; k < variableList.size(); k++) {
+                                                    module_variable_DataModel variable_date_update = variableList.get(k);
+                                                    if (skip_variable_list.equalsIgnoreCase(variable_date_update.getvariable_name())) {
+                                                        variable_date_update.setactive("2");
+                                                        variable_date_update.set_status("2");
+                                                        C.Save("Update module_data set status='2' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+                                                        //mAdapter.notifyItemChanged(k, varlist);
+                                                        if(!recyclerView.isComputingLayout())
+                                                        {
+                                                            recyclerView.invalidate();
+                                                            mAdapter.notifyDataSetChanged();
+
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }else
+                                        {
+                                            String skip_variable_list = skip_rule[j].split(":")[1];
+                                            if (skip_variable_list.contains("-")) {
+
+                                            } else {
+                                                for (int k = 0; k < variableList.size(); k++) {
+                                                    module_variable_DataModel variable_date_update = variableList.get(k);
+                                                    if (skip_variable_list.equalsIgnoreCase(variable_date_update.getvariable_name())) {
+                                                        variable_date_update.setactive("1");
+                                                        variable_date_update.set_status("1");
+                                                        C.Save("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+                                                        //mAdapter.notifyItemChanged(k, varlist);
+                                                        if(!recyclerView.isComputingLayout())
+                                                        {
+                                                            recyclerView.invalidate();
+                                                            mAdapter.notifyDataSetChanged();
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+//                                for(int s = 0; s < skip_variable_list.length; s++){
+//                                    for(int k=0; k < variableList.size(); k++){
+//                                        module_variable_DataModel variable_date_update = variableList.get(k);
+//                                        if (skip_variable_list[s].equalsIgnoreCase(variable_date_update.getvariable_name())) {
+//                                            variable_date_update.setactive("2");
+//                                            C.Save("Update module_data set status='2' where module_id='"+ MODULEID +"' and variable_name='"+ variable_date_update.getvariable_name() +"' and data_id='"+ DATAID +"'");
+//                                            //mAdapter.notifyItemChanged(k, varlist);
+//                                            mAdapter.notifyDataSetChanged();
+//                                        }
+//                                    }
+//                                }
+
+
+                                    } // for loop ended
+
+                                } // 1st if if ended
+
                             }
+                        });
 
-                        }
+                        //Skip Rule
+                        //2:OxyGiv,3:FHSChk1-FHSChk2
+//                        if(varlist.getskip_rule().trim().length() > 0)
+//                        { // 1st if started
+//                            if(varlist.getskip_rule().trim().contains(","))
+//                            {
+//                                skip_rule = varlist.getskip_rule().split(",");
+//                            }else
+//                            {
+//                                skip_rule[0]=varlist.getskip_rule().trim();
+//                            }
+//
+//                            for(int j = 0; j < skip_rule.length; j++) { // for loop started
+////                                Log.logError(skip_rule[j].split(":")[0].trim());
+////                                Log.logError(temp_selection.trim());
+//                                if(temp_selection.trim().equals(skip_rule[j].split(":")[0].trim()))
+//                                {
+//                                    String skip_variable_list = skip_rule[j].split(":")[1];
+//                                    if (skip_variable_list.contains("-")) {
+//
+//                                    } else {
+//                                        for (int k = 0; k < variableList.size(); k++) {
+//                                            module_variable_DataModel variable_date_update = variableList.get(k);
+//                                            if (skip_variable_list.equalsIgnoreCase(variable_date_update.getvariable_name())) {
+//                                                variable_date_update.setactive("2");
+//                                                variable_date_update.set_status("2");
+//                                                C.Save("Update module_data set status='2' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+//                                                //mAdapter.notifyItemChanged(k, varlist);
+//                                                if(!recyclerView.isComputingLayout())
+//                                                {
+//                                                    recyclerView.invalidate();
+//                                                    mAdapter.notifyDataSetChanged();
+//                                                }
+//                                            }
+//
+//                                        }
+//                                    }
+//                                }else
+//                                {
+//                                    String skip_variable_list = skip_rule[j].split(":")[1];
+//                                    if (skip_variable_list.contains("-")) {
+//
+//                                    } else {
+//                                        for (int k = 0; k < variableList.size(); k++) {
+//                                            module_variable_DataModel variable_date_update = variableList.get(k);
+//                                            if (skip_variable_list.equalsIgnoreCase(variable_date_update.getvariable_name())) {
+//                                                variable_date_update.setactive("1");
+//                                                variable_date_update.set_status("1");
+//                                                C.Save("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+//                                                //mAdapter.notifyItemChanged(k, varlist);
+//                                                if(!recyclerView.isComputingLayout())
+//                                                {
+//                                                    recyclerView.invalidate();
+//                                                    mAdapter.notifyDataSetChanged();
+//                                                }
+//                                            }
+//
+//                                        }
+//                                    }
+//                                }
+////                                for(int s = 0; s < skip_variable_list.length; s++){
+////                                    for(int k=0; k < variableList.size(); k++){
+////                                        module_variable_DataModel variable_date_update = variableList.get(k);
+////                                        if (skip_variable_list[s].equalsIgnoreCase(variable_date_update.getvariable_name())) {
+////                                            variable_date_update.setactive("2");
+////                                            C.Save("Update module_data set status='2' where module_id='"+ MODULEID +"' and variable_name='"+ variable_date_update.getvariable_name() +"' and data_id='"+ DATAID +"'");
+////                                            //mAdapter.notifyItemChanged(k, varlist);
+////                                            mAdapter.notifyDataSetChanged();
+////                                        }
+////                                    }
+////                                }
+//
+//
+//                            } // for loop ended
+//
+//                        } // 1st if if ended
 
-                        switch (checkedId) {
 
-                        }
+
+
                     }
 
                 });

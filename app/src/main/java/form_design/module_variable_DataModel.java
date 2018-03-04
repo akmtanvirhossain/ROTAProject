@@ -254,6 +254,10 @@ import android.content.Context;
          return _variable_data;
      }
 
+     public void set_variable_data(String _variable_data) {
+         this._variable_data = _variable_data;
+     }
+
      private String _data_desc = "";
      public String getdata_desc(){
          return _variable_option;
@@ -264,6 +268,9 @@ import android.content.Context;
          return _status;
      }
 
+     public void set_status(String _status) {
+         this._status = _status;
+     }
 
      public List<module_variable_DataModel> SelectAll_WithVariableData(Context context, String SQL)
      {
