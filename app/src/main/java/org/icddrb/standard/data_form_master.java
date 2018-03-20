@@ -1,16 +1,21 @@
 package org.icddrb.standard;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -21,9 +26,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -36,6 +44,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -46,6 +55,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -56,8 +66,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import Common.Connection;
 import Common.Global;
@@ -90,6 +102,7 @@ public class data_form_master extends AppCompatActivity {
     static final int TIME_DIALOG = 2;
 
     private List<module_variable_DataModel> variableList = new ArrayList<>();
+
     private RecyclerView recyclerView;
     private VariableListAdapter mAdapter;
 
@@ -171,6 +184,8 @@ public class data_form_master extends AppCompatActivity {
 
 
 
+
+
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -188,6 +203,9 @@ public class data_form_master extends AppCompatActivity {
             }
 
         }));
+
+
+
 
         manager = new GridLayoutManager(this, 1);
         //dynamically changing the total number of column
@@ -282,6 +300,7 @@ public class data_form_master extends AppCompatActivity {
         variableList.clear();
 
         variableList.addAll(data);
+
         try {
             mAdapter.notifyDataSetChanged();
         }catch ( Exception ex){
@@ -307,6 +326,7 @@ public class data_form_master extends AppCompatActivity {
 
     public class VariableListAdapter extends RecyclerView.Adapter<VariableListAdapter.MyViewHolder> {
         private List<module_variable_DataModel> variableList;
+
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView objDescription, dataDescription,rdoData_Value;
@@ -364,21 +384,27 @@ public class data_form_master extends AppCompatActivity {
 
         public VariableListAdapter(List<module_variable_DataModel> varList) {
             this.variableList = varList;
+
         }
+
 
         @Override
         public VariableListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.module_variable_view_item_sakib, parent, false);
 
+
             return new VariableListAdapter.MyViewHolder(itemView);
         }
+
+
 
 
 
         @Override
         public void onBindViewHolder(final VariableListAdapter.MyViewHolder holder, final int position) {
             final module_variable_DataModel varlist = variableList.get(position);
+//            holder.setIsRecyclable(false);
 
             /*if(varlist.getImportant().equals("1"))
                 holder.objDescription.setText(Html.fromHtml("<font color=\"#FF0000\">*</font>"+ varlist.getDescription()));
@@ -539,9 +565,6 @@ public class data_form_master extends AppCompatActivity {
             {
                 holder.txtData.setVisibility(View.VISIBLE);
 
-                holder.txtData.setText(varlist.getvariable_data());
-                Log.logError(varlist.getvariable_data());
-
                 //Length
                 if (varlist.getvariable_length().length() != 0)
                     holder.txtData.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Integer.valueOf(varlist.getvariable_length()))});
@@ -554,13 +577,27 @@ public class data_form_master extends AppCompatActivity {
                 else
                     holder.txtData.setInputType(InputType.TYPE_CLASS_TEXT);
 
+
+
+                holder.txtData.setText(varlist.getvariable_data());
+                Log.logError(varlist.getvariable_data());
+
+
                 holder.txtData.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if(!hasFocus & holder.txtData.getText().length()!=0) {
 //                            Connection.MessageBox(data_form_master.this, v.getTag() + "");
 
+                            varlist.set_variable_data(holder.txtData.getText().toString());
+
                             saveData(varlist,holder.txtData.getText().toString());
+
+                            if(!recyclerView.isComputingLayout()) {
+                                Log.logError("****************************sakib******************");
+                                recyclerView.invalidate();
+                                mAdapter.notifyItemChanged(position);
+                            }
                         }
                     }
                 });
@@ -632,6 +669,8 @@ public class data_form_master extends AppCompatActivity {
 //
 //                        }
 
+                        //Skip Rule
+                        //2:OxyGiv,3:FHSChk1-FHSChk2
                         recyclerView.post(new Runnable() {
                             @Override
                             public void run() {
@@ -651,7 +690,53 @@ public class data_form_master extends AppCompatActivity {
                                         if(temp_selection.trim().equals(skip_rule[j].split(":")[0].trim()))
                                         {
                                             String skip_variable_list = skip_rule[j].split(":")[1];
-                                            if (skip_variable_list.contains("-")) {
+                                            if (skip_variable_list.contains("-"))
+                                            {
+                                                String[] skip_variable_list2=skip_variable_list.split("-");
+                                                int startSeq=0,endSeq=0;
+                                                for (int k = 0; k < variableList.size(); k++)
+                                                {
+                                                    module_variable_DataModel variable_date_update = variableList.get(k);
+                                                    if(startSeq==0)
+                                                    {
+                                                        if (skip_variable_list2[0].equalsIgnoreCase(variable_date_update.getvariable_name())) {
+                                                            startSeq=Integer.parseInt(variable_date_update.getvariable_seq());
+                                                        }
+                                                    }
+
+                                                    if(endSeq==0)
+                                                    {
+                                                        if (skip_variable_list2[1].equalsIgnoreCase(variable_date_update.getvariable_name())) {
+                                                            endSeq=Integer.parseInt(variable_date_update.getvariable_seq());
+                                                        }
+                                                    }
+                                                }
+
+                                                for(int i=startSeq;i<=endSeq;i++)
+                                                {
+                                                    for (int k = 0; k < variableList.size(); k++)
+                                                    {
+                                                        module_variable_DataModel variable_date_update = variableList.get(k);
+                                                        if (i==Integer.parseInt(variable_date_update.getvariable_seq())) {
+                                                            variable_date_update.setactive("2");
+                                                            variable_date_update.set_status("2");
+                                                            C.Save("Update module_data set status='2' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+                                                            //mAdapter.notifyItemChanged(k, varlist);
+                                                            if(!recyclerView.isComputingLayout())
+                                                            {
+                                                                recyclerView.invalidate();
+//                                                                mAdapter.notifyDataSetChanged();
+
+
+                                                                mAdapter.notifyItemChanged(k);
+
+
+
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
 
                                             } else {
                                                 for (int k = 0; k < variableList.size(); k++) {
@@ -664,8 +749,9 @@ public class data_form_master extends AppCompatActivity {
                                                         if(!recyclerView.isComputingLayout())
                                                         {
                                                             recyclerView.invalidate();
-                                                            mAdapter.notifyDataSetChanged();
 
+//                                                            mAdapter.notifyDataSetChanged();
+                                                            mAdapter.notifyItemChanged(k);
                                                         }
                                                     }
 
@@ -675,6 +761,46 @@ public class data_form_master extends AppCompatActivity {
                                         {
                                             String skip_variable_list = skip_rule[j].split(":")[1];
                                             if (skip_variable_list.contains("-")) {
+                                                String[] skip_variable_list2=skip_variable_list.split("-");
+                                                int startSeq=0,endSeq=0;
+                                                for (int k = 0; k < variableList.size(); k++)
+                                                {
+                                                    module_variable_DataModel variable_date_update = variableList.get(k);
+                                                    if(startSeq==0)
+                                                    {
+                                                        if (skip_variable_list2[0].equalsIgnoreCase(variable_date_update.getvariable_name())) {
+                                                            startSeq=Integer.parseInt(variable_date_update.getvariable_seq());
+                                                        }
+                                                    }
+
+                                                    if(endSeq==0)
+                                                    {
+                                                        if (skip_variable_list2[1].equalsIgnoreCase(variable_date_update.getvariable_name())) {
+                                                            endSeq=Integer.parseInt(variable_date_update.getvariable_seq());
+                                                        }
+                                                    }
+                                                }
+
+                                                for(int i=startSeq;i<=endSeq;i++)
+                                                {
+                                                    for (int k = 0; k < variableList.size(); k++)
+                                                    {
+                                                        module_variable_DataModel variable_date_update = variableList.get(k);
+                                                        if (i==Integer.parseInt(variable_date_update.getvariable_seq())) {
+                                                            variable_date_update.setactive("1");
+                                                            variable_date_update.set_status("1");
+                                                            C.Save("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+                                                            //mAdapter.notifyItemChanged(k, varlist);
+                                                            if(!recyclerView.isComputingLayout())
+                                                            {
+                                                                recyclerView.invalidate();
+//                                                                mAdapter.notifyDataSetChanged();
+                                                                mAdapter.notifyItemChanged(k);
+                                                            }
+
+                                                        }
+                                                    }
+                                                }
 
                                             } else {
                                                 for (int k = 0; k < variableList.size(); k++) {
@@ -687,7 +813,8 @@ public class data_form_master extends AppCompatActivity {
                                                         if(!recyclerView.isComputingLayout())
                                                         {
                                                             recyclerView.invalidate();
-                                                            mAdapter.notifyDataSetChanged();
+//                                                            mAdapter.notifyDataSetChanged();
+                                                            mAdapter.notifyItemChanged(k);
                                                         }
                                                     }
 
@@ -714,82 +841,6 @@ public class data_form_master extends AppCompatActivity {
                             }
                         });
 
-                        //Skip Rule
-                        //2:OxyGiv,3:FHSChk1-FHSChk2
-//                        if(varlist.getskip_rule().trim().length() > 0)
-//                        { // 1st if started
-//                            if(varlist.getskip_rule().trim().contains(","))
-//                            {
-//                                skip_rule = varlist.getskip_rule().split(",");
-//                            }else
-//                            {
-//                                skip_rule[0]=varlist.getskip_rule().trim();
-//                            }
-//
-//                            for(int j = 0; j < skip_rule.length; j++) { // for loop started
-////                                Log.logError(skip_rule[j].split(":")[0].trim());
-////                                Log.logError(temp_selection.trim());
-//                                if(temp_selection.trim().equals(skip_rule[j].split(":")[0].trim()))
-//                                {
-//                                    String skip_variable_list = skip_rule[j].split(":")[1];
-//                                    if (skip_variable_list.contains("-")) {
-//
-//                                    } else {
-//                                        for (int k = 0; k < variableList.size(); k++) {
-//                                            module_variable_DataModel variable_date_update = variableList.get(k);
-//                                            if (skip_variable_list.equalsIgnoreCase(variable_date_update.getvariable_name())) {
-//                                                variable_date_update.setactive("2");
-//                                                variable_date_update.set_status("2");
-//                                                C.Save("Update module_data set status='2' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
-//                                                //mAdapter.notifyItemChanged(k, varlist);
-//                                                if(!recyclerView.isComputingLayout())
-//                                                {
-//                                                    recyclerView.invalidate();
-//                                                    mAdapter.notifyDataSetChanged();
-//                                                }
-//                                            }
-//
-//                                        }
-//                                    }
-//                                }else
-//                                {
-//                                    String skip_variable_list = skip_rule[j].split(":")[1];
-//                                    if (skip_variable_list.contains("-")) {
-//
-//                                    } else {
-//                                        for (int k = 0; k < variableList.size(); k++) {
-//                                            module_variable_DataModel variable_date_update = variableList.get(k);
-//                                            if (skip_variable_list.equalsIgnoreCase(variable_date_update.getvariable_name())) {
-//                                                variable_date_update.setactive("1");
-//                                                variable_date_update.set_status("1");
-//                                                C.Save("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
-//                                                //mAdapter.notifyItemChanged(k, varlist);
-//                                                if(!recyclerView.isComputingLayout())
-//                                                {
-//                                                    recyclerView.invalidate();
-//                                                    mAdapter.notifyDataSetChanged();
-//                                                }
-//                                            }
-//
-//                                        }
-//                                    }
-//                                }
-////                                for(int s = 0; s < skip_variable_list.length; s++){
-////                                    for(int k=0; k < variableList.size(); k++){
-////                                        module_variable_DataModel variable_date_update = variableList.get(k);
-////                                        if (skip_variable_list[s].equalsIgnoreCase(variable_date_update.getvariable_name())) {
-////                                            variable_date_update.setactive("2");
-////                                            C.Save("Update module_data set status='2' where module_id='"+ MODULEID +"' and variable_name='"+ variable_date_update.getvariable_name() +"' and data_id='"+ DATAID +"'");
-////                                            //mAdapter.notifyItemChanged(k, varlist);
-////                                            mAdapter.notifyDataSetChanged();
-////                                        }
-////                                    }
-////                                }
-//
-//
-//                            } // for loop ended
-//
-//                        } // 1st if if ended
 
 
 
@@ -892,6 +943,127 @@ public class data_form_master extends AppCompatActivity {
                 });
             }
 
+            //date picker
+            //**************************************************************************************
+
+            else if(varlist.getcontrol_type().equals("5") & varlist.getstatus().equalsIgnoreCase("1")) {
+                holder.txtData.setVisibility(View.VISIBLE);
+                holder.txtData.setFocusable(false);
+                holder.txtData.setText(Global.DateNowDMY());
+
+                //Length
+                if (varlist.getvariable_length().length() != 0)
+                    holder.txtData.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Integer.valueOf(varlist.getvariable_length()))});
+
+                //Data Type
+                if (varlist.getdata_type().equals("1"))
+                    holder.txtData.setInputType(InputType.TYPE_CLASS_TEXT);
+                else if (varlist.getdata_type().equals("2"))
+                    holder.txtData.setInputType(InputType.TYPE_CLASS_NUMBER);
+                else
+                    holder.txtData.setInputType(InputType.TYPE_CLASS_TEXT);
+
+
+
+                if(varlist.getvariable_data().length()>0) {
+
+                    holder.txtData.setText(varlist.getvariable_data());
+                }
+
+                final Calendar myCalendar = Calendar.getInstance();
+
+
+
+                final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                          int dayOfMonth) {
+                        // TODO Auto-generated method stub
+                        myCalendar.set(Calendar.YEAR, year);
+                        myCalendar.set(Calendar.MONTH, monthOfYear);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        String myFormat = "dd/MM/yyyy"; //In which you need put here
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+                        holder.txtData.setText(sdf.format(myCalendar.getTime()));
+
+                        saveData(varlist,holder.txtData.getText().toString());
+                    }
+
+                };
+
+                holder.txtData.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new DatePickerDialog(data_form_master.this, date, myCalendar
+                                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                    }
+                });
+
+
+
+            }
+
+
+            //time picker
+            //**************************************************************************************
+
+            else if(varlist.getcontrol_type().equals("6") & varlist.getstatus().equalsIgnoreCase("1")) {
+
+                holder.txtData.setVisibility(View.VISIBLE);
+                holder.txtData.setFocusable(false);
+
+                //Length
+                if (varlist.getvariable_length().length() != 0)
+                    holder.txtData.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Integer.valueOf(varlist.getvariable_length()))});
+
+                //Data Type
+                if (varlist.getdata_type().equals("1"))
+                    holder.txtData.setInputType(InputType.TYPE_CLASS_TEXT);
+                else if (varlist.getdata_type().equals("2"))
+                    holder.txtData.setInputType(InputType.TYPE_CLASS_NUMBER);
+                else
+                    holder.txtData.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                if(varlist.getvariable_data().length()>0) {
+
+                    holder.txtData.setText(varlist.getvariable_data());
+                }
+
+
+
+                holder.txtData.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Calendar mcurrentTime = Calendar.getInstance();
+                        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                        int minute = mcurrentTime.get(Calendar.MINUTE);
+                        TimePickerDialog mTimePicker;
+                        mTimePicker = new TimePickerDialog(data_form_master.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                holder.txtData.setText( selectedHour + ":" + selectedMinute);
+                                saveData(varlist,holder.txtData.getText().toString());
+                            }
+                        }, hour, minute, true);//Yes 24 hour time
+                        mTimePicker.setTitle("Select Time");
+                        mTimePicker.show();
+
+
+
+                    }
+                });
+
+
+
+            }
+
+
+
+
 
 
             //**************************************************************************************
@@ -904,6 +1076,8 @@ public class data_form_master extends AppCompatActivity {
 //            mAdapter.notifyDataSetChanged();
 
         }
+
+
 
         public void saveData(module_variable_DataModel varlist,String data)
         {

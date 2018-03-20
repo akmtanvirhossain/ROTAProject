@@ -9,6 +9,7 @@ android {
         applicationId "com.data.standard"
         minSdkVersion 16
         targetSdkVersion 26
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -38,7 +39,9 @@ dependencies {
     // for joda
     compile files('libs/ksoap2-android-assembly-2.4-jar-with-dependencies.jar')
     compile files('libs/org.apache.http.legacy.jar')
-    compile 'com.journeyapps:zxing-android-embedded:3.5.0'
+//    compile 'com.journeyapps:zxing-android-embedded:3.5.0'
 
     //compile 'org.apache.commons:commons-math3:3.6.1'
+    compile 'net.zetetic:android-database-sqlcipher:3.5.9@aar'
+    compile 'com.android.support:multidex:1.0.3'
 }

@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import Common.Connection;
+import Common.Connection_Sakib;
 import Common.Global;
 import Common.ProjectSetting;
 import Common.Security_Permission;
@@ -51,6 +54,8 @@ public class LoginActivity extends Activity {
             setContentView(R.layout.login_activity);
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             Security_Permission my_permission = new Security_Permission(getApplicationContext(),LoginActivity.this);
+
+            SQLiteDatabase.loadLibs(this);
 
             C = new Connection(this);
             g = Global.getInstance();

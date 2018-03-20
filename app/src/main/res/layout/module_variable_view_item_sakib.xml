@@ -41,7 +41,7 @@
 
                 <EditText android:id="@+id/txtData" android:paddingLeft="5dp" android:paddingRight="20dp" android:inputType="text"
                     android:layout_width="match_parent" android:imeOptions="actionDone"
-                    android:layout_height="40sp" android:textSize="18sp" android:gravity="left"/>
+                    android:layout_height="60sp" android:textSize="18sp" android:gravity="left"/>
 
                 <Spinner android:id="@+id/spnDataList" android:paddingLeft="5dp"
                     android:layout_width="match_parent" android:textSize="14sp"
