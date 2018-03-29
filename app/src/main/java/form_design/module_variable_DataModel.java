@@ -122,6 +122,12 @@ import android.content.Context;
         private String _image = "";
         private String _audio= "";
         private String _video = "";
+//        private String _language_type = "";
+
+//     public String get_language_type() {
+//         return _language_type;
+//     }
+
 
      public String get_data_id() {
          return _data_id;
@@ -240,6 +246,8 @@ import android.content.Context;
                 d._skip_rule = cur.getString(cur.getColumnIndex("skip_rule"));
                 d._color = cur.getString(cur.getColumnIndex("color"));
                 d._active = cur.getString(cur.getColumnIndex("active"));
+//                d._language_type = cur.getString(cur.getColumnIndex("language_type"));
+
                 data.add(d);
 
                 cur.moveToNext();
@@ -306,6 +314,7 @@ import android.content.Context;
              d._audio=cur.getString(cur.getColumnIndex("variable_audio"));
              d._video=cur.getString(cur.getColumnIndex("variable_video"));
              d._data_id=cur.getString(cur.getColumnIndex("data_id"));
+//             d._language_type=cur.getString(cur.getColumnIndex("language_type"));
 
              //*************** sakib end **********************
 
@@ -317,4 +326,6 @@ import android.content.Context;
          cur.close();
          return data;
      }
+
+
  }
