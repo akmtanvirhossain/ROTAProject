@@ -167,7 +167,6 @@
     <!-- Button Style -->
 
 
-
     <style name="ActionBar" parent="Theme.AppCompat">
         <item name="android:background">@color/theme_color</item>
         <item name="android:titleTextStyle">@style/ActionBar.TitleTextStyle</item>

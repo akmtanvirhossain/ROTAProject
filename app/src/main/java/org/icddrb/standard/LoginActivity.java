@@ -26,13 +26,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import Common.Connection;
-import Common.Connection_Sakib;
+//import Common.Connection_Sakib;
 import Common.Global;
 import Common.ProjectSetting;
 import Common.Security_Permission;
 import Stat.Stat_Funcation;
 import Utility.MySharedPreferences;
-//dhaka
+
 public class LoginActivity extends Activity {
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     Connection C;

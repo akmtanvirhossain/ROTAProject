@@ -40,7 +40,7 @@ import static android.view.View.generateViewId;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
 
-public class datafrommaster extends AppCompatActivity {
+public class datafrommaster1 extends AppCompatActivity {
     Bundle IDbundle;
     static String MODULEID = "";
     static String DATAID = "";
@@ -112,7 +112,7 @@ public class datafrommaster extends AppCompatActivity {
 
         module_data_dataModel.setmodifyDate(Global.DateTimeNowYMDHMS());
 
-        module_data_dataModel.SaveUpdateData(datafrommaster.this);
+        module_data_dataModel.SaveUpdateData(datafrommaster1.this);
 
     }
 
