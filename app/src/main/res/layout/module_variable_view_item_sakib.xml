@@ -18,8 +18,8 @@
 
         <LinearLayout
             android:id="@+id/data"
-            android:layout_width="wrap_content"
-
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -70,18 +70,22 @@
 
         <RelativeLayout
             android:id="@+id/resource"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30sp"
             android:orientation="vertical"
-            android:gravity="end">
+            android:gravity="start">
 
             <!--android:layout_weight="1"-->
 
             <ImageView
                 android:id="@+id/ivImage"
-                android:layout_width="200sp"
-                android:layout_height="200sp" android:scaleType="fitCenter"
+                android:layout_width="match_parent"
+                android:layout_height="200sp"
+                android:scaleType="center"
+                android:background="@drawable/chinup"
+
                 />
 
                 <Button

@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -33,6 +34,7 @@ import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -122,10 +124,17 @@ public class data_form_master extends AppCompatActivity {
     LinearLayout secTitle;
     TextView lblTitle;
 
+    TextView lblStatus;
+
 
     static String MODULEID = "";
     static String DATAID  = "";
     static String VARIABLENAME = "";
+
+    static String NAME = "";
+    static String MODULENAME = "";
+    static String AGE = "";
+    static String ID = "";
 
     Global g;
     Connection C;
@@ -156,8 +165,27 @@ public class data_form_master extends AppCompatActivity {
         IDbundle    = getIntent().getExtras();
         MODULEID    = IDbundle.getString("moduleid");;
         DATAID      = IDbundle.getString("dataid");
+        NAME      = IDbundle.getString("name");
+        MODULENAME    = IDbundle.getString("moduleName");
+        AGE      = IDbundle.getString("age");
+        ID      = IDbundle.getString("id");
+
+
 
         VARIABLENAME = "";
+
+
+        TextView lblName = (TextView) findViewById(R.id.lblName);
+        TextView lblAge = (TextView) findViewById(R.id.lblAge);
+        TextView lblID = (TextView) findViewById(R.id.lblID);
+        TextView lblHeading = (TextView) findViewById(R.id.lblHeading);
+        lblStatus = (TextView) findViewById(R.id.lblStatus);
+
+        lblName.setText(lblName.getText()+NAME);
+        lblAge.setText(lblAge.getText()+AGE);
+        lblID.setText(lblID.getText()+ID);
+        lblHeading.setText(MODULENAME);
+
         ImageButton cmdBack = (ImageButton) findViewById(R.id.cmdBack);
         cmdBack.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -252,6 +280,7 @@ public class data_form_master extends AppCompatActivity {
 
 
         prepareVariableListData(MODULEID, DATAID);
+        countansweredquestion();
     }
 
     @Override
@@ -260,6 +289,32 @@ public class data_form_master extends AppCompatActivity {
         mp.stop();
         mp.reset();
         audio_flag=true;
+    }
+
+    public void countansweredquestion() {
+        int answered = 0;
+        int question = 0;
+        for (int i = 0; i < variableList.size(); i++) {
+            Log.logDebug(variableList.get(i).getvariable_data()+"===="+variableList.get(i).getvariable_desc());
+            if(!variableList.get(i).getcontrol_type().equals("8")){
+
+                if (!variableList.get(i).getvariable_data().toString().equals(""))
+                    answered++;
+
+                question++;
+            }
+        }
+//        if(answered == question){
+//            lblStatus.setTextColor(Color.parseColor("#006400"));
+//        }else{
+//
+//            lblStatus.setTextColor(Color.parseColor("#C50000"));
+//        }
+        lblStatus.setText("Status: "+answered + "/" + question);
+        if(answered==question)
+        {
+            lblStatus.setBackgroundColor(Color.GREEN);
+        }
     }
 
     public void refreshAdapter(){
@@ -599,12 +654,15 @@ public class data_form_master extends AppCompatActivity {
             {
                 holder.resource.setVisibility(View.GONE);
 
+
             }
 
             if(varlist.get_image().length()!=0) {
                 holder.resource.setVisibility(View.VISIBLE);
                 holder.ivImage.setVisibility(View.VISIBLE);
                 holder.ivImage.setBackground(Drawable.createFromPath(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_image()));
+
+
             }
             if(varlist.get_audio().length()!=0) {
                 holder.resource.setVisibility(View.VISIBLE);
@@ -632,20 +690,18 @@ public class data_form_master extends AppCompatActivity {
             holder.ivImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Connection.MessageBox(data_form_master.this,"Image Clicked !!!");
-                    ImageView image = new ImageView(data_form_master.this);
-                    image.setBackground(Drawable.createFromPath(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_image()));
 
-                    AlertDialog.Builder builder =
-                            new AlertDialog.Builder(data_form_master.this).
-                                    setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    }).
-                                    setView(image);
-                    builder.create().show();
+                    LayoutInflater inflater = getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.popup_layout,null);
+
+                    final AlertDialog dialog = new AlertDialog.Builder(data_form_master.this)
+                            .setCancelable(true)
+                            .setView(dialogView)
+                            .create();
+                    dialog.show();
+
+                    ImageView imgPopUp =  dialogView.findViewById(R.id.imgPopUp);
+                    imgPopUp.setBackground(Drawable.createFromPath(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_image()));
 
                 }
             });
@@ -713,6 +769,21 @@ public class data_form_master extends AppCompatActivity {
             }
             //********************* sakib end *********************
 
+            //Label
+            //**************************************************************************************
+            if(varlist.getcontrol_type().equals("8") & varlist.getstatus().equalsIgnoreCase("1"))
+            {
+                holder.objDescription.setVisibility(View.VISIBLE);
+                holder.objDescription.setGravity(Gravity.CENTER);
+                holder.objDescription.setTextColor(Color.parseColor("#F3F3F3"));
+                holder.secVariable.setBackgroundColor(Color.parseColor("#006699"));
+
+            }
+            else{
+                holder.objDescription.setTextColor(Color.parseColor("#006699"));
+                holder.secVariable.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            }
+
             //EditText
             //**************************************************************************************
             if(varlist.getcontrol_type().equals("1") & varlist.getstatus().equalsIgnoreCase("1"))
@@ -747,6 +818,7 @@ public class data_form_master extends AppCompatActivity {
                             temp_selection=holder.txtData.getText().toString();
 
                             saveData(varlist,holder.txtData.getText().toString());
+                            countansweredquestion();
 
                             if(varlist.getskip_rule().trim().length()>0)
                             {
@@ -818,6 +890,7 @@ public class data_form_master extends AppCompatActivity {
                                 temp_selection = varlist.getvariable_option().split(",")[i].split("-")[0];
                                 saveData(varlist,varlist.getvariable_option().split(",")[i].split("-")[0]);
                                 varlist.set_variable_data(temp_selection.trim());
+                                countansweredquestion();
 
                             }
                         }
@@ -1070,6 +1143,7 @@ public class data_form_master extends AppCompatActivity {
 
                             temp_selection=holder.spnDataList.getItemAtPosition(p).toString();
                             saveData(varlist,holder.spnDataList.getItemAtPosition(p).toString());
+                            countansweredquestion();
                             if(varlist.getskip_rule().trim().length()>0)
                             {
                                 recyclerView.post(new Runnable() {
@@ -1112,6 +1186,7 @@ public class data_form_master extends AppCompatActivity {
                             data=2;
 
                         saveData(varlist,""+data);
+                        countansweredquestion();
                         temp_selection=""+data;
                         if(varlist.getskip_rule().trim().length()>0)
                         {
@@ -1175,6 +1250,7 @@ public class data_form_master extends AppCompatActivity {
                         holder.txtData.setText(sdf.format(myCalendar.getTime()));
 
                         saveData(varlist,holder.txtData.getText().toString());
+                        countansweredquestion();
                     }
 
                 };
@@ -1216,6 +1292,7 @@ public class data_form_master extends AppCompatActivity {
                 if(varlist.getvariable_data().length()>0) {
 
                     holder.txtData.setText(varlist.getvariable_data());
+                    countansweredquestion();
                 }
 
 

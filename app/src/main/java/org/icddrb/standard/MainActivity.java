@@ -71,8 +71,12 @@ public class MainActivity extends AppCompatActivity
                 {
                     if(position==0)
                     {
-                        IDbundle.putString("moduleid", "1");
+                        IDbundle.putString("moduleid", "5");
                         IDbundle.putString("dataid", "1235");
+                        IDbundle.putString("name", "Sakib");
+                        IDbundle.putString("age", "5 month");
+                        IDbundle.putString("id", "#123");
+                        IDbundle.putString("moduleName", "test form");
                         Intent intent = new Intent(getApplicationContext(), data_form_master.class);
                         intent.putExtras(IDbundle);
                         startActivity(intent);
