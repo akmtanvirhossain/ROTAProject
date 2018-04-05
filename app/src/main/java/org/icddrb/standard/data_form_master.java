@@ -313,7 +313,10 @@ public class data_form_master extends AppCompatActivity {
         lblStatus.setText("Status: "+answered + "/" + question);
         if(answered==question)
         {
-            lblStatus.setBackgroundColor(Color.GREEN);
+            lblStatus.setBackground(getResources().getDrawable(R.drawable.button_style_circle_green));
+        }else
+        {
+            lblStatus.setBackground(getResources().getDrawable(R.drawable.button_style_circle_red));
         }
     }
 
@@ -780,6 +783,7 @@ public class data_form_master extends AppCompatActivity {
 
             }
             else{
+                holder.objDescription.setGravity(Gravity.START);
                 holder.objDescription.setTextColor(Color.parseColor("#006699"));
                 holder.secVariable.setBackgroundColor(Color.parseColor("#FFFFFF"));
             }
