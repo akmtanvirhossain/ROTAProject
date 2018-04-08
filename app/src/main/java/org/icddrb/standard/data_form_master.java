@@ -542,7 +542,7 @@ public class data_form_master extends AppCompatActivity {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView objDescription, dataDescription,rdoData_Value;
-            public LinearLayout secVariable;
+            public LinearLayout secVariable,secInput_control;
             public RelativeLayout resource,secVideo;
             public Spinner spnDataList;
             public EditText txtData;
@@ -564,6 +564,7 @@ public class data_form_master extends AppCompatActivity {
                 super(view);
                 objDescription = (TextView) view.findViewById(R.id.objDescription);
                 secVariable = (LinearLayout) view.findViewById(R.id.secVariable);
+                secInput_control = (LinearLayout) view.findViewById(R.id.secInput_control);
                 resource = (RelativeLayout) view.findViewById(R.id.resource);
 
                 dataDescription = (TextView) view.findViewById(R.id.dataDescription);
@@ -1171,40 +1172,109 @@ public class data_form_master extends AppCompatActivity {
             //CheckBox
             //**************************************************************************************
             else if(varlist.getcontrol_type().equals("4") & varlist.getstatus().equalsIgnoreCase("1")) {
-                holder.chkData.setVisibility(View.VISIBLE);
 
-                if(varlist.getvariable_data().equals("1"))
-                    holder.chkData.setChecked(true);
-                else
-                    holder.chkData.setChecked(false);
+                String op=varlist.getvariable_option().toString();
 
+                if(op.contains(","))
+                {
+                    // 1-Yes,2-No,9-dk
+                    final String []arr=op.split(",");
+                    for (int i=0;i<arr.length;i++)
+                    {
+                        CheckBox checkBox= new CheckBox(data_form_master.this);
+                        checkBox.setText(arr[i].split("-")[1]);
+                        checkBox.setTag(arr[i].split("-")[1]);
+                        holder.secInput_control.addView(checkBox);
 
-                holder.chkData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        int data;
-
-                        if(isChecked)
-                            data=1;
-                        else
-                            data=2;
-
-                        saveData(varlist,""+data);
-                        countansweredquestion();
-                        temp_selection=""+data;
-                        if(varlist.getskip_rule().trim().length()>0)
+                        if(varlist.getvariable_data().length()>0)
                         {
-                            recyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    skip_variable(varlist);
-                                }
-                            });
-
+                            if(varlist.getvariable_data().contains(arr[i].split("-")[0]))
+                            {
+                                checkBox.setChecked(true);
+                            }
                         }
 
+
+                        final int finalI = i;
+                        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                                Toast.makeText(data_form_master.this,""+arr[finalI].split("-")[0],Toast.LENGTH_LONG).show();
+                                String data;
+
+                                if(isChecked)
+                                    data = arr[finalI].split("-")[0];
+                                else
+                                    data="";
+
+                                if(varlist.getvariable_data().length()>0)
+                                {
+                                    String s=varlist.getvariable_data()+","+data;
+                                    varlist.set_variable_data(s);
+                                    saveData(varlist,s);
+                                }else
+                                {
+                                    varlist.set_variable_data(""+data);
+                                    saveData(varlist,""+data);
+                                }
+
+                                countansweredquestion();
+                                temp_selection=""+data;
+                                if(varlist.getskip_rule().trim().length()>0)
+                                {
+                                    recyclerView.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            skip_variable(varlist);
+                                        }
+                                    });
+
+                                }
+
+                            }
+                        });
                     }
-                });
+
+                }else{
+
+                    holder.chkData.setVisibility(View.VISIBLE);
+
+                    if(varlist.getvariable_data().equals("1"))
+                        holder.chkData.setChecked(true);
+                    else
+                        holder.chkData.setChecked(false);
+
+
+                    holder.chkData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            int data;
+
+                            if(isChecked)
+                                data=1;
+                            else
+                                data=2;
+
+                            saveData(varlist,""+data);
+                            countansweredquestion();
+                            temp_selection=""+data;
+                            if(varlist.getskip_rule().trim().length()>0)
+                            {
+                                recyclerView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        skip_variable(varlist);
+                                    }
+                                });
+
+                            }
+
+                        }
+                    });
+
+                }
+
+
             }
 
             //date picker

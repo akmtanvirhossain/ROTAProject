@@ -34,34 +34,59 @@
 
             <!--android:layout_weight="3"-->
 
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_gravity="left|top"
+            <LinearLayout
+                android:id="@+id/secInput_control"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|top"
+                android:orientation="vertical"
                 android:paddingLeft="40dp">
 
 
-                <TextView android:id="@+id/dataDescription"
-                    android:textColor="#000000" android:gravity="center_horizontal|top"
+                <TextView
+                    android:id="@+id/dataDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16dp"/>
+                    android:gravity="center_horizontal|top"
+                    android:textColor="#000000"
+                    android:textSize="16dp" />
 
-                <EditText android:id="@+id/txtData" android:paddingLeft="5dp" android:paddingRight="20dp" android:inputType="text"
-                    android:layout_width="match_parent" android:imeOptions="actionDone"
-                    android:layout_height="60sp" android:textSize="18sp" android:gravity="left"/>
+                <EditText
+                    android:id="@+id/txtData"
+                    android:layout_width="match_parent"
+                    android:layout_height="60sp"
+                    android:gravity="left"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="20dp"
+                    android:textSize="18sp" />
 
-                <Spinner android:id="@+id/spnDataList" android:paddingLeft="5dp"
-                    android:layout_width="match_parent" android:textSize="14sp"
-                    android:layout_height="35sp" android:paddingRight="20dp"/>
+                <Spinner
+                    android:id="@+id/spnDataList"
+                    android:layout_width="match_parent"
+                    android:layout_height="35sp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="20dp"
+                    android:textSize="14sp" />
 
-                <TextView android:id="@+id/rdoData_Value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone"/>
-                <RadioGroup android:id="@+id/rdoData"
+                <TextView
+                    android:id="@+id/rdoData_Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <RadioGroup
+                    android:id="@+id/rdoData"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                 </RadioGroup>
 
-                <CheckBox android:id="@+id/chkData"
+                <CheckBox
+                    android:id="@+id/chkData"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_gravity="center_vertical|center_horizontal">
                 <ImageButton android:id="@+id/btnData" android:layout_marginLeft="10sp" android:src="@drawable/ic_action_save"
@@ -116,8 +141,6 @@
 
 
 
-
-
     </LinearLayout>
     <RelativeLayout android:id="@+id/secVideo"
         android:layout_width="wrap_content"
@@ -127,7 +150,6 @@
             android:layout_width="wrap_content"
             android:layout_height="300dp" android:scaleType="fitCenter"
             android:paddingLeft="10dp"/>
-
     </RelativeLayout>
 
 

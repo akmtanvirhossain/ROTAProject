@@ -5,6 +5,7 @@
     <color name="questionHeader">#0097a7</color>
     <color name="Heading">#01A9DB</color>
     <color name="pageHeading">#FFFFFF</color>
+    <color name="headecolor">#006699</color>
 
     <!-- Navigation Bar-->
     <!--<color name="HeadingBackground">#FF0000</color>-->

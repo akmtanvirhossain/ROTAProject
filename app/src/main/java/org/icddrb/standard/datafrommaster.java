@@ -1,12 +1,20 @@
 package org.icddrb.standard;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,6 +31,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +45,7 @@ import Utility.MySharedPreferences;
 import form_design.module_data_DataModel;
 import form_design.module_variable_DataModel;
 
+import static android.view.Gravity.CENTER;
 import static android.view.View.generateViewId;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
@@ -47,6 +57,10 @@ public class datafrommaster extends AppCompatActivity {
     static String VARIABLENAME = "";
     static String DEVICEID = "";
     static String ENTRYUSER = "";
+    static String NAME = "";
+    static String ID = "";
+    static String TITLE = "";
+    static String AGE = "";
 
     private List<module_variable_DataModel> variableList = new ArrayList<>();
     private List<module_variable_DataModel> variableList2 = new ArrayList<>();
@@ -137,8 +151,8 @@ public class datafrommaster extends AppCompatActivity {
 
             if (!varlist.getskip_rule().toString().equals("")) {
 
-                Log.d("My value ===", varlist.getvariable_name()+" == " +
-                        ""+varlist.getskip_rule().toString() + "");
+                Log.d("My value ===", varlist.getvariable_name() + " == " +
+                        "" + varlist.getskip_rule().toString() + "");
                 if (varlist.getskip_rule().trim().contains(",")) {
                     skip_rule = varlist.getskip_rule().split(",");
                 } else {
@@ -194,6 +208,31 @@ public class datafrommaster extends AppCompatActivity {
         return models;
     }
 
+    public void countansweredquestion() {
+        int answered = 0;
+        int question = 0;
+        for (int i = 0; i < variableList.size(); i++) {
+            Log.d("MY ===== ", variableList.get(i).getvariable_data() + "====" + variableList.get(i).getvariable_desc());
+            if (!variableList.get(i).getcontrol_type().equals("8")) {
+
+                if (!variableList.get(i).getvariable_data().toString().equals("")) {
+                    answered++;
+//                    Toast.makeText(this, variableList.get(i).getvariable_data()+"value", Toast.LENGTH_SHORT).show();
+                }
+
+                question++;
+            }
+        }
+        if (answered == question) {
+            questionanswered.setTextColor(Color.parseColor("#006400"));
+        } else {
+
+            questionanswered.setTextColor(Color.parseColor("#C50000"));
+        }
+        questionanswered.setText(answered + "/" + question);
+    }
+
+    TextView title, name, age, sid, questionanswered;
 
     @SuppressLint({"ResourceType", "NewApi"})
     @Override
@@ -208,44 +247,62 @@ public class datafrommaster extends AppCompatActivity {
         IDbundle = getIntent().getExtras();
         MODULEID = IDbundle.getString("moduleid");
         DATAID = IDbundle.getString("dataid");
+
+        NAME = IDbundle.getString("Name");
+        ID = IDbundle.getString("ID");
+        AGE = IDbundle.getString("AGE");
+        TITLE = IDbundle.getString("Title");
         prepareVariableListData(MODULEID, DATAID);
 
         //-----------------------------------------------------------------------------DESIGN FOR LAYOUT
-        //-----------------------------------------------------------------PRACICE TO PULL OFF
+
         start = findViewById(R.id.start);
+        title = (TextView) findViewById(R.id.lbltitle);
+        name = (TextView) findViewById(R.id.name);
+        age = (TextView) findViewById(R.id.age);
+        sid = (TextView) findViewById(R.id.sid);
+        questionanswered = (TextView) findViewById(R.id.lblanswered);
+
+        title.setText(TITLE);
+        name.setText(NAME);
+        age.setText(AGE);
+        sid.setText(ID);
+        countansweredquestion();
+        //-----------------------------------------------------------------PRACICE TO PULL OFF
 
         List<module_variable_DataModel> listCopy = new ArrayList<>(variableList);
-
 
         variableList2 = sortmodel(listCopy);
 
         //------------------------------------
+        int serial = 0;
         for (int i = 0; i < variableList.size(); i++) {
-            boolean insert = true;
-            for (int j = 0; j < letsmapskip_rule.size(); j++) {
-                if (variableList.get(i).getvariable_name().toString().equals(letsmapskip_rule.get(j).getRemovalvalue().toString())) {
-                    insert = false;
-                }
-            }
-            if (insert) {
+//            Log.d("My ===== ", variableList.get(i).getvariable_name() + "=======" + variableList.get(i).getcontrol_type());
+            if (variableList.get(i).getcontrol_type().equals("8")) {
+                View v = makeheader(variableList.get(i), serial);
+                start.addView(v);
+            } else {
 
-                View cardchild = generate(variableList.get(i), i );
-//
-                start.addView(cardchild);
-//                Toast.makeText(this, i+"MYMY", Toast.LENGTH_SHORT).show();
+                boolean insert = true;
+
+                for (int j = 0; j < letsmapskip_rule.size(); j++) {
+                    if (variableList.get(i).getvariable_name().toString().equals(letsmapskip_rule.get(j).getRemovalvalue().toString())) {
+                        insert = false;
+                    }
+                }
+                if (insert) {
+
+                    View cardchild = generate(variableList.get(i), serial);
+                    start.addView(cardchild);
+                }
+                serial++;
             }
         }
         //------------------------------------
-//        for (int i = 0; i < variableList2.size(); i++) {
-//            View cardchild = generate(variableList2.get(i), i + 1);
-//
-//            start.addView(cardchild);
-//        }
         for (int i = 0; i < variableList.size(); i++) {
             if (variableList.get(i).getstatus().toString().equals("2")) {
-//                Toast.makeText(this, i+"", Toast.LENGTH_SHORT).show();
                 View skipchild = generate(variableList.get(i), i);
-                start.addView(skipchild, i );
+                start.addView(skipchild, i);
             }
         }
 
@@ -258,7 +315,7 @@ public class datafrommaster extends AppCompatActivity {
         LinearLayout.LayoutParams crdparam = new LinearLayout.LayoutParams(0, 0);
         crdparam.width = LinearLayout.LayoutParams.MATCH_PARENT;
         crdparam.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        crdparam.setMargins(10, 10, 10, 10);
+        crdparam.setMargins(0, 5, 0, 5);
         crd.setLayoutParams(crdparam);
 
         LinearLayout linearLayout_87 = new LinearLayout(this);
@@ -282,7 +339,9 @@ public class datafrommaster extends AppCompatActivity {
         TextView textView_978 = new TextView(this);
         textView_978.setTag(varlist.getvariable_name());
 
-        textView_978.setText((position+1) + " . " + varlist.getvariable_desc());
+        textView_978.setText((position + 1) + " . " + varlist.getvariable_desc());
+        textView_978.setPadding(10, 0, 0, 0);
+        textView_978.setTextColor(Color.parseColor("#006699"));
         LinearLayout.LayoutParams layout_115 = new LinearLayout.LayoutParams(0, 0);
         layout_115.width = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout_115.height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -331,7 +390,6 @@ public class datafrommaster extends AppCompatActivity {
 //                relativeLayout_323.addView(mak());
         }
 
-//        linearLayout_223.addView(radioGroup_684);
         linearLayout_519.addView(linearLayout_223);
 
         LinearLayout linearLayout_582 = new LinearLayout(this);
@@ -352,18 +410,8 @@ public class datafrommaster extends AppCompatActivity {
         layout_721.height = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout_721.weight = 1;
         linearLayout_921.setLayoutParams(layout_721);
-
-        ImageView img = new ImageView(this);
-        img.setImageResource(R.drawable.logo);
-        LinearLayout.LayoutParams layout_777 = new LinearLayout.LayoutParams(0, 0);
-        layout_777.width = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout_777.height = LinearLayout.LayoutParams.MATCH_PARENT;
-        img.setLayoutParams(layout_777);
-        linearLayout_921.addView(img);
-
-
         //IMAGE
-        linearLayout_582.addView(linearLayout_921);
+        linearLayout_582.addView(makeimageview(varlist, position));
 
 
         LinearLayout linearLayout_75 = new LinearLayout(this);
@@ -385,8 +433,71 @@ public class datafrommaster extends AppCompatActivity {
 
     }
 
+    //----------------------ALERT
+    public void showChangeLangDialog(String imgname) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.popupimage, null);
+        dialogBuilder.setView(dialogView);
+
+        final ImageView imgv = (ImageView) dialogView.findViewById(R.id.dialog_imageview);
+        imgv.setBackground(Drawable.createFromPath(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + imgname));
+
+        dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+        AlertDialog b = dialogBuilder.create();
+        b.show();
+    }
+
+    //----------------------ALERT
     //-----------------ALL VIEW CONTROLLER
     //-------------------------------------------------VIEW COTROLLER
+    public View makeheader(module_variable_DataModel varlist, int position) {
+
+        RelativeLayout relativeLayout_950 = new RelativeLayout(this);
+        relativeLayout_950.setBackgroundResource(R.color.headecolor);
+        RelativeLayout.LayoutParams layout_58 = new RelativeLayout.LayoutParams(0, 0);
+        layout_58.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        layout_58.height = 30;
+        relativeLayout_950.setLayoutParams(layout_58);
+
+        TextView textView_34 = new TextView(this);
+        textView_34.setTextColor(Color.parseColor("#F3F3F3"));
+        textView_34.setText(varlist.getvariable_desc().toString());
+        textView_34.setGravity(CENTER);
+        RelativeLayout.LayoutParams layout_589 = new RelativeLayout.LayoutParams(0, 0);
+        layout_589.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        layout_589.height = 30;
+        textView_34.setLayoutParams(layout_589);
+        relativeLayout_950.addView(textView_34);
+
+        return relativeLayout_950;
+    }
+
+    public View makeimageview(module_variable_DataModel varlist, int position) {
+        ImageView img = new ImageView(this);
+
+        img.setBackground(Drawable.createFromPath(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Global.DatabaseFolder + File.separator + varlist.get_image()));
+
+        LinearLayout.LayoutParams layout_777 = new LinearLayout.LayoutParams(0, 0);
+        layout_777.width = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout_777.height = LinearLayout.LayoutParams.MATCH_PARENT;
+        img.setLayoutParams(layout_777);
+
+        final String imgname = varlist.get_image();
+
+        img.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showChangeLangDialog(imgname);
+            }
+        });
+
+        return img;
+    }
+
     public View makespinner(final module_variable_DataModel varlist, int position) {
 
         String option_list[] = varlist.getvariable_option().split(",");
@@ -409,22 +520,18 @@ public class datafrommaster extends AppCompatActivity {
         spn.setAdapter(adapter);
         spn.setLayoutParams(layout_256);
 
-//        int spinnerPosition = adapter.getPosition(varlist.getvariable_data());
-//        spn.setSelection(spinnerPosition);
-
         spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                saveData(varlist, spinnerArray.get(position));
+                saveData(varlist, position + "");
+                countansweredquestion();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
             }
-
         });
-
         return spn;
     }
 
@@ -485,10 +592,12 @@ public class datafrommaster extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
+
+                varlist.set_variable_data(editText_384.getText().toString());
                 saveData(varlist, editText_384.getText().toString());
+                countansweredquestion();
             }
         });
-//        skip_rules(varlist, position, varlist.getvariable_data().toString() + "");
         return editText_384;
     }
 
@@ -502,20 +611,23 @@ public class datafrommaster extends AppCompatActivity {
         LinearLayout.LayoutParams layout_256 = new LinearLayout.LayoutParams(0, 0);
         layout_256.width = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout_256.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        radioGroup_441.setPadding(15, 0, 0, 0);
         radioGroup_441.setId(generateViewId());
         radioGroup_441.setLayoutParams(layout_256);
 
         RadioButton rb;
-//        View str = generate(varlist,postion);
-//        start.addView(str);
+
         for (int j = 0; j < option_list.length; j++) {
 
             final RadioButton[] radbutton = {new RadioButton(this)};
             radbutton[0].setText(option_list[j].trim());
+            radbutton[0].setGravity(Gravity.TOP);
             radbutton[0].setId(generateViewId());
             radbutton[0].setTag("rad" + j);
             radioGroup_441.addView(radbutton[0]);
-            if (option_list[j].trim().toString().equals(varlist.getvariable_data())) {
+            String selected[] = option_list[j].trim().toString().split("-");
+
+            if (selected[0].toString().trim().equals(varlist.getvariable_data())) {
 
                 RadioButton btn = (RadioButton) radioGroup_441.getChildAt(j);
                 btn.setChecked(true);
@@ -530,59 +642,140 @@ public class datafrommaster extends AppCompatActivity {
                 RadioButton rdobtn = (RadioButton) findViewById(selectedId);
                 int idx = radioGroup_441.indexOfChild(rdobtn);
                 skip_rules(varlist, postion, (idx + 1) + "");
-//                String skip_chheck = (idx + 1) + "";
-                saveData(varlist, rdobtn.getText().toString());
+                String sendata[] = rdobtn.getText().toString().split("-");
+
+                varlist.set_variable_data(sendata[0].trim());
+                saveData(varlist, sendata[0].trim());
+                countansweredquestion();
 
             }
         });
         return radioGroup_441;
     }
 
-    public View makeimageview(module_variable_DataModel varlist, int position) {
-        ImageView img_445 = new ImageView(this);
-        LinearLayout.LayoutParams layout_188 = new LinearLayout.LayoutParams(0, 0);
-        layout_188.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout_188.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        img_445.setImageResource(R.drawable.logo);
-        img_445.setLayoutParams(layout_188);
-        img_445.setId(generateViewId());
-
-        img_445.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            }
-        });
-
-        return img_445;
-    }
-
     public View makececkbox(final module_variable_DataModel varlist, final int position) {
-        final CheckBox checkBox_758 = new CheckBox(this);
-        LinearLayout.LayoutParams layout_642 = new LinearLayout.LayoutParams(0, 0);
-        layout_642.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout_642.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        checkBox_758.setLayoutParams(layout_642);
-        checkBox_758.setText(varlist.getvariable_desc());
-        checkBox_758.setId(generateViewId());
-        if (varlist.getvariable_data().equals("1")) {
-            checkBox_758.setChecked(true);
+
+
+        final List<String> checklist = new ArrayList<String>();
+        LinearLayout linear = new LinearLayout(this);
+
+        linear.setOrientation(VERTICAL);
+        LinearLayout.LayoutParams layout_490 = new LinearLayout.LayoutParams(0, 0);
+        layout_490.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout_490.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        linear.setLayoutParams(layout_490);
+
+        if (varlist.getvariable_option().contains(",")) {
+            String splitme[] = varlist.getvariable_option().split(",");
+
+
+            for (int i = 0; i < splitme.length; i++) {
+                final String chekboxes[] = splitme[i].split("-");
+
+                final CheckBox checkBox_758 = new CheckBox(this);
+                checkBox_758.setText(chekboxes[1].toString());
+                if(varlist.getvariable_data().toString().contains(chekboxes[0]+"")){
+                    checkBox_758.setChecked(true);
+                    checklist.add(chekboxes[0]);
+                }
+
+                LinearLayout.LayoutParams layout_642 = new LinearLayout.LayoutParams(0, 0);
+                layout_642.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                layout_642.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                checkBox_758.setLayoutParams(layout_642);
+                checkBox_758.setId(generateViewId());
+                linear.addView(checkBox_758);
+
+                checkBox_758.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                                                            @Override
+                                                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                                if (checkBox_758.isChecked()) {
+//                                                                    Toast.makeText(datafrommaster.this, chekboxes[0]+"", Toast.LENGTH_SHORT).show();
+                                                                    checklist.add(chekboxes[0]);
+                                                                } else {
+//                                                                    Toast.makeText(datafrommaster.this, chekboxes[0]+"", Toast.LENGTH_SHORT).show();
+                                                                    checklist.remove(chekboxes[0]);
+                                                                }
+                                                                String value = "";
+                                                                for (int i = 0; i < checklist.size(); i++) {
+                                                                    value = value  + checklist.get(i)+ ",";
+                                                                }
+                                                                varlist.set_variable_data(value);
+                                                                saveData(varlist, value);
+                                                                Toast.makeText(datafrommaster.this, value + "", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                );
+            }
+        } else {
+            final CheckBox checkBox_758 = new CheckBox(this);
+            checkBox_758.setText(varlist.getvariable_option());
+            if(varlist.getvariable_data().toString().contains("true")){
+                checkBox_758.setChecked(true);
+            }
+            LinearLayout.LayoutParams layout_642 = new LinearLayout.LayoutParams(0, 0);
+            layout_642.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            layout_642.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            checkBox_758.setLayoutParams(layout_642);
+            checkBox_758.setId(generateViewId());
+            linear.addView(checkBox_758);
+
+            checkBox_758.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                                                        @Override
+                                                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                            if (checkBox_758.isChecked()) {
+//                                                                    Toast.makeText(datafrommaster.this, chekboxes[0]+"", Toast.LENGTH_SHORT).show();
+                                                                checklist.add("true");
+                                                            } else {
+//                                                                    Toast.makeText(datafrommaster.this, chekboxes[0]+"", Toast.LENGTH_SHORT).show();
+                                                                checklist.remove("");
+                                                            }
+                                                            String value = "";
+                                                            for(int i=0;i < checklist.size();i++){
+                                                                value = value+","+ checklist.get(i);
+                                                            }
+                                                            varlist.set_variable_data(value);
+                                                            saveData(varlist, value);
+                                                            Toast.makeText(datafrommaster.this, value+"", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+            );
         }
 
-        checkBox_758.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//        Toast.makeText(this, varlist.getvariable_option()+"", Toast.LENGTH_SHORT).show();
+//        final CheckBox checkBox_758 = new CheckBox(this);
+//        LinearLayout.LayoutParams layout_642 = new LinearLayout.LayoutParams(0, 0);
+//        layout_642.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        layout_642.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        checkBox_758.setLayoutParams(layout_642);
+//        checkBox_758.setId(generateViewId());
+//        if (varlist.getvariable_data().equals("1")) {
+//            checkBox_758.setChecked(true);
+//        }
+//
+//        checkBox_758.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//
+//                                                    @Override
+//                                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                                                        if (checkBox_758.isChecked()) {
+//                                                            skip_rules(varlist, position, "1");
+//
+//                                                            varlist.set_variable_data("1");
+//                                                            saveData(varlist, "1");
+//                                                            countansweredquestion();
+//                                                        } else {
+//
+//                                                            varlist.set_variable_data("");
+//                                                            saveData(varlist, "");
+//                                                            countansweredquestion();
+//                                                        }
+//                                                    }
+//                                                }
+//        );
 
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (checkBox_758.isChecked()) {
-//                        Toast.makeText(datafrommaster.this, varlist.getvariable_name()+"", Toast.LENGTH_SHORT).show();
-                        skip_rules(varlist,position,varlist.getvariable_name().toString());
-                        saveData(varlist, "1");
-                    } else {
-                        saveData(varlist, "");
-                    }
-                }
-            }
-        );
-
-        return checkBox_758;
+        return linear;
     }
 
     public View maketextview(int count, module_variable_DataModel varlist, int position) {
@@ -597,6 +790,7 @@ public class datafrommaster extends AppCompatActivity {
     }
 
     //-------------------------------------------------------------------------SKIP RULES
+
     public void skip_rules(final module_variable_DataModel varlist, int postion, String value) {
 
         for (int i = 0; i < letsmapskip_rule.size(); i++) {
@@ -611,7 +805,6 @@ public class datafrommaster extends AppCompatActivity {
                             letsmapskip_rule.get(i).getRemovalvalue());
                     addvariableview(letsmapskip_rule.get(i).getRemovalvalue());
                 }
-
             }
         }
     }
@@ -634,7 +827,7 @@ public class datafrommaster extends AppCompatActivity {
                 if (variableList.get(i).getvariable_name().toString().equals(variable.toString())) {
                     variableList.get(i).set_status("2");
                     View skipadd = generate(variableList.get(i), i);
-                    start.addView(skipadd, i );
+                    start.addView(skipadd, i);
                     C.Save("Update module_data set status='2' where module_id='" + MODULEID + "' and variable_name='" + variableList.get(i).getvariable_name().toString() + "' and data_id='" + DATAID + "'");
                 }
             }
