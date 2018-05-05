@@ -24,9 +24,9 @@
     -->
     <color name="pageHeadingBack">#01A9DB</color>
     <color name="theme_color">#01A9DB</color>
-    <color name="form_background_color">#F3F3F3</color>
-    <color name="mainmenu_background_color">#D7D7D7</color>
-    <color name="mainmenu_button_color">#FFFFFF</color>
+    <color name="form_background_color">#FFFFFF</color>
+    <color name="mainmenu_background_color">#FFFFFF</color>
+    <color name="mainmenu_button_color">#D7D7D7</color>
 
     <color name="save_button_color">#69CB3F</color>
 

@@ -50,6 +50,26 @@ public class Connection extends SQLiteOpenHelper {
         super(context, DBLocation, null, DATABASE_VERSION);
         dbContext = context;
         ud_context = context;
+
+        CreateTable("test2","Create Table test2(\n" +
+                " text varchar(50),\n" +
+                " numeric numeric(1),\n" +
+                " decimal numeric(5,2),\n" +
+                " dt datetime,\n" +
+                " tm varchar(5),\n" +
+                " temp_f numeric(5,1),\n" +
+                " temp_c numeric(4,1),\n" +
+                " dropdown numeric(4,1),\n" +
+                " radiobut numeric(1),\n" +
+                " checkbox int,\n" +
+                " StartTime varchar(5),\n" +
+                " EndTime varchar(5),\n" +
+                " DeviceID Varchar(10),\n" +
+                " EntryUser Varchar(10),\n" +
+                " Lat varchar(20),\n" +
+                " Lon varchar(20),\n" +
+                " EnDt datetime,\n" +
+                " Upload int, UploadDT datetime , modifyDate datetime)");
     }
 
     /*private static Connection instance;

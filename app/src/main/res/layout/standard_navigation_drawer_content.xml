@@ -19,7 +19,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/theme_color"
+            android:background="@color/theme_color" android:layout_margin="10dp"
             app:popupTheme="@style/CustomTheme.PopupOverlay">
         </android.support.v7.widget.Toolbar>
 
@@ -41,49 +41,6 @@
             android:horizontalSpacing="5dp"
             android:stretchMode="columnWidth"
             android:gravity="center" android:padding="10dp"/>
-        <!--<GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:layout_margin="0.5dp"
-            android:columnWidth="90dp"
-            android:numColumns="auto_fit"
-            android:rowCount="3" xmlns:grid="http://schemas.android.com/apk/res-auto">
-            <Button
-                android:id="@+id/b_1"
-                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
-
-            <Button
-                android:id="@+id/b_2"
-                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
-
-            <Button
-                android:id="@+id/b_3"
-                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
-
-            <Button
-                android:id="@+id/b_4"
-                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
-
-            <Button
-                android:id="@+id/b_5"
-                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
-
-            <Button
-                android:id="@+id/b_6"
-                android:text="Hellooo" android:layout_width="150dp" android:layout_height="150dp"/>
-        </GridLayout>
-        <LinearLayout android:layout_height="75dp" android:visibility="gone"
-            android:id="@+id/bacon"
-            android:orientation="vertical"
-            android:layout_width="fill_parent">
-            <TextureView android:id="@+id/bacon_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextureView android:id="@+id/bacon_time_elapsed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-        -->
     </FrameLayout>
     <android.support.design.widget.BottomNavigationView
         xmlns:app="http://schemas.android.com/apk/res-auto"

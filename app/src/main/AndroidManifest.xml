@@ -51,6 +51,7 @@
         <activity android:name=".RecycleActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".data_form_master" />
+        <activity android:name=".test2"/>
 
 
         //Service

@@ -29,6 +29,12 @@ public class Global {
 	public int mYear = c.get(Calendar.YEAR);
 	public int mMonth = c.get(Calendar.MONTH) + 1;
 	public int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+	//Date format
+	public static SimpleDateFormat date_format_yyymmdd_hhmmss = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static SimpleDateFormat date_format_yyymmdd = new SimpleDateFormat("yyyy-MM-dd");
+
 	//Global Variable
 	//-------------------------------------------------------------------------
 	private String _UserId;
