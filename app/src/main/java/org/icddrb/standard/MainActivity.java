@@ -5,7 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,7 +30,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Common.Connection;
+import Common.Global;
+import Utility.MySharedPreferences;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,11 +43,21 @@ public class MainActivity extends AppCompatActivity
     BottomNavigationView bottom_nav_view;
     Boolean netwoekAvailable = false;
     Bundle IDbundle;
+    Connection C;
+    static String DEVICEID  = "";
+    static String ENTRYUSER = "";
+    ProgressDialog progDailog;
+    int jumpTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.standard_navigation_drawer);
+
+        C = new Connection(this);
+        DEVICEID    = MySharedPreferences.getValue(this,"deviceid");
+        ENTRYUSER   = MySharedPreferences.getValue(this,"userid");
+
         IDbundle = new Bundle();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -59,9 +78,6 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //navigationView.setNavigationItemSelectedListener(this);
-
 
         GridView gv = (GridView) findViewById(R.id.gridview);
         gv.setAdapter(new menuAdapter(this));
@@ -70,9 +86,10 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 try
                 {
+                    //Data Collection
                     if(position==0)
                     {
-                        IDbundle.putString("moduleid", "1");
+                        /*IDbundle.putString("moduleid", "1");
                         IDbundle.putString("dataid", "1235");
                         IDbundle.putString("name", "Sakib");
                         IDbundle.putString("age", "5 month");
@@ -80,8 +97,61 @@ public class MainActivity extends AppCompatActivity
                         IDbundle.putString("moduleName", "test form");
                         Intent intent = new Intent(getApplicationContext(), data_form_master.class);
                         intent.putExtras(IDbundle);
-                        startActivity(intent);
+                        startActivity(intent);*/
                     }
+
+                    //Monitoring
+                    else if(position==1)
+                    {
+
+                    }
+
+                    //Data Search
+                    else if(position==2)
+                    {
+
+                    }
+
+                    //Data Sync
+                    //*******************************************************************************
+                    /*else if(position==3)
+                    {
+                        if (Connection.haveNetworkConnection(MainActivity.this)) {
+                            netwoekAvailable=true;
+
+                        } else {
+                            netwoekAvailable=false;
+                        }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder
+                                .setTitle("Data Sync")
+                                .setMessage("Do you want to synchronize data to server[Y/N]?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (which){
+                                            case DialogInterface.BUTTON_POSITIVE:
+
+                                                if (Connection.haveNetworkConnection(MainActivity.this)) {
+                                                } else {
+                                                    Connection.MessageBox(MainActivity.this,"Internet connection is not available for Data Sync.");
+                                                    return;
+                                                }
+
+                                                new DataSyncTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR,DEVICEID);
+
+
+                                                break;
+
+                                            case DialogInterface.BUTTON_NEGATIVE:
+                                                //No button clicked
+                                                break;
+                                        }
+                                    }
+                                })
+                                .setNegativeButton("No", null)	//Do nothing on no
+                                .show();
+                    }*/
                     else if(position==3)
                     {
                         if (Connection.haveNetworkConnection(MainActivity.this)) {
@@ -92,8 +162,8 @@ public class MainActivity extends AppCompatActivity
                         }
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder
-                                .setTitle("Message")
-                                .setMessage("আপনি কি তথ্য ডাটা বেজ সার্ভারে আপলোড/ডাউনলোড করতে চান[হ্যাঁ/না]?")
+                                .setTitle("Data Sync")
+                                .setMessage("Do you want to synchronize data to server[Y/N]?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
@@ -110,19 +180,17 @@ public class MainActivity extends AppCompatActivity
                                                 {
                                                     String ResponseString="Status:";
 
-                                                    final ProgressDialog progDailog = ProgressDialog.show(
-                                                            MainActivity.this, "", "অপেক্ষা করুন ...", true);
+                                                    progDailog = new ProgressDialog(MainActivity.this);
+                                                    progDailog.setMessage("Synchronizing database, Please Wait . . .");
+                                                    progDailog.setIndeterminate(false);
+                                                    progDailog.setCancelable(false);
+                                                    progDailog.setProgress(0);
+                                                    progDailog.show();
 
                                                     new Thread() {
                                                         public void run() {
-                                                            String ResponseString="Status:";
-                                                            String response;
-
                                                             try {
-
-
-                                                                Connection.MessageBox(MainActivity.this, "তথ্য ডাটাবেজ সার্ভারে সম্পূর্ণ ভাবে আপলোড হয়েছে। ");
-
+                                                                C.DataSync(DEVICEID, progDailog, progressHandler);
                                                             } catch (Exception e) {
 
                                                             }
@@ -130,7 +198,6 @@ public class MainActivity extends AppCompatActivity
 
                                                         }
                                                     }.start();
-
                                                 }
                                                 catch(Exception ex)
                                                 {
@@ -184,7 +251,15 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+
     }
+    Handler progressHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            progDailog.setMessage(Global.getInstance().getProgressMessage());
+            progDailog.incrementProgressBy(jumpTime);
+        }
+    };
 
     @Override
     public void onBackPressed() {
@@ -318,4 +393,97 @@ public class MainActivity extends AppCompatActivity
         };
     }
 
+
+    private class DataSyncTask extends AsyncTask<String, Void, Void> {
+        ProgressDialog dialog;
+        private Context context;
+        String resp = "";
+        public void setContext(Context contextf){
+            context = contextf;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(MainActivity.this);
+            dialog.setTitle("Data Sync");
+            dialog.setMessage("Data Sync in Progress, Please wait ...");
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.setCancelable(false);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.show();
+        }
+
+        //@Override
+        protected void onProgressUpdate(String... values) {
+            //super.onProgressUpdate(values);
+            dialog.setProgress(Integer.parseInt(values[0].toString().split(",")[1]));
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            final String[] ID = params[0].toString().split("-");
+            final String DEVICEID    = ID[0].toString();
+
+            try {
+
+                new Thread() {
+                    public void run() {
+                        try {
+
+                            //Upload
+                            List<String> tableList = new ArrayList<String>();
+                            tableList.add("DataCollector");
+
+                            int progressCount = 50/tableList.size();
+                            int count = 0;
+                            for (int i = 0; i < tableList.size(); i++) {
+                                try {
+                                    C.Sync_Upload_Process(tableList.get(i).toString());
+                                    count +=progressCount;
+                                    onProgressUpdate(tableList.get(i).toString()+","+String.valueOf(count));
+                                }catch(Exception ex){
+
+                                }
+                            }
+
+                            //Download
+                            progressCount = 50/tableList.size();
+                            for (int i = 0; i < tableList.size(); i++) {
+                                try {
+                                    C.Sync_Download(tableList.get(i).toString(), DEVICEID,"");
+                                    count +=progressCount;
+                                    onProgressUpdate(tableList.get(i).toString()+","+String.valueOf(count));
+                                }catch(Exception ex){
+
+                                }
+                            }
+
+                            dialog.dismiss();
+
+                        } catch (Exception e) {
+                            resp = e.getMessage();
+                            dialog.dismiss();
+                        }
+                        finally {
+                            dialog.dismiss();
+                        }
+                    }
+                }.start();
+
+            } catch (Exception e) {
+
+            }
+            // do stuff!
+            return null;
+        }
+
+        //@Override
+        protected void onPostExecute(String result) {
+            if(result.length()!=0) {
+                Connection.MessageBox(MainActivity.this, "Data Sync successfully completed.");
+                dialog.dismiss();
+            }
+        }
+    }
 }

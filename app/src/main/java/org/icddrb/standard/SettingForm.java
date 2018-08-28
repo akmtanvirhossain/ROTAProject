@@ -70,7 +70,11 @@ public class SettingForm extends Activity {
                         new Thread() {
                             public void run() {
                                 try {
+                                    //Old Process
                                     C.RebuildDatabase(DeviceID, progDailog, progressHandler);
+
+                                    //New Process
+                                    //C.DataSync_RebuildDatabase(DeviceID, progDailog, progressHandler);
                                 } catch (Exception e) {
 
                                 }

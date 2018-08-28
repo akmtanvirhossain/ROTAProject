@@ -195,7 +195,7 @@ import android.content.Context;
             try
               {
                  SQL = "Insert into "+ TableName +" (module_id,variable_name,variable_desc,variable_seq,control_type,variable_option,variable_length,data_type,skip_rule,color,active,StartTime,EndTime,DeviceID,EntryUser,Lat,Lon,EnDt,Upload,modifyDate)Values('"+ _module_id +"', '"+ _variable_name +"', '"+ _variable_desc +"', '"+ _variable_seq +"', '"+ _control_type +"', '"+ _variable_option +"', '"+ _variable_length +"', '"+ _data_type +"', '"+ _skip_rule +"', '"+ _color +"', '"+ _active +"', '"+ _StartTime +"', '"+ _EndTime +"', '"+ _DeviceID +"', '"+ _EntryUser +"', '"+ _Lat +"', '"+ _Lon +"', '"+ _EnDt +"', '"+ _Upload +"', '"+ _modifyDate +"')";
-                 C.Save(SQL);
+                 response = C.SaveData(SQL);
                  C.close();
               }
               catch(Exception  e)
@@ -213,7 +213,7 @@ import android.content.Context;
             try
               {
                  SQL = "Update "+ TableName +" Set Upload='2',modifyDate='" + _modifyDate + "' ,module_id = '"+ _module_id +"',variable_name = '"+ _variable_name +"',variable_desc = '"+ _variable_desc +"',variable_seq = '"+ _variable_seq +"',control_type = '"+ _control_type +"',variable_option = '"+ _variable_option +"',variable_length = '"+ _variable_length +"',data_type = '"+ _data_type +"',skip_rule = '"+ _skip_rule +"',color = '"+ _color +"',active = '"+ _active +"'  Where module_id='"+ _module_id +"' and variable_name='"+ _variable_name +"'";
-                 C.Save(SQL);
+                  response = C.SaveData(SQL);
                  C.close();
               }
               catch(Exception  e)

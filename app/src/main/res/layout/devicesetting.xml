@@ -5,19 +5,18 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         layout="@layout/form_heading"/>
-    <View android:layout_height="2dip" android:layout_width="fill_parent" android:background="#D7D7D7" />
-    <LinearLayout android:id="@+id/seclblListing" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowHeading">
-        <TextView
+    <LinearLayout android:id="@+id/seclblListing" android:paddingBottom="20dp" android:background="@color/login_page_background"  android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+        <TextView android:gravity="center"
             android:id="@+id/lblHlblListing"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Device Setting"
             android:textColor="#006699"
             android:textSize="20sp" />
     </LinearLayout>
     <View android:layout_height="1dip" android:layout_width="fill_parent" android:background="#CCCCCC" />
-    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0" android:background="#F3F3F3">
-        <TextView android:text="Device ID" android:layout_width="140sp" android:layout_height="wrap_content" android:textSize="20sp" />
+    <LinearLayout android:layout_width="wrap_content" android:padding="15dp" android:layout_gravity="center" android:layout_height="wrap_content" android:orientation="horizontal" style="@style/rowStyle0" android:background="#F3F3F3">
+        <TextView android:text="Device ID " android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp" />
         <Spinner android:id="@+id/spnUser" android:drawSelectorOnTop="true" android:layout_width="300sp" android:layout_height="wrap_content" android:layout_weight="0" android:prompt="@string/planet_prompt" android:textSize="20sp" />
     </LinearLayout>
 

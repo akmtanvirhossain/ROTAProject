@@ -424,7 +424,7 @@ public class data_form_master extends AppCompatActivity {
 
                                 variable_date_update.set_variable_data("");
 
-                                C.Save("Update module_data set status='2', variable_data='' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+                                String response = C.SaveData("Update module_data set status='2', variable_data='' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
                                 //mAdapter.notifyItemChanged(k, varlist);
                                 if(!recyclerView.isComputingLayout())
                                 {
@@ -445,7 +445,7 @@ public class data_form_master extends AppCompatActivity {
 
                             variable_date_update.set_variable_data("");
 
-                            C.Save("Update module_data set status='2',variable_data='' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+                            String response = C.SaveData("Update module_data set status='2',variable_data='' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
 
                             //mAdapter.notifyItemChanged(k, varlist);
                             if(!recyclerView.isComputingLayout())
@@ -490,7 +490,7 @@ public class data_form_master extends AppCompatActivity {
                             if (i==Integer.parseInt(variable_date_update.getvariable_seq())) {
                                 variable_date_update.setactive("1");
                                 variable_date_update.set_status("1");
-                                C.Save("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+                                String response = C.SaveData("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
                                 //mAdapter.notifyItemChanged(k, varlist);
                                 if(!recyclerView.isComputingLayout())
                                 {
@@ -509,7 +509,7 @@ public class data_form_master extends AppCompatActivity {
                         if (skip_variable_list.equalsIgnoreCase(variable_date_update.getvariable_name())) {
                             variable_date_update.setactive("1");
                             variable_date_update.set_status("1");
-                            C.Save("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
+                            String response = C.SaveData("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variable_date_update.getvariable_name() + "' and data_id='" + DATAID + "'");
                             //mAdapter.notifyItemChanged(k, varlist);
                             if(!recyclerView.isComputingLayout())
                             {

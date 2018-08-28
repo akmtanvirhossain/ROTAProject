@@ -635,7 +635,7 @@ public class datafrommaster1 extends AppCompatActivity {
                     variableList.get(i).set_status("2");
                     View skipadd = generate(variableList.get(i), i);
                     start.addView(skipadd, i );
-                    C.Save("Update module_data set status='2' where module_id='" + MODULEID + "' and variable_name='" + variableList.get(i).getvariable_name().toString() + "' and data_id='" + DATAID + "'");
+                    String response = C.SaveData("Update module_data set status='2' where module_id='" + MODULEID + "' and variable_name='" + variableList.get(i).getvariable_name().toString() + "' and data_id='" + DATAID + "'");
                 }
             }
         }
@@ -653,7 +653,7 @@ public class datafrommaster1 extends AppCompatActivity {
             if (variable.toString().equals(variableList.get(i).getvariable_name().toString())) {
                 saveData(variableList.get(i), "");
                 variableList.get(i).set_status("1");
-                C.Save("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variableList.get(i).getvariable_name().toString() + "' and data_id='" + DATAID + "'");
+                String response = C.SaveData("Update module_data set status='1' where module_id='" + MODULEID + "' and variable_name='" + variableList.get(i).getvariable_name().toString() + "' and data_id='" + DATAID + "'");
                 break;
             }
         }

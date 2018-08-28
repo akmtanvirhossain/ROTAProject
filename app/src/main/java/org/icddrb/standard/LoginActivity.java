@@ -107,11 +107,22 @@ public class LoginActivity extends Activity {
             sp.save(this,"deviceid",UniqueID);
 
             //**************************************************************************************
+
             if (networkAvailable)
-        {
-            Intent syncService = new Intent(this, Sync_Service.class);
-            startService(syncService);
-        }
+            {
+                Intent syncService = new Intent(this, Sync_Service.class);
+                startService(syncService);
+            }
+
+            //Prepare Index Table for Data Sync: 26 Aug 2018
+            String IndexSQL = "Insert into sync_index_id(DeviceID,TableName,indexid) Select '"+ UniqueID +"',t.TableName,'' indexid from DatabaseTab t\n" +
+                    "where Sync_Download='Y' and not exists(select * from sync_index_id where TableName=t.TableName)";
+            try {
+                C.SaveData(IndexSQL);
+            }catch (Exception ex){
+
+            }
+
             //**************************************************************************************
 
             uid.setAdapter(C.getArrayAdapter("select UserId||'-'||UserName User from DataCollector order by UserName"));
@@ -145,8 +156,8 @@ public class LoginActivity extends Activity {
                         }
 
                         //Store Last Login information
-                        C.Save("Delete from LastLogin");
-                        C.Save("Insert into LastLogin(UserId)Values('"+ U[0] +"')");
+                        String response = C.SaveData("Delete from LastLogin");
+                        String response1 = C.SaveData("Insert into LastLogin(UserId)Values('"+ U[0] +"')");
 
                         //Download Updated System
                         //...................................................................................
@@ -168,7 +179,7 @@ public class LoginActivity extends Activity {
                                 //check for system date
                                 if(ServerDate.equals(Global.TodaysDateforCheck())==false)
                                 {
-                                    Connection.MessageBox(LoginActivity.this, "আপনার ট্যাব এর তারিখ সঠিক নয় ["+ Global.DateNowDMY() +"]।");
+                                    Connection.MessageBox(LoginActivity.this, "System date is incorrect ["+ Global.DateNowDMY() +"]");
                                     startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
                                     return;
                                 }
