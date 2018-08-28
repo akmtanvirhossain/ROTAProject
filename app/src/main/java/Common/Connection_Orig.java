@@ -19,7 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
-import org.icddrb.standard.R;
+import org.icddrb.rotaproject.R;
 
 import java.io.File;
 import java.lang.reflect.Type;
