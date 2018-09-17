@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/theme_color">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal">
+            <ImageButton android:id="@+id/cmdBack" android:background="@color/theme_color" android:src="@drawable/back" android:layout_width="50sp" android:layout_height="match_parent"/>
+            <TextView android:id="@+id/lblHeading" android:text="Assessment Form"  android:paddingLeft="10sp" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center_vertical" android:textSize="20sp" android:textColor="@color/pageHeading"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
+
+
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" android:paddingTop="0dp">
+
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent" android:id="@+id/secRow"
+                android:layout_height="wrap_content"
+                android:background="#F3F3F3"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/padding_list_row"
+                android:paddingLeft="?listPreferredItemPaddingLeft"
+                android:paddingRight="?listPreferredItemPaddingRight"
+                android:paddingTop="@dimen/padding_list_row" >
+
+                <LinearLayout android:layout_marginLeft="0sp"
+                    android:id="@+id/message_container1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:orientation="vertical"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="@dimen/padding_list_row">
+                    <TextView android:text="Study ID"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:textColor="@color/from" android:textSize="@dimen/textsize_list_row"
+                        android:textStyle="normal" />
+                    <TextView
+                        android:id="@+id/txtStudyID"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:textColor="@color/theme_color" android:textSize="@dimen/textsize_list_row"
+                        android:textStyle="bold" />
+                    <TextView android:text="Hospital ID"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:textColor="@color/from" android:textSize="@dimen/textsize_list_row" android:layout_marginTop="5sp"
+                        android:textStyle="normal" />
+                    <TextView
+                        android:id="@+id/txtHospID"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:textColor="@color/theme_color" android:textSize="@dimen/textsize_list_row"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+                <LinearLayout android:layout_marginLeft="10sp"
+                    android:id="@+id/message_container2"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp" android:layout_toRightOf="@+id/message_container1"
+                    android:paddingRight="@dimen/padding_list_row">
+
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1" android:textSize="20dp" android:textStyle="bold"
+                        android:textColor="@color/from"/>
+                    <TextView
+                        android:id="@+id/txtFatherMOther"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end" android:layout_marginTop="5dp"
+                        android:textSize="@dimen/textsize_list_row"
+                        android:textColor="@color/subject"/>
+                    <TextView
+                        android:id="@+id/txtAge"  android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1" android:textSize="@dimen/textsize_list_row"
+                        android:textColor="#006699"/>
+
+                    <TextView android:layout_marginTop="5sp" android:visibility="gone"
+                        android:id="@+id/txtAddress"
+                        android:layout_width="300sp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="2" android:textSize="@dimen/textsize_list_row"
+                        android:textColor="@color/message"/>
+                    <TextView android:layout_marginTop="5sp" android:visibility="gone"
+                        android:id="@+id/txtRegDate"
+                        android:layout_width="300sp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1" android:textSize="@dimen/textsize_list_row"
+                        android:textColor="#006699"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_marginLeft="10sp"
+                    android:id="@+id/message_container3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp" android:layout_toRightOf="@+id/message_container2"
+                    android:paddingRight="@dimen/padding_list_row">
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end" android:text="Schedule Date"
+                        android:lines="1" android:textSize="@dimen/textsize_list_row"
+                        android:textColor="@color/from"/>
+                    <TextView
+                        android:id="@+id/lblScheduleDate"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1" android:textSize="@dimen/textsize_list_row"
+                        android:textColor="@color/theme_color"/>
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end" android:text="Possible Visit"
+                        android:lines="1" android:textSize="@dimen/textsize_list_row"
+                        android:textColor="@color/from"/>
+                    <TextView
+                        android:id="@+id/lblVisitPossible"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1" android:textSize="@dimen/textsize_list_row"
+                        android:textColor="@color/theme_color"/>
+
+                </LinearLayout>
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="0sp">
+
+                <TextView android:layout_marginBottom="5sp"
+                    android:id="@+id/lblFollowupMonth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lines="1" android:textSize="20dp"
+                    android:textColor="@color/theme_color"/>
+                <TextView
+                    android:id="@+id/lblPrefferedVisit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" android:layout_marginBottom="5dp"
+                    android:lines="1" android:textSize="@dimen/textsize_list_row"
+                    android:textColor="@color/theme_color"/>
+
+                <TextView
+                    android:id="@+id/lblMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_marginTop="30dp"
+                    android:gravity="center" android:layout_marginBottom="5dp"
+                    android:lines="1" android:textSize="25dp" android:visibility="gone"
+                    android:textColor="#ff0000" android:text="Schedule Assessment Date Over"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2">
+                    <Button android:layout_weight="1"
+                        android:id="@+id/cmdScreening"
+                        style="@style/menuButtonStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_marginBottom="5sp"
+                        android:layout_marginLeft="20sp" android:minHeight="80dp"
+                        android:layout_marginRight="10sp" android:layout_height="match_parent"
+                        android:background="@drawable/button_style_gray"
+                        android:gravity="center|center_vertical"
+                        android:text="Screening and ENrollment"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                    <Button android:layout_weight="1"
+                        android:id="@+id/cmdClinical"
+                        style="@style/menuButtonStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_marginBottom="5sp"
+                        android:layout_marginLeft="0sp" android:minHeight="80dp"
+                        android:layout_marginRight="20sp" android:layout_height="match_parent"
+                        android:background="@drawable/button_style_gray"
+                        android:gravity="center|center_vertical"
+                        android:text="Clinical Assessment"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2">
+                    <Button android:layout_weight="1"
+                        android:id="@+id/cmdPhysical"
+                        style="@style/menuButtonStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_marginBottom="5sp"
+                        android:layout_marginLeft="20sp"
+                        android:layout_marginRight="10sp" android:layout_height="80dp"
+                        android:background="@drawable/button_style_gray"
+                        android:gravity="center|center_vertical"
+                        android:text="Physical examination "
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                    <Button android:layout_weight="1"
+                        android:id="@+id/cmdSerum"
+                        style="@style/menuButtonStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_marginBottom="5sp"
+                        android:layout_marginLeft="0sp"
+                        android:layout_marginRight="20sp" android:layout_height="80dp"
+                        android:background="@drawable/button_style_gray"
+                        android:gravity="center|center_vertical"
+                        android:text="Serum electrolyte"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2">
+                    <Button android:layout_weight="1"
+                        android:id="@+id/cmdVaccination"
+                        style="@style/menuButtonStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_marginBottom="5sp"
+                        android:layout_marginLeft="20sp"
+                        android:layout_marginRight="10sp" android:layout_height="80dp"
+                        android:background="@drawable/button_style_gray"
+                        android:gravity="center|center_vertical"
+                        android:text="Vaccination "
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                    <Button android:layout_weight="1"
+                        android:id="@+id/cmdDischarge"
+                        style="@style/menuButtonStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_marginBottom="5sp"
+                        android:layout_marginLeft="0sp"
+                        android:layout_marginRight="20sp" android:layout_height="80dp"
+                        android:background="@drawable/button_style_gray"
+                        android:gravity="center|center_vertical"
+                        android:text="Discharge"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2">
+                    <Button
+                        android:id="@+id/cmdFinalStatus"
+                        style="@style/menuButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="5sp"
+                        android:layout_marginLeft="20sp"
+                        android:layout_marginRight="10sp"
+                        android:layout_marginTop="20sp"
+                        android:background="@drawable/button_style_sky"
+                        android:gravity="center|center_vertical"
+                        android:text="Final Status"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp" android:layout_weight="1" />
+
+                </LinearLayout>
+
+
+        </LinearLayout>
+        </LinearLayout>
+</LinearLayout>

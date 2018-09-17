@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -88,21 +89,15 @@ public class MainActivity extends AppCompatActivity
                     //Data Collection
                     if(position==0)
                     {
-                        /*IDbundle.putString("moduleid", "1");
-                        IDbundle.putString("dataid", "1235");
-                        IDbundle.putString("name", "Sakib");
-                        IDbundle.putString("age", "5 month");
-                        IDbundle.putString("id", "#123");
-                        IDbundle.putString("moduleName", "test form");
-                        Intent intent = new Intent(getApplicationContext(), data_form_master.class);
-                        intent.putExtras(IDbundle);
-                        startActivity(intent);*/
+                        Intent intent = new Intent(getApplicationContext(), IPDScreening_list.class);
+                        startActivity(intent);
                     }
 
                     //Monitoring
                     else if(position==1)
                     {
-
+                        Intent intent = new Intent(getApplicationContext(), EmergencyScreening_list.class);
+                        startActivity(intent);
                     }
 
                     //Data Search
@@ -375,9 +370,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         private String[] desc={
-                "New",
-                "Monitoring",
-                "Data Search",
+                "Inpatient",
+                "Emergency",
+                "Specimen Tracking",
                 "Data Sync",
                 "Exit"};
 
@@ -385,7 +380,7 @@ public class MainActivity extends AppCompatActivity
         //references to our images
         private Integer[] mThumbIds = {
                 R.drawable.ic_action_new,
-                R.drawable.planning,
+                R.drawable.ic_action_new,
                 R.drawable.ic_action_search,
                 R.drawable.sync,
                 R.drawable.exit1

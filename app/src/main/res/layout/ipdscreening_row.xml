@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:scrollbars="vertical">
+    <LinearLayout android:id="@+id/secListRow" android:paddingTop="8sp" android:paddingBottom="8sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+        <TextView android:id="@+id/PreEnrollmentID" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/hasDiarr" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/IBDID" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/CName" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/CDOB" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/CAge" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/CSex" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosAdDate" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosAdTime" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosRegis1" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosBed1" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosWard1" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosRegis2" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosBed2" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosWard2" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosRegis3" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosBed3" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosWard3" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/ProviDaig1" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/ProviDiag2" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/ProviDiag3" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/ProviDiag4" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/ProviDiag5" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Age5Yr" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Occur3" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/DurDiarr" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/BldDiarr" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/EligiEnrol" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Consent" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/StudyID" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/MFName" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Contact1" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/cont1Veri" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/cont1Rel" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Contact2" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Cont2Veri" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Cont2Rel" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Zila" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Upazila" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Unions" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Village" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Location" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/StudyArea" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/SpeColAdv" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+    </LinearLayout>
+ </LinearLayout>

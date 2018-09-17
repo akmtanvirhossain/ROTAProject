@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:scrollbars="vertical">
+    <LinearLayout android:id="@+id/secListRow" android:paddingTop="8sp" android:paddingBottom="8sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+        <TextView android:id="@+id/PreEnrollmentID" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/StudyID" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/HosRegis" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/DtEnroll" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/CName" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/CDOB" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/CAgeM" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/CSex" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/MFName" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Contact1" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Cont1Veri" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Cont1Rel" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Contact2" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Cont2Veri" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Cont2Rel" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Zila" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Upazila" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Unions" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Village" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Location" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/StudyArea" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/PreSumDiag" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/PreSumDiag1" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/PreSumDiag2" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/PreSumDiag3" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/PreSumDiag4" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/PreSumDiag5" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/OthSymp1" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Symp1Dur" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/OthSymp2" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/Symp2Dur" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/RefuesAdm" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/TRefusal" android:layout_width="50dp" android:gravity="center" android:layout_height="wrap_content"/>
+    </LinearLayout>
+ </LinearLayout>

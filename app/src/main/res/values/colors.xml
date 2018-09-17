@@ -10,7 +10,10 @@
     <!-- Navigation Bar-->
     <!--<color name="HeadingBackground">#FF0000</color>-->
 
-
+    <color name="subject">#111111</color>
+    <color name="timestamp">#4285f4</color>
+    <color name="message">#7a7a7a</color>
+    <color name="from">#000000</color>
     <color name="navigationBar">#01A9DB</color>
     <color name="navigationBarTextColor">#FFFFFF</color>
     <!--<color name="pageHeadingBack">#FFC4005F</color>-->

@@ -47,6 +47,16 @@
         <activity android:name="org.icddrb.rotaproject.RecycleActivity" />
         <activity android:name="org.icddrb.rotaproject.MainActivity" />
         <activity android:name="org.icddrb.rotaproject.data_form_master" />
+        <activity android:name=".IPDScreening_list" />
+        <activity android:name=".IPDScreening" />
+        <activity android:name=".Menu_Assessment" />
+        <activity android:name=".ClinicalInfo" />
+        <activity android:name=".PhysicalExam" />
+        <activity android:name=".Serumelectro" />
+        <activity android:name=".Discharge" />
+        <activity android:name=".Vaccination" />
+        <activity android:name=".EmergencyScreening" />
+        <activity android:name=".EmergencyScreening_list" />
 
         //Service
         <service android:name="org.icddrb.rotaproject.DataSyncService" />
